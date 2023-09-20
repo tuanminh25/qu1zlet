@@ -4,6 +4,7 @@ function adminAuthRegister(email, password, nameFirst, nameLast) {
     }
 }
 
+
 function adminAuthLogin(email, password) {
     return {
         authUserId: 1
@@ -21,4 +22,5 @@ function adminUserDetails(authUserId) {
         }
     }
 }
+
 
