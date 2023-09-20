@@ -9,7 +9,7 @@ let data = {
         password: 'hayden123',
         numSuccessfulLogins: 3,
         numFailedPasswordsSinceLastLogin: 1,
-        ownedQuizzes: [1, 4, 2]
+        ownedQuizzes: [1, 4, 2],
         }
     ],
     quizzes: [
