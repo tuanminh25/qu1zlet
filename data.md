@@ -1,20 +1,18 @@
 ```javascript
 let data = {
-    // TODO: insert your data structure that contains 
-    // users + quizzes here
-    user: [
+    users: [
         {
         userId: 1,
-        name: 'Hayden Smith',
         nameFirst: 'Hayden',
         nameLast: 'Smith',
         email: 'hayden.smith@unsw.edu.au',
         password: 'hayden123',
         numSuccessfulLogins: 3,
         numFailedPasswordsSinceLastLogin: 1,
+        ownedQuizzes: [1, 4, 2]
         }
     ],
-    quiz: [
+    quizzes: [
         {
         quizId: 1,
         name: 'My Quiz',
