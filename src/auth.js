@@ -1,3 +1,9 @@
+function adminAuthRegister(email, password, nameFirst, nameLast) {
+    return {
+        authUserId: 1
+    }
+}
+
 function adminUserDetails(authUserId) {
     return { user:
         {
@@ -9,3 +15,4 @@ function adminUserDetails(authUserId) {
         }
     }
 }
+
