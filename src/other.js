@@ -8,7 +8,7 @@
 */
 
 function clear() {
-    return {
-        
-    }
+  return {
+
+  }
 }
