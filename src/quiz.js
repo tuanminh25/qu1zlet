@@ -32,7 +32,6 @@ function adminQuizList(authUserId) {
         name: 'My Quiz',
       }
     ]
->>>>>>> src/quiz.js
   }
 }
 
