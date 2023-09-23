@@ -27,7 +27,7 @@ UNSW must resort to giving into the limited attention span of students and gamif
 
 However, instead of licensing well-built and tested software, UNSW is hoping to use the pool of extremely talented and interesting COMP1531 students to create their own version to distribute around campus for free. The chosen game to "take inspiration from" is **<a href="https://kahoot.com/">Kahoot</a>**.
 
-The 23T2 cohort of COMP1531 students will build the **backend Javascript server** for a new quiz game platform, **Toohak**. We plan to task future COMP6080 students to build the frontend for Toohak, something you won't have to worry about.
+The 23T3 cohort of COMP1531 students will build the **backend Javascript server** for a new quiz game platform, **Toohak**. We plan to task future COMP6080 students to build the frontend for Toohak, something you won't have to worry about.
 
 **Toohak** is the questionably-named quiz tool that allows admins to create quiz games, and players to join (without signing up) to participate and compete.
 
@@ -329,8 +329,6 @@ To run the dryrun, you should on a CSE machine (i.e. using `VLAB` or `ssh`'ed in
 ### 🐭 2.5. Submission
 
 Please see section 6 for information on **due date** and on how you will **demonstrate this iteration**.
-
-## 🐶 3. Iteration 1: Basic Functionality and Tests
 
 ## 🐶 3. Iteration 1: Basic Functionality and Tests
 
