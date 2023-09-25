@@ -8,7 +8,7 @@
 
 ## Change Log
 
-N/A
+* 25/09: A few remaining references to 'assumptions' removed from the spec
 
 ## 🫡 0. Aims:
 
@@ -399,7 +399,6 @@ You should first approach this project by considering its distinct "features". E
 1. Write tests for that feature and commit them to the branch. These will fail as you have not yet implemented the feature.
 1. Implement that feature.
 1. Make any changes to the tests such that they pass with the given implementation. You should not have to do a lot here. If you find that you are, you're not spending enough time on your tests.
-1. Consider any assumptions you made in the previous steps and add them to `assumptions.md`.
 1. Create a merge request for the branch.
 1. Get someone in your team who **did not** work on the feature to review the merge request.
 1. Fix any issues identified in the review.
@@ -726,20 +725,7 @@ Note that the `authUserId` variable is simply the user ID of the user who is mak
 
 Since `authUserId` refers to the user ID of the user calling the functions, you do NOT need to store separate user IDs (e.g. a uId or userId + a authUserId) to identify each user in your data structure - you only need to store one user ID. How you name this user ID property in your data structure is up to you.
 
-### 🐶 3.7. Bad Assumptions
-
-Here are a few examples of bad assumptions:
-
-* Assume that all groups store their data in a field called data which is located in dataStore.js
-* Assume all individual return values are returned as single values rather than being stored in an object
-* Assume the functions are written correctly
-* Assume the input authUserId is valid
-
-Bad assumptions are usually ones that directly contradict an explicit or implicit requirement in the specification. Good assumptions are ones that fill holes or gaps in requirements. 
-
-Avoid "assumptions" that simply describe the implementation details irrelevant to the client, e.g. a particular method of ID generation. Instead, consider the scenarios in which the expected behaviour of Toohak is not addressed clearly in the spec and document, with reasoning, your assumptions regarding such scenarios.
-
-### 🐶 3.8. Working in parallel
+### 🐶 3.7. Working in parallel
 
 This iteration provides challenges for many groups when it comes to working in parallel. Your group's initial reaction will be that you need to complete registration before you can complete quiz creation, and then quiz creation must be done before you update a quiz name, etc.
 
@@ -751,7 +737,7 @@ There are several approaches that you can consider to overcome these challenges:
     * This can be helpful when two people are working on functions on separate branches where one function is a prerequisite of the other, and an implementation is required to keep the pipeline passing.
     * You should pull from `master` on a regular basis to ensure your code remains up-to-date.
 
-### 🐶 3.9. Marking Criteria
+### 🐶 3.8. Marking Criteria
 
 <table>
   <tr>
@@ -823,7 +809,7 @@ Where:
  * `t` is the mark you receive for your tests running against your code (100% = your implementation passes all of your tests)
  * `i` is the mark you receive for our course tests (hidden) running against your code (100% = your implementation passes all of our tests)
 
-### 🐶 3.10. Dryrun
+### 🐶 3.9. Dryrun
 
 We have provided a very simple dryrun for iteration 1 consisting of a few tests, including your implementation of `adminAuthRegister`, `adminAuthLogin`, `adminQuizCreate`. These only check the format of your return types and simple expected behaviour, so do not rely on these as an indicator of the correctness of your implementation or tests.
 
@@ -837,7 +823,7 @@ Tips to ensure dryrun runs successfully:
 * Files used for imports are appended with `.js` e.g. `import { clearV1 } from './other.js';`
 * Files sit within the `/src` directory
 
-### 🐶 3.11. Submission & Peer Assessment
+### 🐶 3.10. Submission & Peer Assessment
 
 Please see section 6 for information on **due date** and on how you will **demonstrate this iteration**.
 
