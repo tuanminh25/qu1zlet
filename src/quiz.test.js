@@ -22,13 +22,13 @@ beforeEach(() => {
 describe('adminQuizCreate', () => {
 
   test("check for the correct return type", () => {
-    expect(adminQuizCreate(1, 'Cats or Dogs?', 'I like dogs!')).toStrictEqual({
+    expect(adminQuizCreate(1, 'Cats or Dogs', 'I like dogs')).toStrictEqual({
       quizId: expect.any(Number),
     });
   });
 
   test("AuthUserId is not a valid user", () => {
-    expect(adminQuizCreate(300, 'Dogs?', 'I like dogs!')).toStrictEqual(ERROR);
+    expect(adminQuizCreate(300, 'Dogs', 'I like dogs')).toStrictEqual(ERROR);
   });
 
   test.each([
@@ -46,11 +46,11 @@ describe('adminQuizCreate', () => {
   });
 
   test("non-numerical input for id", () => {
-      expect(adminQuizCreate('weee', 'Dogs?', 'I like dogs!')).toStrictEqual(ERROR);
+      expect(adminQuizCreate('weee', 'Dogs', 'I like dogs')).toStrictEqual(ERROR);
   });
 
   test.each([
-    {a: '', b: 'The Titanic', c: 'ship'},
+    {a: '', b: 'Dogs', c: 'ship'},
     {a: 1, b: '', c: 'ship'}, 
     {a: '', b: '', c: 'ship'},
   ])('blank inputs should create an error', ({a, b, c}) => {
@@ -58,12 +58,12 @@ describe('adminQuizCreate', () => {
   });
 
   test("multiple quizzes should have different id", () => {
-    expect(adminQuizCreate(1, 'movie1', 'this is a movie')).
-    not.toEqual(adminQuizCreate(1, 'movie2', 'this is a movie'));
+    expect(adminQuizCreate(1, 'Dogs', 'I like dogs')).
+    not.toEqual(adminQuizCreate(1, 'Cats', 'I like dogs'));
   });
 
   test("error for duplicate names", () => {
-    adminQuizCreate(1, 'Dogs?', 'I like cats!')
-    expect(adminQuizCreate(1, 'Dogs?', 'I like dogs!')).toStrictEqual(ERROR);
+    adminQuizCreate(1, 'Dogs', 'I like cats')
+    expect(adminQuizCreate(1, 'Dogs', 'I like dogs')).toStrictEqual(ERROR);
   });
 });
