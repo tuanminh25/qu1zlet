@@ -11,9 +11,6 @@ import {
   adminUserDetails,
 } from './auth.js';
 
-import { getData, setData } from "./dataStore.js";
-let store  = getData();
-
 const ERROR = { error: expect.any(String) };
 
 beforeEach(() => {
@@ -25,39 +22,37 @@ beforeEach(() => {
 describe('adminQuizCreate', () => {
 
   test("check for the correct return type", () => {
-    expect(adminQuizCreate(1, "The Prestige", "Christopher Nolan")).toStrictEqual({
-      movieId: expect.any(Number),
+    expect(adminQuizCreate(1, 'Cats or Dogs?', 'I like dogs!')).toStrictEqual({
+      quizId: expect.any(Number),
     });
   });
 
-  test("test that the quiz is stored in data", () => {
-    const uid = adminQuizCreate(1, 'Planet of the Apes', 'Vincent is an ape.');
-    expect(store.quizzes).toContain({
-      quizId: uid,
-      name: 'Planet of the Apes',
-      timeCreated: expect.any(Number),
-      timeLastEdited: expect.any(Number),
-      description: 'Vincent is an ape.',
-      ownedBy: 1,
-    });
+  test("AuthUserId is not a valid user", () => {
+    expect(adminQuizCreate(2, 'Dogs?', 'I like dogs!')).toStrictEqual(ERROR)
   });
 
-  test("userid not contained in data", () => {
-    expect(adminQuizCreate(Math.random(), '21', 'whats 9 + 10')).toStrictEqual(ERROR)
+  test.each([
+    {a: 'Roger!', b: 'Duong'},
+    {a: 'Roger%', b: 'Duong'},
+    {a: 'R', b: 'Duong'},
+    {a: 'Roger Roge', b: 'Duong'},
+    {a: 'Roger', b: 'Duong!'},
+    {a: 'Roger', b: 'Duong%'},
+    {a: 'RogeRogerRogerRogerRogerRogerRogerRogerr', b: 'D'},
+    {a: 'R', b: 'Duong DDuong DngDuongDuong DngDuongDuong DngDuongDuong DngDuongngDuongDuong DngDuongDuong DngDuongDuong DngDuong'},
+    {a: 'RogerRogerRogerRogerRogerRogerRoge', b: 'Duong DDuong DngDuongDuong DngDuongDuong DngDuongDuong DngDuongngDuongDuong DngDuongDuong DngDuongDuong DngDuong'},
+  ])('Invalid names : ($a, $b)', ({a, b}) => {
+    expect(adminQuizCreate(1, a, b)).toStrictEqual(ERROR);
   });
 
   test("non-numerical input for id", () => {
-      expect(adminQuizCreate(1, 'The Notebook', 'Cry')).toStrictEqual(ERROR);
+      expect(adminQuizCreate('weee', 'Dogs?', 'I like dogs!')).toStrictEqual(ERROR);
   });
 
   test.each([
     {a: '', b: 'The Titanic', c: 'ship'},
     {a: 1, b: '', c: 'ship'}, 
-    {a: 1, b: 'The Titanic', c: ''},
     {a: '', b: '', c: 'ship'},
-    {a: 1, b: '', c: ''},
-    {a: '', b: 'The Titanic', c: ''},
-    {a: '', b: '', c: ''},
   ])('blank inputs should create an error', ({a, b, c}) => {
     expect(adminQuizCreate(a, b, c)).toStrictEqual(ERROR)
   });
@@ -65,5 +60,10 @@ describe('adminQuizCreate', () => {
   test("multiple quizzes should have different id", () => {
     expect(adminQuizCreate(1, 'movie1', 'this is a movie')).
     not.toEqual(adminQuizCreate(1, 'movie2', 'this is a movie'));
+  });
+
+  test("error for duplicate names", () => {
+    adminQuizCreate('weee', 'Dogs?', 'I like cats!')
+    expect(adminQuizCreate('weee', 'Dogs?', 'I like dogs!')).toStrictEqual(ERROR);
   });
 });
