@@ -44,11 +44,32 @@ describe('adminAuthRegister', () => {
   });
 
   test('Valid Registeration', () => {
-    expect(adminAuthRegister('Roger.com', 'Roger1234', 'Roger', 'Duong')).toStrictEqual({
+    expect(adminAuthRegister('Roger@gmail.com', 'Roger1234', 'Roger', 'Duong')).toStrictEqual({
       authUserId: expect.any(Number)
     });
   });
 });
+
+describe('adminAuthLogin', () => {
+  let user1;
+  beforeEach(() => {
+    user1 = adminAuthRegister('Roger@gmail.com', 'Roger1234', 'Roger', 'Duong')
+  });
+
+  test('Email address does not exist', () => {
+    expect(adminAuthLogin('Jade@gmail.com', 'Roger1234')).toStrictEqual(ERROR);
+  })
+
+  test('Password is not correct for the given email', () => {
+    expect(adminAuthLogin('Roger@gmail.com', 'Roger12345')).toStrictEqual(ERROR);
+  })
+
+  test('Successful login', () => {
+    expect(adminAuthLogin('Roger@gmail.com', 'Roger1234')).toStrictEqual({
+      authUserId: user1.authUserId
+    });
+  })
+})
 
 describe('adminUserDetails', () => {
   let user;
