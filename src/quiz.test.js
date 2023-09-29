@@ -28,7 +28,7 @@ describe('adminQuizCreate', () => {
   });
 
   test("AuthUserId is not a valid user", () => {
-    expect(adminQuizCreate(2, 'Dogs?', 'I like dogs!')).toStrictEqual(ERROR)
+    expect(adminQuizCreate(300, 'Dogs?', 'I like dogs!')).toStrictEqual(ERROR);
   });
 
   test.each([
@@ -54,7 +54,7 @@ describe('adminQuizCreate', () => {
     {a: 1, b: '', c: 'ship'}, 
     {a: '', b: '', c: 'ship'},
   ])('blank inputs should create an error', ({a, b, c}) => {
-    expect(adminQuizCreate(a, b, c)).toStrictEqual(ERROR)
+    expect(adminQuizCreate(a, b, c)).toStrictEqual(ERROR);
   });
 
   test("multiple quizzes should have different id", () => {
@@ -63,7 +63,7 @@ describe('adminQuizCreate', () => {
   });
 
   test("error for duplicate names", () => {
-    adminQuizCreate('weee', 'Dogs?', 'I like cats!')
-    expect(adminQuizCreate('weee', 'Dogs?', 'I like dogs!')).toStrictEqual(ERROR);
+    adminQuizCreate(1, 'Dogs?', 'I like cats!')
+    expect(adminQuizCreate(1, 'Dogs?', 'I like dogs!')).toStrictEqual(ERROR);
   });
 });
