@@ -12,6 +12,44 @@ beforeEach(() => {
   clear();
 });
 
+describe('adminAuthRegister', () => {
+  test('Invalid email', () => {
+    expect(adminAuthRegister('Roger.com', 'Roger1234', 'Roger', 'Duong')).toStrictEqual(ERROR);
+  });
+
+  test('Email address unavailable', () => {
+    const user = adminAuthRegister('Roger@gmail.com', 'Roger1234', 'Roger', 'Duong');
+    expect(adminAuthRegister('Roger@gmail.com', 'Jadelyn12', 'Jade', '')).toStrictEqual(ERROR);
+  });
+
+  test.each([
+    {a: 'Roger!', b: 'Duong', expected: ERROR},
+    {a: 'Roger%', b: 'Duong', expected: ERROR},
+    {a: 'R', b: 'Duong', expected: ERROR},
+    {a: 'Roger Roger RogerRogerRoger', b: 'Duong', expected: ERROR},
+    {a: 'Roger', b: 'Duong!', expected: ERROR},
+    {a: 'Roger', b: 'Duong%', expected: ERROR},
+    {a: 'Roger', b: 'D', expected: ERROR},
+    {a: 'Roger', b: 'Duong Duong DuongDuongDuong', expected: ERROR},
+  ])('Invalid names : ($a, $b)', ({a, b, expected}) => {
+    expect(adminAuthRegister('Roger@gmail.com', 'Roger123', a, b)).toStrictEqual(expected);
+  });
+
+  test.each([
+    {a: 'Roger12', expected: ERROR},
+    {a: '123456789', expected: ERROR},
+    {a: 'RogerDuong', expected: ERROR},
+  ])('Invalid passwords : $a', ({a, expected}) => {
+    expect(adminAuthRegister('Roger@gmail.com', a, 'Roger', 'Duong')).toStrictEqual(expected);
+  });
+
+  test('Valid Registeration', () => {
+    expect(adminAuthRegister('Roger.com', 'Roger1234', 'Roger', 'Duong')).toStrictEqual({
+      authUserId: expect.any(Number)
+    });
+  });
+});
+
 describe('adminUserDetails', () => {
   let user;
   beforeEach(() => {
