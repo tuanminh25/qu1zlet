@@ -4,7 +4,6 @@ import {
 } from './quiz.js';
 
 import clear from './other.js';
-user.authUserId
 import {
   adminAuthRegister,
   adminAuthLogin,
