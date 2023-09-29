@@ -9,7 +9,6 @@ let data = {
       password: 'hayden123',
       numSuccessfulLogins: 3,
       numFailedPasswordsSinceLastLogin: 1,
-      ownedQuizzes: [1, 4, 2],
     }
   ],
   quizzes: [
@@ -19,6 +18,7 @@ let data = {
       timeCreated: 1683125870,
       timeLastEdited: 1683125871,
       description: 'This is my quiz',
+      quizOwnedby: 1,
     }    
   ]
 }
