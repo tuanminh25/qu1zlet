@@ -80,13 +80,30 @@ function isName(name) {
 /**
   * Given a registered user's email and password
   * returns their authUserId value.
+  * 
   * @param {string} email
   * @param {string} password 
   * @returns {{authUserId: number}} 
 */
 function adminAuthLogin(email, password) {
-  return {
-    authUserId: 1
+  const user = store.users.find((user) => user.email === email);
+  if (user === undefined) {
+    return {
+      error: 'Email address does not exist'
+    };
+  } else {
+    if (user.password !== password) {
+      user.numFailedPasswordsSinceLastLogin++;
+      return {
+        error: 'Password is not correct for the given email'
+      };
+    } else {
+      user.numSuccessfulLogins++;
+      user.numFailedPasswordsSinceLastLogin = 0;
+      return {
+        authUserId: user.userId
+      };
+    }
   }
 }
 
