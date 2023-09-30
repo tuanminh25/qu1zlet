@@ -1,6 +1,13 @@
+import { getData, setData } from "./dataStore.js";
+import validator from 'validator';
+
+let store = getData();
+
+let user_id = 0;
 /**
   * Register a user with an email, password, and names,
-  *  then returns their authUserId value.
+  * then returns their authUserId value.
+  * 
   * @param {string} email
   * @param {string} password 
   * @param {string} nameFirst
@@ -8,8 +15,65 @@
   * @returns {{authUserId: number}} 
 */
 function adminAuthRegister(email, password, nameFirst, nameLast) {
-  return {
-    authUserId: 1
+  if (!validator.isEmail(email)) {
+    return {
+      error: 'Invalid email'
+    };
+  } else {
+    if (store.users.find((user) => user.email === email)) {
+      return {
+        error: 'Email address is used by another user'
+      };
+    } else if (!isPassword(password)) {
+      return {
+        error: 'Invalid password'
+      };
+    } else if (!isName(nameFirst)) {
+      return {
+        error: 'Invalid first name'
+      };
+    } else if (!isName(nameLast)) {
+      return {
+        error: 'Invalid last name'
+      };
+    } else {
+      user_id++;
+
+      store.users.push({
+        userId: user_id,
+        nameFirst: nameFirst,
+        nameLast: nameLast,
+        email: email,
+        password: password,
+        numSuccessfulLogins: 1,
+        numFailedPasswordsSinceLastLogin: 0,
+      })
+      
+      setData(store);
+      return {
+        authUserId: user_id
+      };
+    }
+  }
+}
+
+function isPassword(password) {
+  if (password.length < 8) {
+    return false;
+  } else if (/\d/.test(password) === false || /[a-zA-Z]/.test(password) === false) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function isName(name) {
+  if (name.length < 2 || name.length > 20) {
+    return false;
+  } else if (/^[a-zA-Z\s'-]+$/.test(name) === false) {
+    return false;
+  } else {
+    return true;
   }
 }
 
