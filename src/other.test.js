@@ -4,7 +4,9 @@ import {
 	adminAuthRegister,
 	adminUserDetails
 } from './auth.js';
+
 const ERROR = { error: expect.any(String) };
+
 describe('clear', () => {
 	test('returns empty dictionary', () => {
 		expect(clear()).toStrictEqual({});
