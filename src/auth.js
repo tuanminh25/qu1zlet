@@ -28,10 +28,7 @@ function adminAuthLogin(email, password) {
 
 /**
   * Given an admin user's authUserId, return details about the user.
-  *"name" is the first and last name concatenated with a single space between them
-  *numSuccessfulLogins includes logins direct via registration, and is counted from the moment of registration starting at 1
-  *numFailedPasswordsSinceLastLogin is reset every time they have a successful login, 
-  *and simply counts the number of attempted logins that failed due to incorrect password, only since the last login
+  *
   * @param {number} authUserId - unique identifier
   * @returns { user: 
   *   {
@@ -45,15 +42,36 @@ function adminAuthLogin(email, password) {
   * @returns {error: string} - AuthUserId is not a valid user
 */
 function adminUserDetails(authUserId) {
-  return { user:
-    {
-      userId: 1,
-      name: 'Hayden Smith',
-      email: 'hayden.smith@unsw.edu.au',
-      numSuccessfulLogins: 3,
-      numFailedPasswordsSinceLastLogin: 1,
+  const user = checkauthUserId(authUserId);
+  
+  if (user === undefined) {
+    return {
+      error : 'AuthUserId is not a valid use;'
+    }
+  } else {
+    const userName = user.nameFirst + ' ' + user.nameLast;
+    return { user:
+      {
+        userId: user.userId,
+        name: userName,
+        email: user.email,
+        numSuccessfulLogins: user.numSuccessfulLogins,
+        numFailedPasswordsSinceLastLogin: user.numFailedPasswordsSinceLastLogin,
+      }
     }
   }
+}
+
+/**
+  * Given a registered user's email and password
+  * returns their authUserId value.
+  * 
+  * @param {string} email
+  * @param {Object} user
+  */
+function checkauthUserId(authUserId) {
+  const user = store.users.find((user) => user.userId === authUserId);
+  return user;
 }
     
 export {
