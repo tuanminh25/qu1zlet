@@ -1,6 +1,7 @@
 import {
   adminQuizCreate, 
-  adminQuizRemove
+  adminQuizRemove,
+  adminQuizDescriptionUpdate,
 } from './quiz.js';
 
 import clear from './other.js';
@@ -8,6 +9,7 @@ import {
   adminAuthRegister,
   adminAuthLogin,
   adminUserDetails,
+  
 } from './auth.js';
 
 const ERROR = { error: expect.any(String) };
