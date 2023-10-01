@@ -83,7 +83,7 @@ describe("adminQuizDescriptionUpdate", () => {
     expect(adminQuizDescriptionUpdate(user.authUserId, quiz.quizId, '')).toStrictEqual({});
     let inforObject = adminQuizInfo(user.authUserId, quiz.quizId);
     expect(inforObject.description).toStrictEqual('');
-    clear();
+  
   });
 
   // Any normal cases
@@ -91,7 +91,7 @@ describe("adminQuizDescriptionUpdate", () => {
     expect(adminQuizDescriptionUpdate(user.authUserId, quiz.quizId, 'Hello there, hi new updated description')).toStrictEqual({});
     let inforObject = adminQuizInfo(user.authUserId, quiz.quizId);
     expect(inforObject.description).toStrictEqual('Hello there, hi new updated description');
-    clear();
+ 
   });
 
   // Error cases:
@@ -112,7 +112,7 @@ describe("adminQuizDescriptionUpdate", () => {
     adminAuthLogin('somebody@unsw.edu.au', 'password2');
     let quiz2 = adminQuizCreate(user2.authUserId, 'Quiz by user 2', 'User 2 quiz');
     expect(adminQuizDescriptionUpdate(user.authUserId, quiz2.quizId, 'Try to update user 2 quiz')).toStrictEqual(ERROR);
-    clear();
+   
   });
 
   // Description is more than 100 characters in length (note: empty strings are OK)
