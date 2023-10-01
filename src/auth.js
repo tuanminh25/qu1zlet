@@ -159,4 +159,6 @@ export {
   adminAuthRegister,
   adminAuthLogin,
   adminUserDetails,
+
+  checkauthUserId,
 };

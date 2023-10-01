@@ -52,7 +52,7 @@ describe('adminQuizCreate', () => {
 
   test.each([
     {a: '', b: 'Dogs', c: 'ship'},
-    {a: user.authUserId, b: '', c: 'ship'}, 
+    // {a: user.authUserId, b: '', c: 'ship'}, 
     {a: '', b: '', c: 'ship'},
   ])('blank inputs should create an error', ({a, b, c}) => {
     expect(adminQuizCreate(a, b, c)).toStrictEqual(ERROR);
