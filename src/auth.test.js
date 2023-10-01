@@ -15,6 +15,7 @@ beforeEach(() => {
 describe('adminAuthRegister', () => {
   test('Invalid email', () => {
     expect(adminAuthRegister('Roger.com', 'Roger1234', 'Roger', 'Duong')).toStrictEqual(ERROR);
+    expect(adminAuthRegister('', 'Roger1234', 'Roger', 'Duong')).toStrictEqual(ERROR);
   });
 
   test('Email address unavailable', () => {
@@ -24,13 +25,14 @@ describe('adminAuthRegister', () => {
 
   test.each([
     {a: 'Roger!', b: 'Duong', expected: ERROR},
-    {a: 'Roger%', b: 'Duong', expected: ERROR},
     {a: 'R', b: 'Duong', expected: ERROR},
     {a: 'Roger Roger RogerRogerRoger', b: 'Duong', expected: ERROR},
     {a: 'Roger', b: 'Duong!', expected: ERROR},
-    {a: 'Roger', b: 'Duong%', expected: ERROR},
     {a: 'Roger', b: 'D', expected: ERROR},
     {a: 'Roger', b: 'Duong Duong DuongDuongDuong', expected: ERROR},
+    {a: '', b: 'Duong', expected: ERROR},
+    {a: 'Roger', b: '', expected: ERROR},
+    {a: '', b: '', expected: ERROR},
   ])('Invalid names : ($a, $b)', ({a, b, expected}) => {
     expect(adminAuthRegister('Roger@gmail.com', 'Roger123', a, b)).toStrictEqual(expected);
   });
@@ -39,6 +41,7 @@ describe('adminAuthRegister', () => {
     {a: 'Roger12', expected: ERROR},
     {a: '123456789', expected: ERROR},
     {a: 'RogerDuong', expected: ERROR},
+    {a: '', expected: ERROR},
   ])('Invalid passwords : $a', ({a, expected}) => {
     expect(adminAuthRegister('Roger@gmail.com', a, 'Roger', 'Duong')).toStrictEqual(expected);
   });
@@ -58,10 +61,12 @@ describe('adminAuthLogin', () => {
 
   test('Email address does not exist', () => {
     expect(adminAuthLogin('Jade@gmail.com', 'Roger1234')).toStrictEqual(ERROR);
+    expect(adminAuthLogin('', 'Roger1234')).toStrictEqual(ERROR);
   })
 
   test('Password is not correct for the given email', () => {
     expect(adminAuthLogin('Roger@gmail.com', 'Roger12345')).toStrictEqual(ERROR);
+    expect(adminAuthLogin('Roger@gmail.com', '')).toStrictEqual(ERROR);
   })
 
   test('Successful login', () => {
