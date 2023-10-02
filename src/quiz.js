@@ -78,8 +78,6 @@ function isQuizName(name) {
 function isQuizDescription(name) {
   if (name.length > 100) {
     return false;
-  } else if (/^[\w\s]+$/.test(name) === false) {
-    return false;
   } else {
     return true;
   }
