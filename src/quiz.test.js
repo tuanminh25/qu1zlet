@@ -15,7 +15,7 @@ import {
 
 const ERROR = { error: expect.any(String) };
 
-describe.only('adminQuizCreate', () => {
+describe('adminQuizCreate', () => {
   let user;
 
   beforeEach(()=> {
