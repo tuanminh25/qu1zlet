@@ -83,6 +83,7 @@ describe("adminQuizDescriptionUpdate", () => {
     expect(adminQuizDescriptionUpdate(user.authUserId, quiz.quizId + 1, 'This quiz id does no refer to any quiz')).toStrictEqual(ERROR);
   });
 
+>>>>>>> src/quiz.test.js
   // Quiz ID does not refer to a quiz that this user owns
   test("Quiz ID does not refer to a quiz that this user owns, belongs to somebody else", () => {
     let user2 = adminAuthRegister('somebody@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2');
