@@ -31,10 +31,6 @@ function adminQuizCreate(authUserId, name, description) {
     return {
       error: 'Quiz name already exists'
     };
-  } else if (!store.users.includes((user) => user.userId === authUserId)) {
-      return {
-        error: 'User not found'
-      };
   } else if (!isQuizName(name)) {
     return {
       error: 'Invalid quiz name'
@@ -47,20 +43,28 @@ function adminQuizCreate(authUserId, name, description) {
     return {
       error: 'Invalid quiz description'
     };
-  } else {
-    quiz_id++;
-
-    store.quizzes.push({
-      quizId: quiz_id,
-      name: name,
-      timeCreated: Date.now() * 1000,
-      timeLastEdited: Date.now() * 1000,
-      description: description,
-      quizOwnedby: authUserId,
-    })
   }
-    setData(store);
+
+  const userExists = store.users.find((user) => user.userId === authUserId);
+  if (!userExists) {
     return {
+      error: 'User not found'
+    };
+  }
+
+  const newQuiz = {
+    quizId: quiz_id++,
+    name: name,
+    timeCreated: Date.now() * 1000,
+    timeLastEdited: Date.now() * 1000,
+    description: description,
+    quizOwnedby: authUserId,
+  };
+
+  store.quizzes.push(newQuiz);
+  setData(store);
+
+  return {
       quizId: quiz_id,
     }
 }
