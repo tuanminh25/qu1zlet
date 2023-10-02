@@ -1,6 +1,7 @@
 {
     "scripts": {
-        "test": "jest --testMatch '**/?(*.)+(test).js'"
+        "test": "jest --testMatch '**/?(*.)+(test).js'",
+        "auth": "jest auth.test.js"
     },
     "dependencies": {
         "rewire": "^6.0.0",
