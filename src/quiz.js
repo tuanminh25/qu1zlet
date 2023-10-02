@@ -1,8 +1,9 @@
 import { getData, setData } from "./dataStore.js";
 
+
 let store = getData();
 
-let user_id = 0;
+let quiz_id = 0;
 
 /**
     adminQuizDescriptionUpdate 
@@ -26,17 +27,21 @@ function adminQuizDescriptionUpdate (authUserId, quizId, description) {
   * @returns {{ quizId: number }} 
 */
 function adminQuizCreate(authUserId, name, description) {
-  if (store.quizzes.find((quiz) => quiz.name === name)) {
+  if (store.quizzes.some((quiz) => quiz.name === name)) {
     return {
       error: 'Quiz name already exists'
     };
+  } else if (!store.users.includes((user) => user.userId === authUserId)) {
+      return {
+        error: 'User not found'
+      };
   } else if (!isQuizName(name)) {
     return {
       error: 'Invalid quiz name'
     };
-  } else if (!store.users.find((user) => user.userId === authUserId)) {
+  } else if (typeof(authUserId) !== "number") {
     return {
-      error: 'User not found'
+      error: 'User ID should be a number'
     };
   } else if (!isQuizDescription(description)) {
     return {
@@ -45,18 +50,19 @@ function adminQuizCreate(authUserId, name, description) {
   } else {
     quiz_id++;
 
-    store.quiz.push({
+    store.quizzes.push({
       quizId: quiz_id,
       name: name,
-      timeCreated: getTime() * 1000,
-      timeLastEdited: getTime() * 1000,
+      timeCreated: Date.now() * 1000,
+      timeLastEdited: Date.now() * 1000,
       description: description,
       quizOwnedby: authUserId,
     })
-    
-    setData(store);
-    return quiz_id;
   }
+    setData(store);
+    return {
+      quizId: quiz_id,
+    }
 }
 
 function isQuizName(name) {
@@ -71,6 +77,8 @@ function isQuizName(name) {
 
 function isQuizDescription(name) {
   if (name.length > 100) {
+    return false;
+  } else if (/^[\w\s]+$/.test(name) === false) {
     return false;
   } else {
     return true;

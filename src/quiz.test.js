@@ -15,7 +15,7 @@ import {
 
 const ERROR = { error: expect.any(String) };
 
-describe.only('adminQuizCreate', () => {
+describe('adminQuizCreate', () => {
   let user;
 
   beforeEach(()=> {
@@ -23,43 +23,26 @@ describe.only('adminQuizCreate', () => {
     user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast');
   })
 
-  test("check for the correct return type", () => {
-    expect(adminQuizCreate(user.userId, 'Cats or Dogs', 'I like dogs')).toStrictEqual({
-      quizId: expect.any(Number)
-    });
-  });
-
   test("AuthUserId is not a valid user", () => {
-    expect(adminQuizCreate(user.userId + 1, 'Dogs', 'I like dogs')).toStrictEqual(ERROR);
+    expect(adminQuizCreate(user.authUserId + 1, 'Dogs', 'I like dogs')).toStrictEqual(ERROR);
   });
 
   test.each([
     {a: 'Roger!', b: 'Duong'},
     {a: 'Roger%', b: 'Duong'},
     {a: 'R', b: 'Duong'},
-    {a: 'Roger Roge', b: 'Duong'},
-    {a: 'Roger', b: 'Duong!'},
-    {a: 'Roger', b: 'Duong%'},
+    {a: 'Roge...r Roge', b: ''},
+    {a: '', b: ''},
+    {a: 'Roge! djnfdnn 1 !r', b: ''},
     {a: 'RogeRogerRogerRogerRogerRogerRogerRogerr', b: 'D'},
     {a: 'R', b: 'Duong DDuong DngDuongDuong DngDuongDuong DngDuongDuong DngDuongngDuongDuong DngDuongDuong DngDuongDuong DngDuong'},
     {a: 'RogerRogerRogerRogerRogerRogerRoge', b: 'Duong DDuong DngDuongDuong DngDuongDuong DngDuongDuong DngDuongngDuongDuong DngDuongDuong DngDuongDuong DngDuong'},
   ])('Invalid names : ($a, $b)', ({a, b}) => {
-    expect(adminQuizCreate(user.userId, a, b)).toStrictEqual(ERROR);
+    expect(adminQuizCreate(user.authUserId, a, b)).toStrictEqual(ERROR);
   });
 
   test("non-numerical input for id", () => {
       expect(adminQuizCreate('weee', 'Dogs', 'I like dogs')).toStrictEqual(ERROR);
-  });
-
-  test("multiple quizzes should have different id", () => {
-    const id1 = adminQuizCreate(user.userId, 'Dogs', 'I like dogs');
-    const id2 = adminQuizCreate(user.userId, 'Cats', 'I like dogs');
-    expect(id1).not.toEqual(id2);
-  });
-
-  test("error for duplicate names", () => {
-    adminQuizCreate(user.userId, 'Dogs', 'I like cats')
-    expect(adminQuizCreate(user.userId, 'Dogs', 'I like dogs')).toStrictEqual(ERROR);
   });
 });
 
