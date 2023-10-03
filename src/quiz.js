@@ -65,7 +65,7 @@ function adminQuizCreate(authUserId, name, description) {
   setData(store);
 
   return {
-      quizId: quiz_id,
+      quizId: newQuiz.quizId,
     }
 }
 
@@ -94,9 +94,35 @@ function isQuizDescription(name) {
   * @returns {} 
 */
 function adminQuizRemove(authUserId, quizId) {
-  return {
+  if (typeof(authUserId) !== "number") {
+    return {
+      error: 'User ID should be a number'
+    };
+  } else if (typeof(quizId) !== "number") {
+    return {
+      error: 'Quiz ID should be a number'
+    };
   }
-}
+  const quizExists = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  const userExists = store.users.find((person) => person.userId === authUserId);
+  if (!quizExists) {
+    return {
+      error: 'Quiz does not exist'
+    };
+  } else if (!userExists) {
+    return {
+      error: 'Person does not exist'
+    };
+  } else if (quizExists.quizOwnedby !== authUserId) {
+    return {
+      error: 'Person does not own the quiz'
+    };
+  };
+
+  const index = store.quizzes.indexOf((quiz) => quiz.quizId === quizId);
+  store.quizzes.splice(index);
+  return {}
+};
 
 function adminQuizList(authUserId) {
   return { quizzes: [
