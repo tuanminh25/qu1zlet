@@ -87,6 +87,12 @@ function isQuizDescription(name) {
   }
 }
 
+/**
+  * Given a particular quiz, permanently remove the quiz.
+  * @param {number} authUserId
+  * @param {number} quizId 
+  * @returns {} 
+*/
 function adminQuizRemove(authUserId, quizId) {
   return {
   }
