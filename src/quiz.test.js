@@ -5,6 +5,7 @@ import {
 } from './quiz.js';
 
 import clear from './other.js';
+
 import {
   adminAuthRegister,
   adminAuthLogin,
@@ -14,13 +15,14 @@ import {
 
 const ERROR = { error: expect.any(String) };
 
-beforeEach(() => {
-  clear();
-  const user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password', 'nameFirst', 'nameLast');
-  adminAuthLogin('hayden.smith@unsw.edu.au', 'password');
-});
-
 describe('adminQuizCreate', () => {
+  let user;
+
+  beforeEach(()=> {
+    clear();
+    user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast');
+  })
+
 
   test("check for the correct return type", () => {
     expect(adminQuizCreate(user.authUserId, 'Cats or Dogs', 'I like dogs')).toStrictEqual({
@@ -36,9 +38,9 @@ describe('adminQuizCreate', () => {
     {a: 'Roger!', b: 'Duong'},
     {a: 'Roger%', b: 'Duong'},
     {a: 'R', b: 'Duong'},
-    {a: 'Roger Roge', b: 'Duong'},
-    {a: 'Roger', b: 'Duong!'},
-    {a: 'Roger', b: 'Duong%'},
+    {a: 'Roge...r Roge', b: ''},
+    {a: '', b: ''},
+    {a: 'Roge! djnfdnn 1 !r', b: ''},
     {a: 'RogeRogerRogerRogerRogerRogerRogerRogerr', b: 'D'},
     {a: 'R', b: 'Duong DDuong DngDuongDuong DngDuongDuong DngDuongDuong DngDuongngDuongDuong DngDuongDuong DngDuongDuong DngDuong'},
     {a: 'RogerRogerRogerRogerRogerRogerRoge', b: 'Duong DDuong DngDuongDuong DngDuongDuong DngDuongDuong DngDuongngDuongDuong DngDuongDuong DngDuongDuong DngDuong'},
@@ -48,14 +50,6 @@ describe('adminQuizCreate', () => {
 
   test("non-numerical input for id", () => {
       expect(adminQuizCreate('weee', 'Dogs', 'I like dogs')).toStrictEqual(ERROR);
-  });
-
-  test.each([
-    {a: '', b: 'Dogs', c: 'ship'},
-    {a: user.authUserId, b: '', c: 'ship'}, 
-    {a: '', b: '', c: 'ship'},
-  ])('blank inputs should create an error', ({a, b, c}) => {
-    expect(adminQuizCreate(a, b, c)).toStrictEqual(ERROR);
   });
 
   test("multiple quizzes should have different id", () => {
