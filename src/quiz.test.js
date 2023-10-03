@@ -15,7 +15,7 @@ import {
 
 const ERROR = { error: expect.any(String) };
 
-describe.only('adminQuizCreate', () => {
+describe('adminQuizCreate', () => {
   let user;
 
   beforeEach(()=> {
@@ -60,6 +60,48 @@ describe.only('adminQuizCreate', () => {
   test("error for duplicate names", () => {
     adminQuizCreate(user.authUserId, 'Dogs', 'I like cats')
     expect(adminQuizCreate(user.authUserId, 'Dogs', 'I like dogs')).toStrictEqual(ERROR);
+  });
+});
+
+describe('adminQuizRemove', () => {
+  let user;
+  let quiz;
+
+  beforeEach(()=> {
+    clear();
+    user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast');
+    quiz = adminQuizCreate(user.authUserId, 'Quiz 1', 'This is quiz 1');
+
+  });
+
+  test("check for the correct return type", () => {
+    expect(adminQuizRemove(user.authUserId, quiz)).toStrictEqual({})
+  });
+
+  test("AuthUserId is not a valid user", () => {
+    expect(adminQuizRemove(user.authUserId + 1, quiz)).toStrictEqual(ERROR);
+  });
+
+  test("QuizId is not a valid quiz", () => {
+    expect(adminQuizRemove(user.authUserId, quiz + 1)).toStrictEqual(ERROR);
+  });
+
+  test("QuizId is not owned by user", () => {
+    user2 = adminAuthRegister('tracie.smith@unsw.edu.au', 'password1', 'tracie', 'nameLast');
+    expect(adminQuizRemove(user2.authUserId, quiz)).toStrictEqual(ERROR);
+  });
+
+  test("non-numerical input for user id", () => {
+      expect(adminQuizRemove("hello", quiz)).toStrictEqual(ERROR);
+  });
+
+  test("non-numerical input for quiz id", () => {
+    expect(adminQuizRemove(user.authUserId, "hello")).toStrictEqual(ERROR);
+  });
+
+  test("remove quiz twice", () => {
+    adminQuizRemove(user.authUserId, quiz);
+    expect(adminQuizRemove(user.authUserId, quiz)).toStrictEqual(ERROR);
   });
 });
 
