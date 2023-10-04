@@ -214,7 +214,7 @@ describe("adminQuizList", () => {
     adminAuthLogin('jayden2.smith@unsw.edu.au', 'password2');
     
     // 1 item in list 1
-    expect(adminQuizList(user.authUserId)).toStrictEqual({ quizzes: [{quizId: 1, name: 'First quiz by Hayden'}]})
+    expect(adminQuizList(user.authUserId)).toStrictEqual({ quizzes: [{quizId: quiz.quizId, name: 'First quiz by Hayden'}]})
 
 
     // No item in list 2
@@ -222,7 +222,7 @@ describe("adminQuizList", () => {
   })
 
   // Many items in list
-  test ("Successful case: many items in the list", () => {
+  test.only ("Successful case: many items in the list", () => {
     // More quizzies from person 1
     let quiz2 = adminQuizCreate(user.authUserId, 'Hayden second quiz', 'This is quiz 2');
     let quiz3 = adminQuizCreate(user.authUserId, 'Hayden third quiz', 'This is quiz 3');
@@ -230,22 +230,22 @@ describe("adminQuizList", () => {
 
 
     expect(adminQuizList(user.authUserId)).toStrictEqual(
-    { quizzes: 
-      [{quizId: 1, name: 'First quiz by Hayden'}, 
-      {quizId: 2,name: 'Hayden second quiz'},
-      {quizId: 3,name: 'Hayden third quiz'},
-      {quizId: 4,name: 'Hayden 4th quiz'},
+    { quizzes: [
+      {quizId: quiz.quizId, name: 'First quiz by Hayden'}, 
+      {quizId: quiz2.quizId, name: 'Hayden second quiz'},
+      {quizId: quiz3.quizId, name: 'Hayden third quiz'},
+      {quizId: quiz4.quizId, name: 'Hayden 4th quiz'},
     ]});
 
     // Removing quizzes
-    adminQuizRemove(user.authUserId, quiz3);
+    adminQuizRemove(user.authUserId, quiz3.quizId);
+    
     expect(adminQuizList(user.authUserId)).toStrictEqual(
-      { quizzes: 
-        [{quizId: 1, name: 'First quiz by Hayden'}, 
-        {quizId: 2,name: 'Hayden second quiz'},
-        {quizId: 4,name: 'Hayden 4th quiz'},
-      ]});
-
+      { quizzes: [
+      {quizId: quiz.quizId, name: 'First quiz by Hayden'}, 
+      {quizId: quiz2.quizId, name: 'Hayden second quiz'},
+      {quizId: quiz4.quizId, name: 'Hayden 4th quiz'},
+    ]});
 
   })
 

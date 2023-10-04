@@ -161,13 +161,24 @@ function adminQuizRemove(authUserId, quizId) {
 };
 
 function adminQuizList(authUserId) {
-  return { quizzes: [
-      {
-        quizId: 1,
-        name: 'My Quiz',
-      }
-    ]
+  if (checkauthUserId(authUserId) === undefined) {
+    return {error: "AuthUserId is not a valid user"}
   }
+
+  let quizzes = [];
+  for (let quiz of store.quizzes) {
+    if (authUserId === quiz.quizOwnedby) {
+      quizzes.push({
+        name: quiz.name,
+        quizId: quiz.quizId,
+      });
+    }
+  }
+
+
+  return {
+    quizzes
+  };
 }
 
 
