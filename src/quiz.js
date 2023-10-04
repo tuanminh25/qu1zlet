@@ -130,8 +130,9 @@ function adminQuizRemove(authUserId, quizId) {
     };
   };
 
-  const index = store.quizzes.indexOf((quiz) => quiz.quizId === quizId);
-  store.quizzes.splice(index);
+  const quizFound = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  const index = store.quizzes.indexOf(quizFound);
+  store.quizzes.splice(index, 1);
   setData(store);
   return {}
 };
