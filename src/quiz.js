@@ -87,6 +87,14 @@ function isQuizName(name) {
   }
 }
 
+function isQuizDescription(name) {
+  if (name.length > 100) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
 /**
   * Checks whether the string follows the requirements for a description.
   * 
@@ -168,7 +176,6 @@ function adminQuizList(authUserId) {
   }
 } - returns information if valid authUserId and quizId entered
 @returns {error: string} - invalid parameters entered
-
 **/
 function adminQuizInfo(authUserId, quizId) {
   return{
