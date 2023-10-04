@@ -2,6 +2,7 @@ import {
   adminQuizCreate, 
   adminQuizRemove,
   adminQuizDescriptionUpdate,
+  adminQuizList
 } from './quiz.js';
 
 import clear from './other.js';
@@ -9,8 +10,6 @@ import clear from './other.js';
 import {
   adminAuthRegister,
   adminAuthLogin,
-  adminUserDetails,
-  
 } from './auth.js';
 
 const ERROR = { error: expect.any(String) };
@@ -103,44 +102,6 @@ describe('adminQuizRemove', () => {
 })
 
 describe("adminQuizDescriptionUpdate", () => {
-  beforeEach(()=> {
-    clear();
-    user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast');
-    quiz = adminQuizCreate(user.authUserId, 'Quiz 1', 'This is quiz 1');
-  });
-
-  test("check for the correct return type", () => {
-    expect(adminQuizRemove(user.authUserId, quiz.quizId)).toStrictEqual({})
-  });
-
-  test("AuthUserId is not a valid user", () => {
-    expect(adminQuizRemove(user.authUserId + 1, quiz.quizId)).toStrictEqual(ERROR);
-  });
-
-  test("QuizId is not a valid quiz", () => {
-    expect(adminQuizRemove(user.authUserId, quiz.quizId + 1)).toStrictEqual(ERROR);
-  });
-
-  test("QuizId is not owned by user", () => {
-    const user2 = adminAuthRegister('tracie.smith@unsw.edu.au', 'password1', 'tracie', 'nameLast');
-    expect(adminQuizRemove(user2.authUserId, quiz.quizId)).toStrictEqual(ERROR);
-  });
-
-  test("non-numerical input for user id", () => {
-      expect(adminQuizRemove("hello", quiz.quizId)).toStrictEqual(ERROR);
-  });
-
-  test("non-numerical input for quiz id", () => {
-    expect(adminQuizRemove(user.authUserId, "hello")).toStrictEqual(ERROR);
-  });
-
-  test("remove quiz twice", () => {
-    expect(adminQuizRemove(user.authUserId, quiz.quizId)).toStrictEqual({});
-    expect(adminQuizRemove(user.authUserId, quiz.quizId)).toStrictEqual(ERROR);
-  });
-});
-
-describe("adminQuizDescriptionUpdate", () => {
   let user;
   let quiz;
   beforeEach(()=> {
@@ -229,4 +190,69 @@ describe("adminQuizInfo", () => {
     expect(adminQuizInfo(user.authUserId, 2)).toStrictEqual(ERROR);
     expect(adminQuizInfo(user2.authUserId, 1)).toStrictEqual(ERROR);
   });
+})
+
+
+describe("adminQuizList", () => {
+  let user;
+  let quiz;
+
+  beforeEach(()=> {
+    clear();
+    // First person 
+    user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast');
+    adminAuthLogin('hayden.smith@unsw.edu.au', 'password1');
+    quiz = adminQuizCreate(user.authUserId, 'First quiz by Hayden', '')
+  })
+
+  // Working cases
+
+  // One item in list 1 and 0 item in list 2
+  test ("Successful case: one item in the list", () => {
+    // 2nd person
+    let user2 = adminAuthRegister('jayden2.smith@unsw.edu.au', 'password2', 'nameFirst', 'nameLast');
+    adminAuthLogin('jayden2.smith@unsw.edu.au', 'password2');
+    
+    // 1 item in list 1
+    expect(adminQuizList(user.authUserId)).toStrictEqual({ quizzes: [{quizId: quiz.quizId, name: 'First quiz by Hayden'}]})
+
+
+    // No item in list 2
+    expect(adminQuizList(user2.authUserId)).toStrictEqual({ quizzes: []})
+  })
+
+  // Many items in list
+  test.only ("Successful case: many items in the list", () => {
+    // More quizzies from person 1
+    let quiz2 = adminQuizCreate(user.authUserId, 'Hayden second quiz', 'This is quiz 2');
+    let quiz3 = adminQuizCreate(user.authUserId, 'Hayden third quiz', 'This is quiz 3');
+    let quiz4 = adminQuizCreate(user.authUserId, 'Hayden 4th quiz', 'This is quiz 4');
+
+
+    expect(adminQuizList(user.authUserId)).toStrictEqual(
+    { quizzes: [
+      {quizId: quiz.quizId, name: 'First quiz by Hayden'}, 
+      {quizId: quiz2.quizId, name: 'Hayden second quiz'},
+      {quizId: quiz3.quizId, name: 'Hayden third quiz'},
+      {quizId: quiz4.quizId, name: 'Hayden 4th quiz'},
+    ]});
+
+    // Removing quizzes
+    adminQuizRemove(user.authUserId, quiz3.quizId);
+    
+    expect(adminQuizList(user.authUserId)).toStrictEqual(
+      { quizzes: [
+      {quizId: quiz.quizId, name: 'First quiz by Hayden'}, 
+      {quizId: quiz2.quizId, name: 'Hayden second quiz'},
+      {quizId: quiz4.quizId, name: 'Hayden 4th quiz'},
+    ]});
+
+  })
+
+  // Error cases
+
+  // AuthUserId is not a valid user
+  test("AuthUserId is not a valid user", () => {
+    expect(adminQuizList(user.authUserId + 1)).toStrictEqual(ERROR)
+  })  
 })
