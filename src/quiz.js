@@ -121,6 +121,7 @@ function adminQuizRemove(authUserId, quizId) {
 
   const index = store.quizzes.indexOf((quiz) => quiz.quizId === quizId);
   store.quizzes.splice(index);
+  setData(store);
   return {}
 };
 
