@@ -15,6 +15,7 @@ import {
 
 const ERROR = { error: expect.any(String) };
 
+
 describe('adminQuizCreate', () => {
   let user;
 
@@ -105,11 +106,13 @@ describe('adminQuizRemove', () => {
 });
 
 describe("adminQuizDescriptionUpdate", () => {
+  let user;
+  let quiz;
   beforeEach(()=> {
     clear();
-    const user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password', 'nameFirst', 'nameLast');
-    adminAuthLogin('hayden.smith@unsw.edu.au', 'password');
-    let quiz = adminQuizCreate(user.authUserId, 'Quiz 1', 'This is quiz 1');
+    user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast');
+    adminAuthLogin('hayden.smith@unsw.edu.au', 'password1');
+    quiz = adminQuizCreate(user.authUserId, 'Quiz 1', 'This is quiz 1');
   })
 
   // Working cases: 

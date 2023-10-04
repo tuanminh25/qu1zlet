@@ -1,8 +1,7 @@
+import {checkauthUserId, checkquizId} from './helper.js';
 import { getData, setData } from "./dataStore.js";
 
-
 let store = getData();
-
 let quiz_id = 0;
 
 /**
@@ -14,7 +13,26 @@ let quiz_id = 0;
     { } empty object  
  * */
 function adminQuizDescriptionUpdate (authUserId, quizId, description) {
+  let quiz = checkquizId(quizId);
+
+  // Returning errors
+  if (checkauthUserId(authUserId) === undefined) {
+    return {error : 'AuthUserId is not a valid user'}
+  }
+
+  if (quiz === undefined) {
+    return {error : 'Quiz ID does not refer to a valid quiz'}
+  }
+
+  if (description.length > 100) {
+    return {error : 'Description is more than 100 characters in length'}
+  }
+
+  // Working case
+  quiz.description = description;
+
   return {
+
   }
 }
 
@@ -204,7 +222,10 @@ function adminQuizNameUpdate(authUserId, quizId, name){
 }
 
 export {
+  adminQuizDescriptionUpdate,
   adminQuizCreate,
-  adminQuizRemove,
-  adminQuizDescriptionUpdate
+  adminQuizNameUpdate,
+  adminQuizList,
+  adminQuizInfo,
+  adminQuizRemove
 }
