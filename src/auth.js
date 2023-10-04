@@ -1,6 +1,10 @@
 import { getData, setData } from "./dataStore.js";
 import validator from 'validator';
-
+import {
+  isUserName,
+  isPassword,
+  checkauthUserId
+} from './helper.js'
 let store = getData();
 
 let user_id = 0;
@@ -28,11 +32,11 @@ function adminAuthRegister(email, password, nameFirst, nameLast) {
       return {
         error: 'Invalid password'
       };
-    } else if (!isName(nameFirst)) {
+    } else if (!isUserName(nameFirst)) {
       return {
         error: 'Invalid first name'
       };
-    } else if (!isName(nameLast)) {
+    } else if (!isUserName(nameLast)) {
       return {
         error: 'Invalid last name'
       };
@@ -54,26 +58,6 @@ function adminAuthRegister(email, password, nameFirst, nameLast) {
         authUserId: user_id
       };
     }
-  }
-}
-
-function isPassword(password) {
-  if (password.length < 8) {
-    return false;
-  } else if (/\d/.test(password) === false || /[a-zA-Z]/.test(password) === false) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-function isName(name) {
-  if (name.length < 2 || name.length > 20) {
-    return false;
-  } else if (/^[a-zA-Z\s'-]+$/.test(name) === false) {
-    return false;
-  } else {
-    return true;
   }
 }
 
@@ -142,23 +126,9 @@ function adminUserDetails(authUserId) {
     }
   }
 }
-
-/**
-  * Given a registered user's email and password
-  * returns their authUserId value.
-  * 
-  * @param {string} email
-  * @param {Object} user
-  */
-function checkauthUserId(authUserId) {
-  const user = store.users.find((user) => user.userId === authUserId);
-  return user;
-}
-    
+  
 export {
   adminAuthRegister,
   adminAuthLogin,
   adminUserDetails,
-
-  checkauthUserId,
 };
