@@ -132,7 +132,7 @@ function adminQuizRemove(authUserId, quizId) {
 
   const quizFound = store.quizzes.find((quiz) => quiz.quizId === quizId);
   const index = store.quizzes.indexOf(quizFound);
-  store.quizzes.splice(index);
+  store.quizzes.splice(index, 1);
   setData(store);
   return {}
 };
