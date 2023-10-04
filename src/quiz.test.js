@@ -2,6 +2,7 @@ import {
   adminQuizCreate, 
   adminQuizRemove,
   adminQuizDescriptionUpdate,
+  adminQuizList
 } from './quiz.js';
 
 import clear from './other.js';
@@ -9,8 +10,6 @@ import clear from './other.js';
 import {
   adminAuthRegister,
   adminAuthLogin,
-  adminUserDetails,
-  
 } from './auth.js';
 
 const ERROR = { error: expect.any(String) };
@@ -157,4 +156,70 @@ describe("adminQuizDescriptionUpdate", () => {
   test("Description is more than 100 characters in length", () => {
     expect(adminQuizDescriptionUpdate(user.authUserId, quiz.quizId, 'avfwuevfg72q3fv3 r3y2urguyg23rg3t26rg32gr327gr7162gr671trgfjfjsbfsjfbsjhbfsbfsajbfjkwebf823g78grjwbfjewbqurweqbubrweuyrbuywqgruyweqgruwqgrwugreuwgruwgruwgruwgrweuygr293hrownfksnfkasdnfoihrf932hrhwrbjwabfwgf7ghseifbkwnf23noi32j893u2r9owhekfnwafbwafb732yr9q2yhriqwhrbfkwebfwakbf92qohrwqhefkasnfk,sa dfwhr9832urjwrnfefnoi3wjr0329jrowjflwnfmekqjr34jronfke fwrhf392hr9hjoqwnrlaenfa flwenmfo23ue021jeownrlewnfakbfhwgbfyu32gr8723gr92hrwenflasmnflam3902ur0ujonlwanfl')).toStrictEqual(ERROR);
   });
+})
+
+
+
+describe("adminQuizList", () => {
+  let user;
+  let quiz;
+
+  beforeEach(()=> {
+    clear();
+
+    // First person 
+    user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast');
+    adminAuthLogin('hayden.smith@unsw.edu.au', 'password1');
+    quiz = adminQuizCreate(user.authUserId, 'First quiz by Hayden', '')
+  })
+
+  // Working cases
+
+
+
+  // One item in list 1 and 0 item in list 2
+  test ("Successful case: one item in the list", () => {
+    // 2nd person
+    let user2 = adminAuthRegister('jayden2.smith@unsw.edu.au', 'password2', 'nameFirst', 'nameLast');
+    adminAuthLogin('jayden2.smith@unsw.edu.au', 'password2');
+    
+    // 1 item in list 1
+    expect(adminQuizList(user.authUserId)).toStrictEqual({ quizzes: [{quizId: 1, name: 'First quiz by Hayden'}]})
+
+
+    // No item in list 2
+    expect(adminQuizList(user2.authUserId)).toStrictEqual({ quizzes: []})
+  })
+
+  // Many items in list
+  test ("Successful case: many items in the list", () => {
+    // More quiz from person 1
+    let quiz2 = adminQuizCreate(user.authUserId, 'Hayden second quiz', 'This is quiz 2');
+
+    // 2nd person
+    let user2 = adminAuthRegister('jayden2.smith@unsw.edu.au', 'password2', 'nameFirst', 'nameLast');
+    adminAuthLogin('jayden2.smith@unsw.edu.au', 'password2');
+
+    // No item in list 2 yet
+    expect(adminQuizList(user2.authUserId)).toStrictEqual({ quizzes: []})
+
+    let quiz3 = adminQuizCreate(user2.authUserId, 'First quiz by Jayden', '');
+
+    expect(adminQuizList(user.authUserId)).toStrictEqual({ quizzes: [{quizId: 1, name: 'First quiz by Hayden'}, {quizId: 2,name: 'Hayden second quiz'}]});
+
+    expect(adminQuizList(user2.authUserId)).toStrictEqual({ quizzes: [{quizId: 3, name: 'First quiz by Jayden'}]});
+    
+
+  })
+
+  // Error cases
+
+  // AuthUserId is not a valid user
+  test("AuthUserId is not a valid user", () => {
+    expect(adminQuizList(user.authUserId + 1)).toStrictEqual(ERROR)
+  })  
+
+
+
+
 })
