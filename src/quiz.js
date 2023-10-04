@@ -191,5 +191,6 @@ export {
   adminQuizCreate,
   adminQuizNameUpdate,
   adminQuizList,
-  adminQuizInfo
+  adminQuizInfo,
+  adminQuizRemove
 }
