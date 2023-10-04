@@ -166,7 +166,6 @@ describe("adminQuizList", () => {
 
   beforeEach(()=> {
     clear();
-
     // First person 
     user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast');
     adminAuthLogin('hayden.smith@unsw.edu.au', 'password1');
@@ -174,8 +173,6 @@ describe("adminQuizList", () => {
   })
 
   // Working cases
-
-
 
   // One item in list 1 and 0 item in list 2
   test ("Successful case: one item in the list", () => {
@@ -193,22 +190,29 @@ describe("adminQuizList", () => {
 
   // Many items in list
   test ("Successful case: many items in the list", () => {
-    // More quiz from person 1
+    // More quizzies from person 1
     let quiz2 = adminQuizCreate(user.authUserId, 'Hayden second quiz', 'This is quiz 2');
+    let quiz3 = adminQuizCreate(user.authUserId, 'Hayden third quiz', 'This is quiz 3');
+    let quiz4 = adminQuizCreate(user.authUserId, 'Hayden 4th quiz', 'This is quiz 4');
 
-    // 2nd person
-    let user2 = adminAuthRegister('jayden2.smith@unsw.edu.au', 'password2', 'nameFirst', 'nameLast');
-    adminAuthLogin('jayden2.smith@unsw.edu.au', 'password2');
 
-    // No item in list 2 yet
-    expect(adminQuizList(user2.authUserId)).toStrictEqual({ quizzes: []})
+    expect(adminQuizList(user.authUserId)).toStrictEqual(
+    { quizzes: 
+      [{quizId: 1, name: 'First quiz by Hayden'}, 
+      {quizId: 2,name: 'Hayden second quiz'},
+      {quizId: 3,name: 'Hayden third quiz'},
+      {quizId: 4,name: 'Hayden 4th quiz'},
+    ]});
 
-    let quiz3 = adminQuizCreate(user2.authUserId, 'First quiz by Jayden', '');
+    // Removing quizzes
+    adminQuizRemove(user.authUserId, quiz3);
+    expect(adminQuizList(user.authUserId)).toStrictEqual(
+      { quizzes: 
+        [{quizId: 1, name: 'First quiz by Hayden'}, 
+        {quizId: 2,name: 'Hayden second quiz'},
+        {quizId: 4,name: 'Hayden 4th quiz'},
+      ]});
 
-    expect(adminQuizList(user.authUserId)).toStrictEqual({ quizzes: [{quizId: 1, name: 'First quiz by Hayden'}, {quizId: 2,name: 'Hayden second quiz'}]});
-
-    expect(adminQuizList(user2.authUserId)).toStrictEqual({ quizzes: [{quizId: 3, name: 'First quiz by Jayden'}]});
-    
 
   })
 
