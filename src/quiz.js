@@ -1,8 +1,13 @@
+import {
+  checkauthUserId,
+  checkquizId,
+  isQuizDescription,
+  isQuizName,
+} from './helper.js';
+
 import { getData, setData } from "./dataStore.js";
 
-
 let store = getData();
-
 let quiz_id = 0;
 
 /**
@@ -14,7 +19,26 @@ let quiz_id = 0;
     { } empty object  
  * */
 function adminQuizDescriptionUpdate (authUserId, quizId, description) {
+  let quiz = checkquizId(quizId);
+
+  // Returning errors
+  if (checkauthUserId(authUserId) === undefined) {
+    return {error : 'AuthUserId is not a valid user'}
+  }
+
+  if (quiz === undefined) {
+    return {error : 'Quiz ID does not refer to a valid quiz'}
+  }
+
+  if (description.length > 100) {
+    return {error : 'Description is more than 100 characters in length'}
+  }
+
+  // Working case
+  quiz.description = description;
+
   return {
+
   }
 }
 
@@ -72,36 +96,6 @@ function adminQuizCreate(authUserId, name, description) {
 }
 
 /**
-  * Checks whether the string follows the requirements for a name.
-  * 
-  * @param {string} name
-  * @returns {boolean} 
-*/
-function isQuizName(name) {
-  if (name.length < 3 || name.length > 30) {
-    return false;
-  } else if (/^[\w\s]+$/.test(name) === false) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-/**
-  * Checks whether the string follows the requirements for a description.
-  * 
-  * @param {string} name
-  * @returns {boolean} 
-*/
-function isQuizDescription(name) {
-  if (name.length > 100) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-/**
   * Given a particular quiz, permanently remove the quiz.
   * 
   * @param {number} authUserId
@@ -136,7 +130,8 @@ function adminQuizRemove(authUserId, quizId) {
     };
   };
 
-  const index = store.quizzes.indexOf((quiz) => quiz.quizId === quizId);
+  const quizFound = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  const index = store.quizzes.indexOf(quizFound);
   store.quizzes.splice(index);
   setData(store);
   return {}
@@ -153,6 +148,22 @@ function adminQuizList(authUserId) {
 }
 
 
+/**
+ adminQuizInfo
+ Obtaining all relevant information about quiz\
+ @param {number} authUserId - unique user identifier
+ @param {number} quizId - unique quiz identifier
+
+ @returns {array
+  {quizId: number,
+    name: string,
+    timeCreated: number,
+    timeLastEdited: number,
+    description: string
+  }
+} - returns information if valid authUserId and quizId entered
+@returns {error: string} - invalid parameters entered
+**/
 function adminQuizInfo(authUserId, quizId) {
   return{
     quizId: 1,
@@ -163,13 +174,27 @@ function adminQuizInfo(authUserId, quizId) {
   }
 }
 
+/**
+ adminQuizNameUpdate
+ Obtaining all relevant information about quiz\
+ @param {number} authUserId - unique user identifier
+ @param {number} quizId - unique quiz identifier
+ @param {string} name - new name of quiz
+
+ @returns [] - updates name of quiz in datastore
+ @returns {error: string} - invalid parameters entered
+**/
+
 function adminQuizNameUpdate(authUserId, quizId, name){
   return{
   }
 }
 
 export {
+  adminQuizDescriptionUpdate,
   adminQuizCreate,
-  adminQuizRemove,
-  adminQuizDescriptionUpdate
+  adminQuizNameUpdate,
+  adminQuizList,
+  adminQuizInfo,
+  adminQuizRemove
 }
