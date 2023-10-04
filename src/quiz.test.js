@@ -15,11 +15,6 @@ import {
 
 const ERROR = { error: expect.any(String) };
 
-beforeEach(() => {
-  clear();
-  // const user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password', 'nameFirst', 'nameLast');
-  // adminAuthLogin('hayden.smith@unsw.edu.au', 'password');
-});
 
 describe('adminQuizCreate', () => {
   let user;

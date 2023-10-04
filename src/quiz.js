@@ -2,12 +2,6 @@ import {checkauthUserId, checkquizId} from './helper.js';
 import { getData, setData } from "./dataStore.js";
 
 let store = getData();
-
-import { getData, setData } from "./dataStore.js";
-
-
-let store = getData();
-
 let quiz_id = 0;
 
 /**
