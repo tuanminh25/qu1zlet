@@ -1,4 +1,4 @@
-import {checkauthUserId} from './helper.js';
+import {checkauthUserId, checkquizId} from './helper.js';
 import { getData, setData } from "./dataStore.js";
 
 let store = getData();
@@ -13,7 +13,7 @@ let store = getData();
     { } empty object  
  * */
 function adminQuizDescriptionUpdate (authUserId, quizId, description) {
-  let quiz = checkauthUserId(quizId);
+  let quiz = checkquizId(quizId);
 
   // Returning errors
   if (checkauthUserId(authUserId) === undefined) {
