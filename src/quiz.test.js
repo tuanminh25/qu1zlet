@@ -63,6 +63,43 @@ describe('adminQuizCreate', () => {
   });
 });
 
+describe("adminQuizInfo", () => {
+  beforeEach(() => {
+    clear();
+    const user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password', 'nameFirst', 'nameLast');
+    adminAuthLogin('hayden.smith@unsw.edu.au', 'password');
+    let quiz = adminQuizCreate(user.authUserId, 'Quiz 1', 'This is quiz 1');
+  });
+
+  test("Valid UserId and QuizId shows relevant info", () => {
+    expect(adminQuizInfo(user.authUserId, quiz.quizId)).toStrictEqual({quiz:
+      {
+        quizId: '1',
+        name: 'Quiz 1',
+        timeCreated: expect.any(Number),
+        timeLastEdited: expect.any(Number),
+        description: 'This is quiz 1',
+      }
+    });
+  });
+
+  test("UserId is not a valid user", () => {
+    expect(adminQuizInfo(user.authUserId + 1, 1)).toStrictEqual(ERROR);
+  });
+
+  test("QuizId does not refer to a valid quiz", () => {
+    expect(adminQuizInfo(user.authUserId, 17)).toStrictEqual(ERROR);
+  });
+
+  test("QuizId does not belong to user", () => {
+    const user2 = adminAuthRegister('hayden.smith2@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2');
+    adminAuthLogin('hayden.smith2@unsw.edu.au', 'password2');
+    let quiz = adminQuizCreate(user2.authUserId, 'Quiz 2', 'This is quiz 2');
+    expect(adminQuizInfo(user.authUserId, 2)).toStrictEqual(ERROR);
+    expect(adminQuizInfo(user2.authUserId, 1)).toStrictEqual(ERROR);
+  });
+})
+
 describe("adminQuizDescriptionUpdate", () => {
   beforeEach(()=> {
     clear();
