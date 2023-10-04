@@ -71,6 +71,7 @@ describe("adminQuizInfo", () => {
     let quiz = adminQuizCreate(user.authUserId, 'Quiz 1', 'This is quiz 1');
   });
 
+  //Working cases:
   test("Valid UserId and QuizId shows relevant info", () => {
     expect(adminQuizInfo(user.authUserId, quiz.quizId)).toStrictEqual({quiz:
       {
@@ -83,14 +84,18 @@ describe("adminQuizInfo", () => {
     });
   });
 
+  //Error Cases:
+  //UserId does not refer to valid user
   test("UserId is not a valid user", () => {
     expect(adminQuizInfo(user.authUserId + 1, 1)).toStrictEqual(ERROR);
   });
 
+  //QuizId does not refer to a valid quiz
   test("QuizId does not refer to a valid quiz", () => {
     expect(adminQuizInfo(user.authUserId, 17)).toStrictEqual(ERROR);
   });
 
+  //QuizId refers to a quiz that does not belong to user
   test("QuizId does not belong to user", () => {
     const user2 = adminAuthRegister('hayden.smith2@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2');
     adminAuthLogin('hayden.smith2@unsw.edu.au', 'password2');
