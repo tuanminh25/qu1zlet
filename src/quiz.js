@@ -21,12 +21,14 @@ function adminQuizDescriptionUpdate (authUserId, quizId, description) {
 /**
   * Given basic details about a new quiz, create one for the logged in user. 
   *  then returns a quizId.
+  * 
   * @param {number} authUserId
   * @param {string} name 
   * @param {string} description
   * @returns {{ quizId: number }} 
 */
 function adminQuizCreate(authUserId, name, description) {
+  // Error checking.
   if (store.quizzes.some((quiz) => quiz.name === name)) {
     return {
       error: 'Quiz name already exists'
@@ -65,10 +67,16 @@ function adminQuizCreate(authUserId, name, description) {
   setData(store);
 
   return {
-      quizId: quiz_id,
+      quizId: newQuiz.quizId,
     }
 }
 
+/**
+  * Checks whether the string follows the requirements for a name.
+  * 
+  * @param {string} name
+  * @returns {boolean} 
+*/
 function isQuizName(name) {
   if (name.length < 3 || name.length > 30) {
     return false;
@@ -87,10 +95,60 @@ function isQuizDescription(name) {
   }
 }
 
-function adminQuizRemove(authUserId, quizId) {
-  return {
+/**
+  * Checks whether the string follows the requirements for a description.
+  * 
+  * @param {string} name
+  * @returns {boolean} 
+*/
+function isQuizDescription(name) {
+  if (name.length > 100) {
+    return false;
+  } else {
+    return true;
   }
 }
+
+/**
+  * Given a particular quiz, permanently remove the quiz.
+  * 
+  * @param {number} authUserId
+  * @param {number} quizId 
+  * @returns {} 
+*/
+function adminQuizRemove(authUserId, quizId) {
+  if (typeof(authUserId) !== "number") {
+    return {
+      error: 'User ID should be a number'
+    };
+  } else if (typeof(quizId) !== "number") {
+    return {
+      error: 'Quiz ID should be a number'
+    };
+  }
+
+  // Checks if the quiz and the user exists in the data.
+  const quizExists = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  const userExists = store.users.find((person) => person.userId === authUserId);
+  if (!quizExists) {
+    return {
+      error: 'Quiz does not exist'
+    };
+  } else if (!userExists) {
+    return {
+      error: 'Person does not exist'
+    };
+  } else if (quizExists.quizOwnedby !== authUserId) {
+    return {
+      error: 'Person does not own the quiz'
+    };
+  };
+
+  const index = store.quizzes.indexOf((quiz) => quiz.quizId === quizId);
+  store.quizzes.splice(index);
+  setData(store);
+  return {}
+};
 
 function adminQuizList(authUserId) {
   return { quizzes: [
