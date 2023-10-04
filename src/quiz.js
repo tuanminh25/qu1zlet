@@ -1,4 +1,10 @@
-import {checkauthUserId, checkquizId} from './helper.js';
+import {
+  checkauthUserId,
+  checkquizId,
+  isQuizDescription,
+  isQuizName,
+} from './helper.js';
+
 import { getData, setData } from "./dataStore.js";
 
 let store = getData();
@@ -90,36 +96,6 @@ function adminQuizCreate(authUserId, name, description) {
 }
 
 /**
-  * Checks whether the string follows the requirements for a name.
-  * 
-  * @param {string} name
-  * @returns {boolean} 
-*/
-function isQuizName(name) {
-  if (name.length < 3 || name.length > 30) {
-    return false;
-  } else if (/^[\w\s]+$/.test(name) === false) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-/**
-  * Checks whether the string follows the requirements for a description.
-  * 
-  * @param {string} name
-  * @returns {boolean} 
-*/
-function isQuizDescription(name) {
-  if (name.length > 100) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-/**
   * Given a particular quiz, permanently remove the quiz.
   * 
   * @param {number} authUserId
@@ -154,8 +130,9 @@ function adminQuizRemove(authUserId, quizId) {
     };
   };
 
-  const index = store.quizzes.indexOf((quiz) => quiz.quizId === quizId);
-  store.quizzes.splice(index);
+  const quizFound = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  const index = store.quizzes.indexOf(quizFound);
+  store.quizzes.splice(index, 1);
   setData(store);
   return {}
 };
