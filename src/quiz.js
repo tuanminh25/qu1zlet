@@ -36,7 +36,7 @@ function adminQuizDescriptionUpdate (authUserId, quizId, description) {
 
   // Working case
   quiz.description = description;
-
+  quiz.timeLastEdited = Date.now() * 1000;
   return {
 
   }
