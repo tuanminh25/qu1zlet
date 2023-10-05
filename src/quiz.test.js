@@ -118,9 +118,14 @@ describe("adminQuizNameUpdate", () => {
   //Working cases:
   //Normal Name Update
   test("Valid use of adminQuizNameUpdate", () => {
-    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId, 'Quiz Name Change').toStrictEqual({}))
-    let quizinfo = adminQuizInfo(user.authUserId, quiz.quizId);
+    let quizinfo = adminQuizInfo(user.authUserId, quiz.quizId)
+    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId, 'Quiz Name Change123').toStrictEqual({}))
+    let quizinfo2 = adminQuizInfo(user.authUserId, quiz.quizId);
     expect(quizinfo.name).toStrictEqual('Quiz Name Change123');
+
+    //check time last edited
+    expect(quizinfo.timeLastEdited !== quizinfo2.timeLastEdited);
+
   });
 
   //Error Cases
