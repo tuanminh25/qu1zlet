@@ -224,8 +224,30 @@ function adminQuizInfo(authUserId, quizId) {
 **/
 
 function adminQuizNameUpdate(authUserId, quizId, name){
-  return{
+  let quiz = checkquizId(quizId);
+  let user = checkauthUSerId(authUserId);
+
+  //Returning errors
+  if (user === undefined) {
+    return {error : 'AuthUserId is not a valid user'}
   }
+  if (quiz === undefined) {
+    return {error : 'QuizId is not valid'}
+  }
+  //Does the quiz Id belong to the correct user
+  if (quiz.quizOwnedby !== authUserId) {
+    return {error: 'User does not own the quiz'}
+  }
+  if (store.quizzes.some((quiz) => quiz.name === name)) {
+    return {error: 'Quiz name already exists'};
+  }
+  if (!isQuizName(name)) {
+    return {error: 'Invalid quiz name'};
+  }
+
+  //Working case
+  quiz.name = name;
+  return {}
 }
 
 export {
