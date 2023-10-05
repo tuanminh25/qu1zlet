@@ -6,7 +6,7 @@ import {
   adminQuizInfo,
 } from './quiz.js';
 
-import clear from './other.js';
+import { clear } from './other.js';
 
 import {
   adminAuthRegister,

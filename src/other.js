@@ -8,7 +8,7 @@ let store  = getData();
   * @param {} - no parameter
   * @returns {} - empty object
 */
-function clear() {
+export function clear() {
   store.users.length = 0;
   store.quizzes.length = 0;
   setData(store);
@@ -16,4 +16,3 @@ function clear() {
     
   }
 }
-export default clear;
