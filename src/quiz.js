@@ -1,8 +1,13 @@
+import {
+  checkauthUserId,
+  checkquizId,
+  isQuizDescription,
+  isQuizName,
+} from './helper.js';
+
 import { getData, setData } from "./dataStore.js";
 
-
 let store = getData();
-
 let quiz_id = 0;
 
 /**
@@ -14,7 +19,26 @@ let quiz_id = 0;
     { } empty object  
  * */
 function adminQuizDescriptionUpdate (authUserId, quizId, description) {
+  let quiz = checkquizId(quizId);
+
+  // Returning errors
+  if (checkauthUserId(authUserId) === undefined) {
+    return {error : 'AuthUserId is not a valid user'}
+  }
+
+  if (quiz === undefined) {
+    return {error : 'Quiz ID does not refer to a valid quiz'}
+  }
+
+  if (description.length > 100) {
+    return {error : 'Description is more than 100 characters in length'}
+  }
+
+  // Working case
+  quiz.description = description;
+
   return {
+
   }
 }
 
@@ -72,44 +96,6 @@ function adminQuizCreate(authUserId, name, description) {
 }
 
 /**
-  * Checks whether the string follows the requirements for a name.
-  * 
-  * @param {string} name
-  * @returns {boolean} 
-*/
-function isQuizName(name) {
-  if (name.length < 3 || name.length > 30) {
-    return false;
-  } else if (/^[\w\s]+$/.test(name) === false) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-function isQuizDescription(name) {
-  if (name.length > 100) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-/**
-  * Checks whether the string follows the requirements for a description.
-  * 
-  * @param {string} name
-  * @returns {boolean} 
-*/
-function isQuizDescription(name) {
-  if (name.length > 100) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-/**
   * Given a particular quiz, permanently remove the quiz.
   * 
   * @param {number} authUserId
@@ -144,20 +130,32 @@ function adminQuizRemove(authUserId, quizId) {
     };
   };
 
-  const index = store.quizzes.indexOf((quiz) => quiz.quizId === quizId);
-  store.quizzes.splice(index);
+  const quizFound = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  const index = store.quizzes.indexOf(quizFound);
+  store.quizzes.splice(index, 1);
   setData(store);
   return {}
 };
 
 function adminQuizList(authUserId) {
-  return { quizzes: [
-      {
-        quizId: 1,
-        name: 'My Quiz',
-      }
-    ]
+  if (checkauthUserId(authUserId) === undefined) {
+    return {error: "AuthUserId is not a valid user"}
   }
+
+  let quizzes = [];
+  for (let quiz of store.quizzes) {
+    if (authUserId === quiz.quizOwnedby) {
+      quizzes.push({
+        name: quiz.name,
+        quizId: quiz.quizId,
+      });
+    }
+  }
+
+
+  return {
+    quizzes
+  };
 }
 
 
@@ -178,12 +176,39 @@ function adminQuizList(authUserId) {
 @returns {error: string} - invalid parameters entered
 **/
 function adminQuizInfo(authUserId, quizId) {
-  return{
-    quizId: 1,
-    name: 'My Quiz',
-    timeCreated: 1683125870,
-    timeLastEdited: 1683125871,
-    description: 'This is my quiz',
+  if (typeof(authUserId) !== "number") {
+    return {
+      error: 'User ID should be a number'
+    };
+  } else if (typeof(quizId) !== "number") {
+    return {
+      error: 'Quiz ID should be a number'
+    };
+  }
+
+  // Checks if the quiz and the user exists in the data.
+  const quizExists = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  const userExists = store.users.find((person) => person.userId === authUserId);
+  if (!quizExists) {
+    return {
+      error: 'Quiz does not exist'
+    };
+  } else if (!userExists) {
+    return {
+      error: 'Person does not exist'
+    };
+  } else if (quizExists.quizOwnedby !== authUserId) {
+    return {
+      error: 'Person does not own the quiz'
+    };
+  };
+
+  return {
+    quizId: quizId,
+    name: quizExists.name,
+    timeCreated: quizExists.timeCreated,
+    timeLastEdited: quizExists.timeLastEdited,
+    description: quizExists.description,
   }
 }
 
@@ -204,7 +229,10 @@ function adminQuizNameUpdate(authUserId, quizId, name){
 }
 
 export {
+  adminQuizDescriptionUpdate,
   adminQuizCreate,
-  adminQuizRemove,
-  adminQuizDescriptionUpdate
+  adminQuizNameUpdate,
+  adminQuizList,
+  adminQuizInfo,
+  adminQuizRemove
 }

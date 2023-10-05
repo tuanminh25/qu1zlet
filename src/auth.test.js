@@ -47,9 +47,12 @@ describe('adminAuthRegister', () => {
   });
 
   test('Valid Registeration', () => {
-    expect(adminAuthRegister('Roger@gmail.com', 'Roger1234', 'Roger', 'Duong')).toStrictEqual({
+    const user1 = adminAuthRegister('Roger@gmail.com', 'Roger1234', 'Roger', 'Duong');
+    expect(user1).toStrictEqual({
       authUserId: expect.any(Number)
     });
+    const user2 = adminAuthRegister('Jade@gmail.com', 'JadeL1234', 'Jade', 'Duong')
+    expect(user1.authUserId).not.toEqual(user2.authUserId);
   });
 });
 
@@ -73,7 +76,15 @@ describe('adminAuthLogin', () => {
     expect(adminAuthLogin('Roger@gmail.com', 'Roger1234')).toStrictEqual({
       authUserId: user1.authUserId
     });
-  })
+  });
+
+  test('Login failed before registering, then succeeds after ', () => {
+    expect(adminAuthLogin('Jade@gmail.com', 'Roger1234')).toStrictEqual(ERROR);
+    const user2 = adminAuthRegister('Jade@gmail.com', 'Roger1234', 'Roger', 'Duong');
+    expect(adminAuthLogin('Jade@gmail.com', 'Roger1234')).toStrictEqual({
+      authUserId: user2.authUserId
+    });
+  });
 })
 
 describe('adminUserDetails', () => {
@@ -184,6 +195,39 @@ describe('adminUserDetails', () => {
         email : 'roger@gmail.com',
         numSuccessfulLogins: 2,
         numFailedPasswordsSinceLastLogin: 2,
+      }
+    });
+  });
+
+  test('Multiple users', () => {
+    const user2 = adminAuthRegister('user2@gmail.com', 'user2lol', 'James', 'Bond');
+    const user3 = adminAuthRegister('user3@gmail.com', 'user3lol', 'Killer', 'Bee');
+    adminAuthLogin('user3@gmail.com', 'user3lol')
+    expect(adminUserDetails(user.authUserId)).toStrictEqual({user :
+      {
+        userId: user.authUserId,
+        name : 'Roger Duong',
+        email : 'roger@gmail.com',
+        numSuccessfulLogins: 1,
+        numFailedPasswordsSinceLastLogin: 0,
+      }
+    });
+    expect(adminUserDetails(user2.authUserId)).toStrictEqual({user :
+      {
+        userId: user2.authUserId,
+        name : 'James Bond',
+        email : 'user2@gmail.com',
+        numSuccessfulLogins: 1,
+        numFailedPasswordsSinceLastLogin: 0,
+      }
+    });
+    expect(adminUserDetails(user3.authUserId)).toStrictEqual({user :
+      {
+        userId: user3.authUserId,
+        name : 'Killer Bee',
+        email : 'user3@gmail.com',
+        numSuccessfulLogins: 2,
+        numFailedPasswordsSinceLastLogin: 0,
       }
     });
   });
