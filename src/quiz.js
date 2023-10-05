@@ -10,14 +10,19 @@ import { getData, setData } from "./dataStore.js";
 let store = getData();
 let quiz_id = 0;
 
-/**
-    adminQuizDescriptionUpdate 
-    Update the description of the relevant quiz. 
-    Parameters:
-    ( authUserId, quizId, description ) 
-    Return object:
-    { } empty object  
- * */
+  /**
+  * Given an authUserId, quizid, description
+  * Update the description of the relevant quiz.
+  * Return notthing.
+  * 
+  * 
+  * @param {number} authUserId
+  * @param {number} quizId
+  * @param {string} description
+  * 
+  * @returns {}
+*/
+
 function adminQuizDescriptionUpdate (authUserId, quizId, description) {
   let quiz = checkquizId(quizId);
 
@@ -28,6 +33,11 @@ function adminQuizDescriptionUpdate (authUserId, quizId, description) {
 
   if (quiz === undefined) {
     return {error : 'Quiz ID does not refer to a valid quiz'}
+  }
+
+  // Quiz ID does not refer to a quiz that this user owns
+  if (quiz.quizOwnedby !== authUserId) {
+    return {error : "Quiz ID does not refer to a quiz that this user owns"};
   }
 
   if (description.length > 100) {
@@ -137,6 +147,19 @@ function adminQuizRemove(authUserId, quizId) {
   return {}
 };
 
+/**
+  * Given an authUserId
+  * Return a list of all quizzes that are owned by the currently logged in user.
+  * 
+  * 
+  * @param {number} authUserId
+  * @returns { quizzes: [
+  *  {
+  *   quizId: number,
+  *   name: string,
+  *  }
+  * ]}
+*/
 function adminQuizList(authUserId) {
   if (checkauthUserId(authUserId) === undefined) {
     return {error: "AuthUserId is not a valid user"}
@@ -224,8 +247,30 @@ function adminQuizInfo(authUserId, quizId) {
 **/
 
 function adminQuizNameUpdate(authUserId, quizId, name){
-  return{
+  let quiz = checkquizId(quizId);
+  let user = checkauthUSerId(authUserId);
+
+  //Returning errors
+  if (user === undefined) {
+    return {error : 'AuthUserId is not a valid user'}
   }
+  if (quiz === undefined) {
+    return {error : 'QuizId is not valid'}
+  }
+  //Does the quiz Id belong to the correct user
+  if (quiz.quizOwnedby !== authUserId) {
+    return {error: 'User does not own the quiz'}
+  }
+  if (store.quizzes.some((quiz) => quiz.name === name)) {
+    return {error: 'Quiz name already exists'};
+  }
+  if (!isQuizName(name)) {
+    return {error: 'Invalid quiz name'};
+  }
+
+  //Working case
+  quiz.name = name;
+  return {}
 }
 
 export {

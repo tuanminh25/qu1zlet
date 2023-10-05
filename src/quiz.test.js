@@ -106,6 +106,74 @@ describe("adminQuizRemove", () => {
   });
 });
 
+describe("adminQuizNameUpdate", () => {
+  let user;
+  let quiz;
+
+  beforeEach(()=> {
+    clear();
+    user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast');
+    adminAuthLogin('hayden.smith@unsw.edu.au', 'password1');
+    quiz = adminQuizCreate(user.authUserId, 'Quiz 1', 'This is quiz 1');
+  })
+
+  //Working cases:
+  //Normal Name Update
+  test("Valid use of adminQuizNameUpdate", () => {
+    let quizinfo = adminQuizInfo(user.authUserId, quiz.quizId)
+    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId, 'Quiz Name Change123').toStrictEqual({}))
+    let quizinfo2 = adminQuizInfo(user.authUserId, quiz.quizId);
+    expect(quizinfo.name).toStrictEqual('Quiz Name Change123');
+
+    //check time last edited
+    expect(quizinfo.timeLastEdited !== quizinfo2.timeLastEdited);
+
+  });
+
+  //Error Cases
+  //Invalid Name Change
+  test.each([
+    ['Quiz!'],
+    ['Quiz%']
+    ['Q'],
+    ['QuizQuizQuizQuizQuizQuizQuizQuizQuizQuizQuiz'],
+  ]),('Invalid names : ($a)', ({a}) => {
+    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId, a)).toStrictEqual(ERROR);
+  });
+
+  //Quiz Name in Use
+  test("Quiz name is already in use",() => {
+    let quiz2 = adminQuizCreate(user.authUserId, 'Quiz 2', 'This is quiz 2');
+    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId, 'Quiz 2')).toStrictEqual(ERROR);
+    const user2 = adminAuthRegister('hayden.smith2@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2');
+    let quiz3 = adminQuizCreate(user2.authUserId, 'Quiz 3', 'This is quiz 3');
+    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId, 'Quiz 3')).toStrictEqual(ERROR);
+  });
+
+  //Quiz does not belong to user
+  test("Quiz does not belong to User", () => {
+    const user2 = adminAuthRegister('hayden.smith2@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2');
+    adminAuthLogin('hayden.smith2@unsw.edu.au', 'password2');
+    let quiz2 = adminQuizCreate(user2.authUserId, 'Quiz 2', 'This is quiz 2');
+    expect(adminQuizNameUpdate(user.authUserId, quiz2.quizId, 'Quiz Name Change 1').toStrictEqual(ERROR));
+    expect(adminQuizNameUpdate(user2.authUserId, quiz.quizId, 'Quiz Name Change 2').toStrictEqual(ERROR));
+  });
+
+  //Quiz Id is not valid
+  test("Invalid quizId", () => {
+    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId + 0.1, 'Quiz Name Change').toStrictEqual(ERROR));
+    expect(adminQuizNameUpdate(user.authUserId, -10, 'Quiz Name Change').toStrictEqual(ERROR));
+    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId + 999999999, 'Quiz Name Change').toStrictEqual(ERROR));
+  });
+
+  //AuthId is not a valid user
+  test("UserId is not a valid user", () => {
+    expect(adminQuizInfo(user.authUserId + 1, quiz.quizId, 'Quiz Name Change')).toStrictEqual(ERROR);
+    expect(adminQuizInfo(user.authUserId + 0.1, quiz.quizId, 'Quiz Name Change')).toStrictEqual(ERROR);
+  });
+
+});
+
 describe("adminQuizDescriptionUpdate", () => {
   let user;
   let quiz;
@@ -153,11 +221,10 @@ describe("adminQuizDescriptionUpdate", () => {
 
   // Quiz ID does not refer to a quiz that this user owns
   test("Quiz ID does not refer to a quiz that this user owns, belongs to somebody else", () => {
-    let user2 = adminAuthRegister('somebody@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2');
+    let user2 = adminAuthRegister('somebody@unsw.edu.au', 'password2', 'Jias', 'Koals');
     adminAuthLogin('somebody@unsw.edu.au', 'password2');
     let quiz2 = adminQuizCreate(user2.authUserId, 'Quiz by user 2', 'User 2 quiz');
     expect(adminQuizDescriptionUpdate(user.authUserId, quiz2.quizId, 'Try to update user 2 quiz')).toStrictEqual(ERROR);
-   
   });
 
   // Description is more than 100 characters in length (note: empty strings are OK)
