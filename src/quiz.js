@@ -10,14 +10,19 @@ import { getData, setData } from "./dataStore.js";
 let store = getData();
 let quiz_id = 0;
 
-/**
-    adminQuizDescriptionUpdate 
-    Update the description of the relevant quiz. 
-    Parameters:
-    ( authUserId, quizId, description ) 
-    Return object:
-    { } empty object  
- * */
+  /**
+  * Given an authUserId, quizid, description
+  * Update the description of the relevant quiz.
+  * Return notthing.
+  * 
+  * 
+  * @param {number} authUserId
+  * @param {number} quizId
+  * @param {string} description
+  * 
+  * @returns {}
+*/
+
 function adminQuizDescriptionUpdate (authUserId, quizId, description) {
   let quiz = checkquizId(quizId);
 
@@ -137,6 +142,19 @@ function adminQuizRemove(authUserId, quizId) {
   return {}
 };
 
+/**
+  * Given an authUserId
+  * Return a list of all quizzes that are owned by the currently logged in user.
+  * 
+  * 
+  * @param {number} authUserId
+  * @returns { quizzes: [
+  *  {
+  *   quizId: number,
+  *   name: string,
+  *  }
+  * ]}
+*/
 function adminQuizList(authUserId) {
   if (checkauthUserId(authUserId) === undefined) {
     return {error: "AuthUserId is not a valid user"}

@@ -7,7 +7,7 @@ let store = getData();
   * Given a quiz id
   *
   * @param {string} quizId
-  * @returns { user: 
+  * @returns { quiz: 
   *   {
   *     quizId,
   *     name,
