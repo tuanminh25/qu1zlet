@@ -119,18 +119,24 @@ describe("adminQuizDescriptionUpdate", () => {
   // Working cases: 
   // Empty description cases
   test("Successfully update description", () => {
+    let inforObjectOriginal = adminQuizInfo(user.authUserId, quiz.quizId);
     expect(adminQuizDescriptionUpdate(user.authUserId, quiz.quizId, '')).toStrictEqual({});
-    let inforObject = adminQuizInfo(user.authUserId, quiz.quizId);
-    expect(inforObject.description).toStrictEqual('');
+    let inforObjectNew = adminQuizInfo(user.authUserId, quiz.quizId);
+    expect(inforObjectNew.description).toStrictEqual('');
   
+    // Check for changes in time last edited
+    expect(inforObjectOriginal.timeLastEdited !== inforObjectNew.timeLastEdited);
   });
 
   // Any normal cases
   test("Successfully update description", () => {
+    let inforObjectOriginal = adminQuizInfo(user.authUserId, quiz.quizId);
     expect(adminQuizDescriptionUpdate(user.authUserId, quiz.quizId, 'Hello there, hi new updated description')).toStrictEqual({});
-    let inforObject = adminQuizInfo(user.authUserId, quiz.quizId);
-    expect(inforObject.description).toStrictEqual('Hello there, hi new updated description');
- 
+    let inforObjectNew = adminQuizInfo(user.authUserId, quiz.quizId);
+    expect(inforObjectNew.description).toStrictEqual('Hello there, hi new updated description');
+
+    // Check for changes in time last edited
+    expect(inforObjectOriginal.timeLastEdited !== inforObjectNew.timeLastEdited);
   });
 
   // Error cases:
