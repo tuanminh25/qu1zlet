@@ -35,6 +35,11 @@ function adminQuizDescriptionUpdate (authUserId, quizId, description) {
     return {error : 'Quiz ID does not refer to a valid quiz'}
   }
 
+  // Quiz ID does not refer to a quiz that this user owns
+  if (quiz.quizOwnedby !== authUserId) {
+    return {error : "Quiz ID does not refer to a quiz that this user owns"};
+  }
+
   if (description.length > 100) {
     return {error : 'Description is more than 100 characters in length'}
   }
