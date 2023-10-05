@@ -1,5 +1,5 @@
-import clear from "./other";
-import { adminQuizCreate } from "./quiz";
+import { clear } from "./other.js";
+import { adminQuizCreate } from "./quiz.js";
 import {
 	adminAuthRegister,
 	adminUserDetails
