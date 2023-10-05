@@ -228,6 +228,13 @@ function adminQuizNameUpdate(authUserId, quizId, name){
   let user = checkauthUSerId(authUserId);
 
   //Returning errors
+  //Invalid User or Quiz ID
+  if (typeof(authUserId) !== "number") {
+    return {error: 'User ID should be a number'}
+  }
+  if (typeof(quizId) !== "number") {
+    return {error: 'Quiz ID should be a number'}
+  }
   if (user === undefined) {
     return {error : 'AuthUserId is not a valid user'}
   }
@@ -238,9 +245,11 @@ function adminQuizNameUpdate(authUserId, quizId, name){
   if (quiz.quizOwnedby !== authUserId) {
     return {error: 'User does not own the quiz'}
   }
+  //Quiz Name already exists
   if (store.quizzes.some((quiz) => quiz.name === name)) {
     return {error: 'Quiz name already exists'};
   }
+  //Quiz Name is not valid
   if (!isQuizName(name)) {
     return {error: 'Invalid quiz name'};
   }
