@@ -110,8 +110,8 @@ describe("adminQuizNameUpdate", () => {
 
   beforeEach(()=> {
     clear();
-    user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password', 'nameFirst', 'nameLast');
-    adminAuthLogin('hayden.smith@unsw.edu.au', 'password');
+    user = adminAuthRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast');
+    adminAuthLogin('hayden.smith@unsw.edu.au', 'password1');
     quiz = adminQuizCreate(user.authUserId, 'Quiz 1', 'This is quiz 1');
   })
 
