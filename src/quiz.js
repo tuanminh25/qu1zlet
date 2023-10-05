@@ -176,12 +176,39 @@ function adminQuizList(authUserId) {
 @returns {error: string} - invalid parameters entered
 **/
 function adminQuizInfo(authUserId, quizId) {
-  return{
-    quizId: 1,
-    name: 'My Quiz',
-    timeCreated: 1683125870,
-    timeLastEdited: 1683125871,
-    description: 'This is my quiz',
+  if (typeof(authUserId) !== "number") {
+    return {
+      error: 'User ID should be a number'
+    };
+  } else if (typeof(quizId) !== "number") {
+    return {
+      error: 'Quiz ID should be a number'
+    };
+  }
+
+  // Checks if the quiz and the user exists in the data.
+  const quizExists = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  const userExists = store.users.find((person) => person.userId === authUserId);
+  if (!quizExists) {
+    return {
+      error: 'Quiz does not exist'
+    };
+  } else if (!userExists) {
+    return {
+      error: 'Person does not exist'
+    };
+  } else if (quizExists.quizOwnedby !== authUserId) {
+    return {
+      error: 'Person does not own the quiz'
+    };
+  };
+
+  return {
+    quizId: quizId,
+    name: quizExists.name,
+    timeCreated: quizExists.timeCreated,
+    timeLastEdited: quizExists.timeLastEdited,
+    description: quizExists.description,
   }
 }
 
