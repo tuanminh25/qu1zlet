@@ -4,6 +4,7 @@ import {
   adminQuizDescriptionUpdate,
   adminQuizList,
   adminQuizInfo,
+  adminQuizNameUpdate
 } from './quiz.js';
 
 import { clear } from './other.js';
@@ -120,9 +121,10 @@ describe("adminQuizNameUpdate", () => {
   //Working cases:
   //Normal Name Update
   test("Valid use of adminQuizNameUpdate", () => {
-    let quizinfo = adminQuizInfo(user.authUserId, quiz.quizId)
-    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId, 'Quiz Name Change123').toStrictEqual({}))
+    let quizinfo = adminQuizInfo(user.authUserId, quiz.quizId);
+    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId, 'Quiz Name Change123')).toStrictEqual({});
     let quizinfo2 = adminQuizInfo(user.authUserId, quiz.quizId);
+    quizinfo = adminQuizInfo(user.authUserId, quiz.quizId);
     expect(quizinfo.name).toStrictEqual('Quiz Name Change123');
 
     //check time last edited
@@ -143,27 +145,27 @@ describe("adminQuizNameUpdate", () => {
 
   //Quiz Name in Use
   test("Quiz name is already in use",() => {
-    let quiz2 = adminQuizCreate(user.authUserId, 'Quiz 2', 'This is quiz 2');
+    adminQuizCreate(user.authUserId, 'Quiz 2', 'This is quiz 2');
     expect(adminQuizNameUpdate(user.authUserId, quiz.quizId, 'Quiz 2')).toStrictEqual(ERROR);
-    const user2 = adminAuthRegister('hayden.smith2@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2');
-    let quiz3 = adminQuizCreate(user2.authUserId, 'Quiz 3', 'This is quiz 3');
+    const user2 = adminAuthRegister('hayden.smith2@unsw.edu.au', 'password2', 'nameFirstt', 'nameLastt');
+    adminQuizCreate(user2.authUserId, 'Quiz 3', 'This is quiz 3');
     expect(adminQuizNameUpdate(user.authUserId, quiz.quizId, 'Quiz 3')).toStrictEqual(ERROR);
   });
 
   //Quiz does not belong to user
   test("Quiz does not belong to User", () => {
-    const user2 = adminAuthRegister('hayden.smith2@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2');
+    const user2 = adminAuthRegister('hayden.smith2@unsw.edu.au', 'password2', 'nameFirstttt', 'nameLastttt');
     adminAuthLogin('hayden.smith2@unsw.edu.au', 'password2');
     let quiz2 = adminQuizCreate(user2.authUserId, 'Quiz 2', 'This is quiz 2');
-    expect(adminQuizNameUpdate(user.authUserId, quiz2.quizId, 'Quiz Name Change 1').toStrictEqual(ERROR));
-    expect(adminQuizNameUpdate(user2.authUserId, quiz.quizId, 'Quiz Name Change 2').toStrictEqual(ERROR));
+    expect(adminQuizNameUpdate(user.authUserId, quiz2.quizId, 'Quiz Name Change 1')).toStrictEqual(ERROR);
+    expect(adminQuizNameUpdate(user2.authUserId, quiz.quizId, 'Quiz Name Change 2')).toStrictEqual(ERROR);
   });
 
   //Quiz Id is not valid
   test("Invalid quizId", () => {
-    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId + 0.1, 'Quiz Name Change').toStrictEqual(ERROR));
-    expect(adminQuizNameUpdate(user.authUserId, -10, 'Quiz Name Change').toStrictEqual(ERROR));
-    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId + 999999999, 'Quiz Name Change').toStrictEqual(ERROR));
+    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId + 0.1, 'Quiz Name Change')).toStrictEqual(ERROR);
+    expect(adminQuizNameUpdate(user.authUserId, -10, 'Quiz Name Change')).toStrictEqual(ERROR);
+    expect(adminQuizNameUpdate(user.authUserId, quiz.quizId + 999999999, 'Quiz Name Change')).toStrictEqual(ERROR);
   });
 
   //AuthId is not a valid user

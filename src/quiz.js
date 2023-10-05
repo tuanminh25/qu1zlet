@@ -248,7 +248,7 @@ function adminQuizInfo(authUserId, quizId) {
 
 function adminQuizNameUpdate(authUserId, quizId, name){
   let quiz = checkquizId(quizId);
-  let user = checkauthUSerId(authUserId);
+  let user = checkauthUserId(authUserId);
 
   //Returning errors
   //Invalid User or Quiz ID
