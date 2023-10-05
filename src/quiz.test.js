@@ -221,11 +221,10 @@ describe("adminQuizDescriptionUpdate", () => {
 
   // Quiz ID does not refer to a quiz that this user owns
   test("Quiz ID does not refer to a quiz that this user owns, belongs to somebody else", () => {
-    let user2 = adminAuthRegister('somebody@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2');
+    let user2 = adminAuthRegister('somebody@unsw.edu.au', 'password2', 'Jias', 'Koals');
     adminAuthLogin('somebody@unsw.edu.au', 'password2');
     let quiz2 = adminQuizCreate(user2.authUserId, 'Quiz by user 2', 'User 2 quiz');
     expect(adminQuizDescriptionUpdate(user.authUserId, quiz2.quizId, 'Try to update user 2 quiz')).toStrictEqual(ERROR);
-   
   });
 
   // Description is more than 100 characters in length (note: empty strings are OK)
