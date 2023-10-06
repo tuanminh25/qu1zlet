@@ -279,6 +279,7 @@ function adminQuizNameUpdate(authUserId, quizId, name){
 
   //Working case
   quiz.name = name;
+  quiz.timeLastEdited = Date.now() * 1000;
   return {}
 }
 
