@@ -265,7 +265,7 @@ describe("adminQuizInfo", () => {
   });
 
   test("QuizId does not belong to user", () => {
-    const user2 = adminAuthRegister('hayden.smith2@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2');
+    const user2 = adminAuthRegister('hayden.smith2@unsw.edu.au', 'password2', 'nameFirstttt', 'nameLastttt');
     adminAuthLogin('hayden.smith2@unsw.edu.au', 'password2');
     let quiz = adminQuizCreate(user2.authUserId, 'Quiz 2', 'This is quiz 2');
     expect(adminQuizInfo(user.authUserId, 2)).toStrictEqual(ERROR);
