@@ -1,5 +1,8 @@
 // YOU SHOULD MODIFY THIS OBJECT BELOW
-let data = {};
+let data = {    
+  users: [],
+  quizzes: [],
+};
 
 // YOU SHOULDNT NEED TO MODIFY THE FUNCTIONS BELOW IN ITERATION 1
 
@@ -23,7 +26,7 @@ function getData() {
 }
 
 // Use set(newData) to pass in the entire data object, with modifications made
-function setData(newData) {
+function setData(newData) {  
   data = newData;
 }
 

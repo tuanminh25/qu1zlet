@@ -4,7 +4,9 @@
         "tsc": "tsc --project tsconfig.json",
         "lint": "eslint src/**/*.{ts,js}",
         "lint-fix": "eslint --fix src/**/*.{ts,js}",
-        "start": "ts-node -T src/server.ts"
+        "start": "ts-node -T src/server.ts",
+        "auth": "jest auth.test.js",
+        "quiz": "jest quiz.test.js"
     },
     "dependencies": {
         "cors": "^2.8.5",
