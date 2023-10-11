@@ -985,10 +985,6 @@ paths:
           description: Token is empty or invalid (does not refer to valid logged in user session)
           schema:
             $ref: '#/components/return/Error'
-        403:
-          description: Valid token is provided, but user is unauthorised to complete this action
-          schema:
-            $ref: '#/components/return/Error'
     put:
       summary: Update the details of an admin user (non-password).
       description: Given a set of properties, update those properties of this logged in admin user.
@@ -1004,10 +1000,6 @@ paths:
             $ref: '#/components/return/Empty'
         401:
           description: Token is empty or invalid (does not refer to valid logged in user session)
-          schema:
-            $ref: '#/components/return/Error'
-        403:
-          description: Valid token is provided, but user is unauthorised to complete this action
           schema:
             $ref: '#/components/return/Error'
         400:
@@ -1241,10 +1233,6 @@ paths:
             $ref: '#/components/return/QuizTrash'
         401:
           description: Token is empty or invalid (does not refer to valid logged in user session)
-          schema:
-            $ref: '#/components/return/Error'
-        403:
-          description: Valid token is provided, but user is not an owner of this quiz
           schema:
             $ref: '#/components/return/Error'
   /v1/admin/quiz/{quizid}/restore:

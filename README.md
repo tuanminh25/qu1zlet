@@ -10,6 +10,7 @@
 
 * 25/09: A few remaining references to 'assumptions' removed from the spec
 * 10/10: Updated section `4.9` to try and elaborate in more detail about sessions.
+* 11/10: Few minor system updates; Removed a 403 error from swagger for some routes because they weren't applicable
 
 ## 🫡 0. Aims:
 
@@ -840,6 +841,8 @@ In this iteration, more features were added to the specification, and the focus 
 
 Iteration 2 both reuses a lot of work from iteration 1, as well as has new work. Most of the work from iteration 1 can be recycled, but the following consideration(s) need to be made from previous work:
  * `DELETE /v1/admin/quiz/{quizid}` now requires also that all sessions for this quiz must be in END state. This was not a requirement for a similar route in iteration 1.
+
+If you'd like more support in this iteration, you can see a [previous term's video](https://www.youtube.com/watch?v=j0P-SA8bwSs) where a lecturer discusses iteration 2 with the students of that term
 
 In this iteration, you are expected to:
 

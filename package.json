@@ -4,8 +4,7 @@
         "tsc": "tsc --project tsconfig.json",
         "lint": "eslint src/**/*.{ts,js}",
         "lint-fix": "eslint --fix src/**/*.{ts,js}",
-        "start": "ts-node -T src/server.ts",
-        "posttest": "pkill -f 'node_modules/sync-rpc/lib/worker.js' > /dev/null 2>&1 || true"
+        "start": "ts-node -T src/server.ts"
     },
     "dependencies": {
         "cors": "^2.8.5",
@@ -34,7 +33,7 @@
         "jest": "^28.1.0",
         "nyc": "^15.1.0",
         "swagger-ui-express": "^4.6.2",
-        "sync-request": "^6.1.0",
+        "sync-request-curl": "^2.1.5",
         "ts-jest": "^28.0.2",
         "yaml": "^2.2.2"
     }

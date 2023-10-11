@@ -1,5 +1,5 @@
 // Do not delete this file
-import request from 'sync-request';
+import request from 'sync-request-curl';
 import config from './config.json';
 
 const OK = 200;
