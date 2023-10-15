@@ -11,6 +11,7 @@
 * 25/09: A few remaining references to 'assumptions' removed from the spec
 * 10/10: Updated section `4.9` to try and elaborate in more detail about sessions.
 * 11/10: Few minor system updates; Removed a 403 error from swagger for some routes because they weren't applicable
+* 14/10: Correction at the top of `4.1`; Unnecessary `400` error condition for `Quiz ID does not refer to a quiz that this user owns` removed from a number of places where this is covered by `403`.
 
 ## 🫡 0. Aims:
 
@@ -840,7 +841,7 @@ Please see section 7.5 for information on **peer assessment**.
 In this iteration, more features were added to the specification, and the focus has been changed to HTTP endpoints. Most of the theory surrounding iteration 2 is covered in week 4-5 lectures. Note that there will still be some features of the frontend that will not work because the routes will not appear until iteration 3. There is no introductory video for iteration 2.
 
 Iteration 2 both reuses a lot of work from iteration 1, as well as has new work. Most of the work from iteration 1 can be recycled, but the following consideration(s) need to be made from previous work:
- * `DELETE /v1/admin/quiz/{quizid}` now requires also that all sessions for this quiz must be in END state. This was not a requirement for a similar route in iteration 1.
+ * `DELETE /v1/admin/quiz/{quizid}` now requires that upon deletion items are moved to trash instead of permanently removed.
 
 If you'd like more support in this iteration, you can see a [previous term's video](https://www.youtube.com/watch?v=j0P-SA8bwSs) where a lecturer discusses iteration 2 with the students of that term
 
