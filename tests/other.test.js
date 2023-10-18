@@ -1,9 +1,9 @@
-import { clear } from "./other.js";
-import { adminQuizCreate } from "./quiz.js";
+import { clear } from "../src/other.js";
+import { adminQuizCreate } from "../src/quiz.js";
 import {
 	adminAuthRegister,
 	adminUserDetails
-} from './auth.js';
+} from '../src/auth.js';
 
 const ERROR = { error: expect.any(String) };
 

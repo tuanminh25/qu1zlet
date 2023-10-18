@@ -5,14 +5,14 @@ import {
   adminQuizList,
   adminQuizInfo,
   adminQuizNameUpdate
-} from './quiz.js';
+} from '../src/quiz.js';
 
-import { clear } from './other.js';
+import { clear } from '../src/other.js';
 
 import {
   adminAuthRegister,
   adminAuthLogin,
-} from './auth.js';
+} from '../src/auth.js';
 
 const ERROR = { error: expect.any(String) };
 
