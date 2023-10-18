@@ -20,7 +20,7 @@ tests:
     - sleep 2
     - cat $SERVER_LOG
 
-lint:
+linting:
   stage: checks
   only:
     - master
