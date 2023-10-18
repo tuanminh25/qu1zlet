@@ -3,7 +3,7 @@ import fs from 'fs';
 
 let store = getData();
 
-interface User {
+export interface User {
   userId: number;
   nameFirst: string;
   nameLast: string;
@@ -13,7 +13,7 @@ interface User {
   numFailedPasswordsSinceLastLogin: number;
 }
 
-interface Quiz {
+export interface Quiz {
   quizId: number;
   name: string;
   timeCreated: number;
@@ -22,35 +22,27 @@ interface Quiz {
   quizOwnedby: number
 }
 
-interface Session {
+export interface Session {
   userId: number;
   sessionId: string
 }
 
-interface dataStore {
+export interface DataStore {
   users: User[];
   quizzes: Quiz[];
   sessions: Session[]
 }
 
 
-export function load() {
+export function load(): DataStore {
   const data = fs.readFileSync('./dataStore.json');
   return JSON.parse(String(data));
 }
 
-// export function save()
-
-
-
-
-
-
-
-
-
-
-
+export function save(data: DataStore) {
+  const dataStr = JSON.stringify(data)
+  fs.writeFileSync('./dataStore.json', dataStr);
+}
 
 /**
   * Given a quiz id
