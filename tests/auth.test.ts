@@ -21,7 +21,7 @@ function testRegister(
   return { response: JSON.parse(res.body.toString()), status: res.statusCode};
 };
 
-const testClear = () => { request('DELETE', '/v1/clear') };
+const testClear = () => { request('DELETE', SERVER_URL+ '/v1/clear') };
 
 
 beforeEach(() => {
