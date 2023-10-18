@@ -1,5 +1,6 @@
 import request from 'sync-request-curl';
 import { port, url } from '../src/config.json';
+import { clear } from '../src/other.js';
 
 const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/'
@@ -11,21 +12,26 @@ function testRegister(
   nameFirst: string,
   nameLast: string
 ) {
-  const res = request('POST', SERVER_URL + auth + 'register', { json: {
-    email,
-    password,
-    nameFirst,
-    nameLast
-  }});
-  
-  return { response: JSON.parse(res.body.toString()), status: res.statusCode};
+  const res = request('POST', SERVER_URL + auth + 'register', 
+    { 
+      json: { 
+        "email": email, 
+        "password": password, 
+        "nameFirst": nameFirst, 
+        "nameLast": nameLast 
+      } 
+    }
+  );
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 };
 
-const testClear = () => { request('DELETE', SERVER_URL+ '/v1/clear') };
+const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
 
 
 beforeEach(() => {
-  testClear();
+  // testClear();
+  clear();
 });
 
 describe('v1/admin/auth/register', () => {
