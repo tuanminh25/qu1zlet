@@ -24,7 +24,7 @@ interface Quiz {
 
 interface Session {
   userId: number;
-  valid: boolean
+  sessionId: string
 }
 
 interface dataStore {
