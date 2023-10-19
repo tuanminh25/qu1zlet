@@ -144,7 +144,7 @@ export function adminUserDetails(token: string) {
 
   if (!session) {
     return {
-      error : 'Invalid token'
+      error: 'Invalid token'
     };
   }
 
@@ -152,7 +152,8 @@ export function adminUserDetails(token: string) {
   const user = data.users.find((user) => user.userId === session.userId);
 
   const userName = user.nameFirst + ' ' + user.nameLast;
-  return { user:
+  return {
+    user:
     {
       userId: user.userId,
       name: userName,

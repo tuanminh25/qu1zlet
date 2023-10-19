@@ -75,7 +75,7 @@ app.get('/v1/admin/user/details', (req: Request, res: Response) => {
     return res.status(401).json(response);
   }
   res.json(response);
-})
+});
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
 // ====================================================================
