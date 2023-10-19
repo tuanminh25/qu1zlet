@@ -20,9 +20,9 @@ let userUniqueId = 0;
   * @param {string} password
   * @param {string} nameFirst
   * @param {string} nameLast
-  * @returns {{authUserId: number}}
+  * @returns {{token: string}}
 */
-function adminAuthRegister(email: string, password: string, nameFirst: string, nameLast: string) {
+export function adminAuthRegister(email: string, password: string, nameFirst: string, nameLast: string) {
   if (!validator.isEmail(email)) {
     return {
       error: 'Invalid email'
@@ -85,29 +85,39 @@ function adminAuthRegister(email: string, password: string, nameFirst: string, n
   *
   * @param {string} email
   * @param {string} password
-  * @returns {{authUserId: number}}
+  * @returns {{token: string}}
 */
-// function adminAuthLogin(email, password) {
-//   const user = store.users.find((user) => user.email === email);
-//   if (user === undefined) {
-//     return {
-//       error: 'Email address does not exist'
-//     };
-//   } else {
-//     if (user.password !== password) {
-//       user.numFailedPasswordsSinceLastLogin++;
-//       return {
-//         error: 'Password is not correct for the given email'
-//       };
-//     } else {
-//       user.numSuccessfulLogins++;
-//       user.numFailedPasswordsSinceLastLogin = 0;
-//       return {
-//         authUserId: user.userId
-//       };
-//     }
-//   }
-// }
+export function adminAuthLogin(email: string, password: string) {
+  const user = checkEmail(email);
+  if (!user) {
+    return {
+      error: 'Email address does not exist'
+    };
+  }
+
+  if (user.password !== password) {
+    user.numFailedPasswordsSinceLastLogin++;
+    return {
+      error: 'Password is not correct for the given email'
+    };
+  }
+
+  const data = load();
+  const sessionId = uuidv4();
+  user.numSuccessfulLogins++;
+  user.numFailedPasswordsSinceLastLogin = 0;
+
+  const newSession: Session = {
+    userId: user.userId,
+    sessionId: sessionId
+  };
+
+  data.sessions.push(newSession);
+
+  return {
+    token: sessionId
+  };
+}
 
 // /**
 //   * Given an admin user's authUserId, return details about the user.
@@ -145,8 +155,3 @@ function adminAuthRegister(email: string, password: string, nameFirst: string, n
 //   }
 // }
 
-export {
-  adminAuthRegister,
-  // adminAuthLogin,
-  // adminUserDetails,
-};
