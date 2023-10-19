@@ -27,6 +27,18 @@ export function testRegister(
 
 const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
 
+function testLogin(email: string, password: string) {
+  const res = request('POST', SERVER_URL + auth + 'login', 
+    { 
+      json: { 
+        "email": email, 
+        "password": password
+      } 
+    }
+  );
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+};
 
 beforeEach(() => {
   testClear();
@@ -86,6 +98,39 @@ describe('v1/admin/auth/register', () => {
     expect(user1.status).toStrictEqual(400);
   });
 });
+
+describe('/v1/admin/auth/login', () => {
+  beforeEach(() => {
+    testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong');
+  });
+
+  test('Email does not exist', () => {
+    const login1 = testLogin('Jade@gmail.com', 'hieu12345');
+    expect(login1.response).toStrictEqual(ERROR);
+    expect(login1.status).toStrictEqual(400);
+  });
+
+  test('Password is not correct for the given email', () => {
+    const login1 = testLogin('Roger@gmail.com', 'Roger12345');
+    expect(login1.response).toStrictEqual(ERROR);
+    expect(login1.status).toStrictEqual(400);
+
+    const login2 =  testLogin('Roger@gmail.com', '');
+    expect(login2.response).toStrictEqual(ERROR);
+    expect(login2.status).toStrictEqual(400);
+  });
+
+  test('Successful login', () => {
+    const login1 = testLogin('Roger@gmail.com', 'hieu12345');
+    expect(login1.response).toStrictEqual({
+      token: expect.any(String)
+    });
+    expect(login1.status).toStrictEqual(200);
+  });
+});
+
+
+
 
 /*
 describe('adminAuthLogin', () => {
