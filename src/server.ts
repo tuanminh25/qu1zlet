@@ -8,7 +8,7 @@ import sui from 'swagger-ui-express';
 import fs from 'fs';
 import path from 'path';
 import process from 'process';
-import { adminAuthLogin, adminAuthRegister, adminUserDetails } from './auth';
+import { adminAuthLogin, adminAuthRegister, adminUserDetails, adminAuthLogout } from './auth';
 import { clear } from './other';
 
 // Set up web app
@@ -76,6 +76,18 @@ app.get('/v1/admin/user/details', (req: Request, res: Response) => {
   }
   res.json(response);
 });
+
+app.post('/v1/admin/auth/logout', (req: Request, res: Response) => {
+  const token = req.body.token;
+
+  const response = adminAuthLogout(String(token));
+
+  if ('error' in response) {
+    return res.status(401).json(response);
+  }
+  res.json(response);
+})
+
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
 // ====================================================================
