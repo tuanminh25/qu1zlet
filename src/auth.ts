@@ -180,7 +180,7 @@ export function adminAuthLogout(token: string) {
   }
 
   const data = load();
-  const newSessions = data.sessions.filter((item) => item !== session);
+  const newSessions = data.sessions.filter((item) => item.sessionId !== session.sessionId);
   data.sessions = newSessions;
   save(data);
 

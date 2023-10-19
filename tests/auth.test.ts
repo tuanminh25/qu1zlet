@@ -278,7 +278,7 @@ describe('/v1/admin/user/logout', () => {
     expect(logout1.status).toStrictEqual(200);
   });
 
-  test.only('Cannot view profile', () => {
+  test('Cannot view profile', () => {
     const logout1 = testLogout(user1.token);
     const details1 = testGetDetails(user1.token);
     expect(details1.response).toStrictEqual(ERROR);
