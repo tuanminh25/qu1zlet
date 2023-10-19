@@ -109,7 +109,7 @@ export function isPassword(password: string) {
   * @param {string} password
   * @returns {boolean} 
 */ 
-export function isUserName(name: string) {
+export function isUserName(name: string): Boolean {
   if (name.length < 2 || name.length > 20) {
     return false;
   } else if (/^[a-zA-Z\s'-]+$/.test(name) === false) {
@@ -125,8 +125,9 @@ export function isUserName(name: string) {
  * @param {string} email
  * @returns {boolean}
 */
-export function isEmail(email: string) {
-  // const data = 
+export function checkEmail(email: string) {
+  const data = load();
+  return data.users.find((user) => user.email = email);
 }
 
 
@@ -136,7 +137,7 @@ export function isEmail(email: string) {
   * @param {string} name
   * @returns {boolean} 
 */
-export function isQuizName(name: string) {
+export function isQuizName(name: string): Boolean {
   if (name.length < 3 || name.length > 30) {
     return false;
   } else if (/^[\w\s]+$/.test(name) === false) {
