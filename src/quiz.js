@@ -3,7 +3,7 @@ import {
   checkquizId,
   isQuizDescription,
   isQuizName,
-} from './helper.js';
+} from './helper';
 
 import { getData, setData } from "./dataStore.js";
 
