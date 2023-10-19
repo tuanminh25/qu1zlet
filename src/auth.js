@@ -4,7 +4,7 @@ import {
   isUserName,
   isPassword,
   checkauthUserId
-} from './helper.js'
+} from './helper.ts'
 let store = getData();
 
 let user_id = 0;
@@ -55,7 +55,7 @@ function adminAuthRegister(email, password, nameFirst, nameLast) {
       
       setData(store);
       return {
-        authUserId: user_id
+        token: 'hello'
       };
     }
   }
