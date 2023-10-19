@@ -86,7 +86,7 @@ app.post('/v1/admin/auth/logout', (req: Request, res: Response) => {
     return res.status(401).json(response);
   }
   res.json(response);
-})
+});
 
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================

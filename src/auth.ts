@@ -166,7 +166,7 @@ export function adminUserDetails(token: string) {
 
 /**
  * Given an admin user's token and log out of session
- * 
+ *
  * @param {string} token
  * @return {{}}
  */
