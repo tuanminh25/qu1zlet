@@ -1,8 +1,8 @@
-import {load, save} from './helper'
+import { load, save } from './helper';
 
 /**
   * Reset the state of the application back to the start.
-  * 
+  *
   * @param {} - no parameter
   * @returns {} - empty object
 */
