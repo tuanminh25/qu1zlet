@@ -130,6 +130,11 @@ export function checkEmail(email: string) {
   return data.users.find((user) => user.email === email);
 }
 
+export function isToken(token: string) {
+  const data = load();
+  return data.sessions.find((session) => session.sessionId === token);
+}
+
 /**
   * Checks whether the string follows the requirements for a name.
   *
