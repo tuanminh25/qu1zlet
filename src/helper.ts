@@ -1,8 +1,8 @@
-import { getData, setData } from "./dataStore.js";
+import { getData } from './dataStore.js';
 import fs from 'fs';
 import path from 'path';
 
-let store = getData();
+const store = getData();
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -42,7 +42,7 @@ export function load(): DataStore {
 }
 
 export function save(data: DataStore) {
-  const dataStr = JSON.stringify(data)
+  const dataStr = JSON.stringify(data);
   fs.writeFileSync(filePath, dataStr);
 }
 
@@ -50,7 +50,7 @@ export function save(data: DataStore) {
   * Given a quiz id
   *
   * @param {string} quizId
-  * @returns { quiz: 
+  * @returns { quiz:
   *   {
   *     quizId,
   *     name,
@@ -59,19 +59,19 @@ export function save(data: DataStore) {
   *     description,
   *   }
   * }
-  * @returns {undefined} - quizId is not a valid quiz id 
+  * @returns {undefined} - quizId is not a valid quiz id
 */
 
 export function checkquizId(quizId: number) {
-    const quiz = store.quizzes.find((quiz) => quiz.quizId === quizId);
-    return quiz;
+  const quiz = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  return quiz;
 }
 
 /**
   * Given a an auth user id
   *
   * @param {string} authUserId
-  * @returns { user: 
+  * @returns { user:
     *   {
     *   userId: number,
     *   name : string,
@@ -83,33 +83,33 @@ export function checkquizId(quizId: number) {
     * @returns {undefined} - AuthUserId is not a valid user
   */
 export function checkauthUserId(authUserId: number) {
-    const user = store.users.find((user) => user.userId === authUserId);
-    return user;
+  const user = store.users.find((user) => user.userId === authUserId);
+  return user;
 }
 
 /**
   * Checks if password is valid
-  * 
+  *
   * @param {string} password
-  * @returns {boolean} 
+  * @returns {boolean}
 */
 export function isPassword(password: string) {
-    if (password.length < 8) {
-      return false;
-    } else if (/\d/.test(password) === false || /[a-zA-Z]/.test(password) === false) {
-      return false;
-    } else {
-      return true;
-    }
+  if (password.length < 8) {
+    return false;
+  } else if (/\d/.test(password) === false || /[a-zA-Z]/.test(password) === false) {
+    return false;
+  } else {
+    return true;
   }
-  
+}
+
 /**
   * Checks if password is valid
-  * 
+  *
   * @param {string} password
-  * @returns {boolean} 
-*/ 
-export function isUserName(name: string): Boolean {
+  * @returns {boolean}
+*/
+export function isUserName(name: string): boolean {
   if (name.length < 2 || name.length > 20) {
     return false;
   } else if (/^[a-zA-Z\s'-]+$/.test(name) === false) {
@@ -119,25 +119,24 @@ export function isUserName(name: string): Boolean {
   }
 }
 
-/** 
+/**
  * Checks if email exists
- * 
+ *
  * @param {string} email
- * @returns {boolean}
+ * @returns {}
 */
 export function checkEmail(email: string) {
   const data = load();
-  return data.users.find((user) => user.email = email);
+  return data.users.find((user) => user.email === email);
 }
-
 
 /**
   * Checks whether the string follows the requirements for a name.
-  * 
+  *
   * @param {string} name
-  * @returns {boolean} 
+  * @returns {boolean}
 */
-export function isQuizName(name: string): Boolean {
+export function isQuizName(name: string): boolean {
   if (name.length < 3 || name.length > 30) {
     return false;
   } else if (/^[\w\s]+$/.test(name) === false) {
@@ -149,9 +148,9 @@ export function isQuizName(name: string): Boolean {
 
 /**
   * Checks whether the string follows the requirements for a description.
-  * 
+  *
   * @param {string} name
-  * @returns {boolean} 
+  * @returns {boolean}
 */
 export function isQuizDescription(name: string) {
   if (name.length > 100) {
