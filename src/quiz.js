@@ -8,7 +8,7 @@ import {
 import { getData, setData } from './dataStore.js';
 
 const store = getData();
-let quiz_id = 0;
+let quizUniqueId = 0;
 
 /**
   * Given an authUserId, quizid, description
@@ -89,7 +89,7 @@ function adminQuizCreate(authUserId, name, description) {
   }
 
   const newQuiz = {
-    quizId: quiz_id++,
+    quizId: quizUniqueId++,
     name: name,
     timeCreated: Date.now() * 1000,
     timeLastEdited: Date.now() * 1000,

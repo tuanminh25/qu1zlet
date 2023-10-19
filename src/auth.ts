@@ -7,58 +7,57 @@ import {
   save,
   User,
   Session,
-  DataStore
 } from './helper';
-import { v4 as uuidv4} from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 
-let user_id = 0;
+let userUniqueId = 0;
 
 /**
   * Register a user with an email, password, and names,
   * then returns their authUserId value.
-  * 
+  *
   * @param {string} email
-  * @param {string} password 
+  * @param {string} password
   * @param {string} nameFirst
-  * @param {string} nameLast 
-  * @returns {{authUserId: number}} 
+  * @param {string} nameLast
+  * @returns {{authUserId: number}}
 */
 function adminAuthRegister(email: string, password: string, nameFirst: string, nameLast: string) {
   if (!validator.isEmail(email)) {
     return {
       error: 'Invalid email'
     };
-  } 
-  
+  }
+
   if (checkEmail(email)) {
     return {
       error: 'Email address is used by another user'
     };
   }
-  
+
   if (!isPassword(password)) {
     return {
       error: 'Invalid password'
     };
-  } 
+  }
 
   if (!isUserName(nameFirst)) {
     return {
       error: 'Invalid first name'
     };
-  } 
+  }
 
- if (!isUserName(nameLast)) {
+  if (!isUserName(nameLast)) {
     return {
       error: 'Invalid last name'
     };
-  } 
+  }
   const data = load();
   const sessionId = uuidv4();
-  user_id++;
+  userUniqueId++;
 
   const newUser: User = {
-    userId: user_id,
+    userId: userUniqueId,
     nameFirst: nameFirst,
     nameLast: nameLast,
     email: email,
@@ -67,7 +66,7 @@ function adminAuthRegister(email: string, password: string, nameFirst: string, n
     numFailedPasswordsSinceLastLogin: 0,
   };
   const newSession: Session = {
-    userId: user_id,
+    userId: userUniqueId,
     sessionId: sessionId
   };
 
@@ -83,10 +82,10 @@ function adminAuthRegister(email: string, password: string, nameFirst: string, n
 /**
   * Given a registered user's email and password
   * returns their authUserId value.
-  * 
+  *
   * @param {string} email
-  * @param {string} password 
-  * @returns {{authUserId: number}} 
+  * @param {string} password
+  * @returns {{authUserId: number}}
 */
 // function adminAuthLogin(email, password) {
 //   const user = store.users.find((user) => user.email === email);
@@ -114,7 +113,7 @@ function adminAuthRegister(email: string, password: string, nameFirst: string, n
 //   * Given an admin user's authUserId, return details about the user.
 //   *
 //   * @param {number} authUserId - unique identifier
-//   * @returns { user: 
+//   * @returns { user:
 //   *   {
 //   *   userId: number,
 //   *   name : string,
@@ -127,7 +126,7 @@ function adminAuthRegister(email: string, password: string, nameFirst: string, n
 // */
 // function adminUserDetails(authUserId) {
 //   const user = checkauthUserId(authUserId);
-  
+
 //   if (user === undefined) {
 //     return {
 //       error : 'AuthUserId is not a valid use;'
@@ -145,7 +144,7 @@ function adminAuthRegister(email: string, password: string, nameFirst: string, n
 //     }
 //   }
 // }
-  
+
 export {
   adminAuthRegister,
   // adminAuthLogin,
