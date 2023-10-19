@@ -88,27 +88,30 @@ export function adminAuthRegister(email: string, password: string, nameFirst: st
   * @returns {{token: string}}
 */
 export function adminAuthLogin(email: string, password: string) {
-  const user = checkEmail(email);
-  if (!user) {
+  let userLogin = checkEmail(email);
+  if (!userLogin) {
     return {
       error: 'Email address does not exist'
     };
   }
 
-  if (user.password !== password) {
-    user.numFailedPasswordsSinceLastLogin++;
+  const data = load();
+  userLogin = data.users.find((user) => user.userId === userLogin.userId)
+
+  if (userLogin.password !== password) {
+    userLogin.numFailedPasswordsSinceLastLogin++;
+    save(data);
     return {
       error: 'Password is not correct for the given email'
     };
   }
 
-  const data = load();
   const sessionId = uuidv4();
-  user.numSuccessfulLogins++;
-  user.numFailedPasswordsSinceLastLogin = 0;
+  userLogin.numSuccessfulLogins++;
+  userLogin.numFailedPasswordsSinceLastLogin = 0;
 
   const newSession: Session = {
-    userId: user.userId,
+    userId: userLogin.userId,
     sessionId: sessionId
   };
 

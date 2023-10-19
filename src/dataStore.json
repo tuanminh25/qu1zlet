@@ -1,1 +1,25 @@
-{"users":[],"quizzes":[],"sessions":[]}
+{
+  "users": [
+    {
+      "userId": 1,
+      "nameFirst": "Hayden",
+      "nameLast": "Smith",
+      "email": "hayden.smith@unsw.edu.au",
+      "password": "haydensmith123",
+      "numSuccessfulLogins": 9,
+      "numFailedPasswordsSinceLastLogin": 0
+    }
+  ],
+  "quizzes": [],
+  "sessions": [
+    { "userId": 1, "sessionId": "acd33e20-2962-4351-a43a-1553ff1cb151" },
+    { "userId": 1, "sessionId": "a552cbb3-82b8-416c-ad83-7b2dc0321532" },
+    { "userId": 1, "sessionId": "55439f90-8611-4adf-a1f9-1f70a9c7e0f6" },
+    { "userId": 1, "sessionId": "cd685093-04bf-4380-acec-c7022219c62f" },
+    { "userId": 1, "sessionId": "b20afc2e-a2a2-482c-abe0-a7bbc9025dcb" },
+    { "userId": 1, "sessionId": "60dcc2e5-3d82-42d6-99ce-3a40f5e25a96" },
+    { "userId": 1, "sessionId": "d3c99d9f-5774-4472-a4ed-4e58ec2ed7c7" },
+    { "userId": 1, "sessionId": "8382d606-7bd8-4d73-b1ae-e5b193ed9de5" },
+    { "userId": 1, "sessionId": "7c25a9c1-d613-4f45-aa58-48efecf78130" }
+  ]
+}
