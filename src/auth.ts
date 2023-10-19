@@ -113,6 +113,7 @@ export function adminAuthLogin(email: string, password: string) {
   };
 
   data.sessions.push(newSession);
+  save(data);
 
   return {
     token: sessionId
