@@ -5,7 +5,7 @@ const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/'
 const ERROR = { error: expect.any(String) };
 
-function testRegister(
+export function testRegister(
   email: string, 
   password: string,
   nameFirst: string,
