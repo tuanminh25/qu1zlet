@@ -127,7 +127,7 @@ export function adminAuthLogin(email: string, password: string) {
 /**
   * Given an admin user's authUserId, return details about the user.
   *
-  * @param {number} authUserId - unique identifier
+  * @param {string} token
   * @returns { user:
   *   {
   *   userId: number,
@@ -162,4 +162,27 @@ export function adminUserDetails(token: string) {
       numFailedPasswordsSinceLastLogin: user.numFailedPasswordsSinceLastLogin,
     }
   };
+}
+
+/**
+ * Given an admin user's token and log out of session
+ * 
+ * @param {string} token
+ * @return {{}}
+ */
+export function adminAuthLogout(token: string) {
+  const session = isToken(token);
+
+  if (!session) {
+    return {
+      error: 'Invalid token'
+    };
+  }
+
+  const data = load();
+  const newSessions = data.sessions.filter((item) => item !== session);
+  data.sessions = newSessions;
+  save(data);
+
+  return {};
 }
