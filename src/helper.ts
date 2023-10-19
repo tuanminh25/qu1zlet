@@ -1,7 +1,10 @@
 import { getData, setData } from "./dataStore.js";
 import fs from 'fs';
+import path from 'path';
 
 let store = getData();
+
+const filePath = path.join(__dirname, 'dataStore.json');
 
 export interface User {
   userId: number;
@@ -33,15 +36,14 @@ export interface DataStore {
   sessions: Session[]
 }
 
-
 export function load(): DataStore {
-  const data = fs.readFileSync('./dataStore.json');
+  const data = fs.readFileSync(filePath, 'utf8');
   return JSON.parse(String(data));
 }
 
 export function save(data: DataStore) {
   const dataStr = JSON.stringify(data)
-  fs.writeFileSync('./dataStore.json', dataStr);
+  fs.writeFileSync(filePath, dataStr);
 }
 
 /**
