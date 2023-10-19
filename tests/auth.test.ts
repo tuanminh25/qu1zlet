@@ -145,7 +145,7 @@ describe('/v1/admin/auth/login', () => {
 describe('/v1/admin/user/details', () => {
   let user1: any;
   beforeEach(() => {
-    user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong');
+    user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;
   });
 
   test('Empty token', () => {
@@ -162,8 +162,7 @@ describe('/v1/admin/user/details', () => {
   });
 
   test('Valid token', () => {
-    const token1 = user1.token;
-    const details1 = testGetDetails(token1);
+    const details1 = testGetDetails(user1.token);
     expect(details1.response).toStrictEqual({
       "user": {
         "userId": expect.any(Number),
@@ -178,10 +177,9 @@ describe('/v1/admin/user/details', () => {
 
   test('Valid token with multiple login', () => {
     for (let i = 0; i < 3; i++) {
-      testLogin('roger@gmail.com', 'hieu12345');
+      testLogin('Roger@gmail.com', 'hieu12345');
     }
-    const token1 = user1.token;
-    const details1 = testGetDetails(token1);
+    const details1 = testGetDetails(user1.token);
     expect(details1.response).toStrictEqual({
       "user": {
         "userId": expect.any(Number),
@@ -195,9 +193,8 @@ describe('/v1/admin/user/details', () => {
   });
 
   test('Valid token with failed 1 login', () => {
-    testLogin('roger@gmail.com', 'hieu123455133');
-    const token1 = user1.token;
-    const details1 = testGetDetails(token1);
+    testLogin('Roger@gmail.com', 'hieu123455133');
+    const details1 = testGetDetails(user1.token);
     expect(details1.response).toStrictEqual({
       "user": {
         "userId": expect.any(Number),
@@ -212,10 +209,9 @@ describe('/v1/admin/user/details', () => {
 
   test('Valid token with multiple failed login', () => {
     for (let i = 0; i < 3; i++) {
-      testLogin('roger@gmail.com', 'hieu1234533123');
+      testLogin('Roger@gmail.com', 'hieu1234533123');
     }
-    const token1 = user1.token;
-    const details1 = testGetDetails(token1);
+    const details1 = testGetDetails(user1.token);
     expect(details1.response).toStrictEqual({
       "user": {
         "userId": expect.any(Number),
@@ -230,11 +226,10 @@ describe('/v1/admin/user/details', () => {
 
   test('Valid token with login reset', () => {
     for (let i = 0; i < 3; i++) {
-      testLogin('roger@gmail.com', 'hieu1234533123');
+      testLogin('Roger@gmail.com', 'hieu1234533123');
     }
-    testLogin('roger@gmail.com', 'hieu12345');
-    const token1 = user1.token;
-    const details1 = testGetDetails(token1);
+    testLogin('Roger@gmail.com', 'hieu12345');
+    const details1 = testGetDetails(user1.token);
     expect(details1.response).toStrictEqual({
       "user": {
         "userId": expect.any(Number),
@@ -249,58 +244,3 @@ describe('/v1/admin/user/details', () => {
 });
 
 
-/*
-describe('adminUserDetails', () => {
-
-  test('Valid authUserId failed log in reset then failed log in again ', () => {
-    adminAuthLogin('roger@gmail.com', 'roger1234');
-    adminAuthLogin('roger@gmail.com', 'messi1234');
-    adminAuthLogin('roger@gmail.com', 'neymar10');
-    adminAuthLogin('roger@gmail.com', 'roger123');
-    adminAuthLogin('roger@gmail.com', 'neymar11');
-    adminAuthLogin('roger@gmail.com', 'neymar10');
-    expect(adminUserDetails(user.authUserId)).toStrictEqual({user :
-      {
-        userId: user.authUserId,
-        name : 'Roger Duong',
-        email : 'roger@gmail.com',
-        numSuccessfulLogins: 2,
-        numFailedPasswordsSinceLastLogin: 2,
-      }
-    });
-  });
-
-  test('Multiple users', () => {
-    const user2 = adminAuthRegister('user2@gmail.com', 'user2lol', 'James', 'Bond');
-    const user3 = adminAuthRegister('user3@gmail.com', 'user3lol', 'Killer', 'Bee');
-    adminAuthLogin('user3@gmail.com', 'user3lol')
-    expect(adminUserDetails(user.authUserId)).toStrictEqual({user :
-      {
-        userId: user.authUserId,
-        name : 'Roger Duong',
-        email : 'roger@gmail.com',
-        numSuccessfulLogins: 1,
-        numFailedPasswordsSinceLastLogin: 0,
-      }
-    });
-    expect(adminUserDetails(user2.authUserId)).toStrictEqual({user :
-      {
-        userId: user2.authUserId,
-        name : 'James Bond',
-        email : 'user2@gmail.com',
-        numSuccessfulLogins: 1,
-        numFailedPasswordsSinceLastLogin: 0,
-      }
-    });
-    expect(adminUserDetails(user3.authUserId)).toStrictEqual({user :
-      {
-        userId: user3.authUserId,
-        name : 'Killer Bee',
-        email : 'user3@gmail.com',
-        numSuccessfulLogins: 2,
-        numFailedPasswordsSinceLastLogin: 0,
-      }
-    });
-  });
-});
-*/
