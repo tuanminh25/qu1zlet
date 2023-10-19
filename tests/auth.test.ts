@@ -40,6 +40,19 @@ function testLogin(email: string, password: string) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 };
 
+function testGetDetails(token: string) {
+  const res = request('GET', SERVER_URL + '/v1/admin/user/details',
+    {
+      qs: {
+        token: token
+      }
+    }
+  );
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+
 beforeEach(() => {
   testClear();
 });
@@ -129,134 +142,115 @@ describe('/v1/admin/auth/login', () => {
   });
 });
 
+describe('/v1/admin/user/details', () => {
+  let user1: any;
+  beforeEach(() => {
+    user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong');
+  });
 
+  test('Empty token', () => {
+    const details1 = testGetDetails('');
+    expect(details1.response).toStrictEqual(ERROR);
+    expect(details1.status).toStrictEqual(401);
+  });
+
+  test('Invalid token', () => {
+    const token1 = user1.token;
+    const details1 = testGetDetails(token1 + 'random');
+    expect(details1.response).toStrictEqual(ERROR);
+    expect(details1.status).toStrictEqual(401);
+  });
+
+  test('Valid token', () => {
+    const token1 = user1.token;
+    const details1 = testGetDetails(token1);
+    expect(details1.response).toStrictEqual({
+      "user": {
+        "userId": expect.any(Number),
+        "name": "Roger Duong",
+        "email": "Roger@gmail.com",
+        "numSuccessfulLogins": 1,
+        "numFailedPasswordsSinceLastLogin": 0
+      }
+    });
+    expect(details1.status).toStrictEqual(200);
+  });
+
+  test('Valid token with multiple login', () => {
+    for (let i = 0; i < 3; i++) {
+      testLogin('roger@gmail.com', 'hieu12345');
+    }
+    const token1 = user1.token;
+    const details1 = testGetDetails(token1);
+    expect(details1.response).toStrictEqual({
+      "user": {
+        "userId": expect.any(Number),
+        "name": "Roger Duong",
+        "email": "Roger@gmail.com",
+        "numSuccessfulLogins": 4,
+        "numFailedPasswordsSinceLastLogin": 0
+      }
+    });
+    expect(details1.status).toStrictEqual(200);
+  });
+
+  test('Valid token with failed 1 login', () => {
+    testLogin('roger@gmail.com', 'hieu123455133');
+    const token1 = user1.token;
+    const details1 = testGetDetails(token1);
+    expect(details1.response).toStrictEqual({
+      "user": {
+        "userId": expect.any(Number),
+        "name": "Roger Duong",
+        "email": "Roger@gmail.com",
+        "numSuccessfulLogins": 1,
+        "numFailedPasswordsSinceLastLogin": 1
+      }
+    });
+    expect(details1.status).toStrictEqual(200);
+  });
+
+  test('Valid token with multiple failed login', () => {
+    for (let i = 0; i < 3; i++) {
+      testLogin('roger@gmail.com', 'hieu1234533123');
+    }
+    const token1 = user1.token;
+    const details1 = testGetDetails(token1);
+    expect(details1.response).toStrictEqual({
+      "user": {
+        "userId": expect.any(Number),
+        "name": "Roger Duong",
+        "email": "Roger@gmail.com",
+        "numSuccessfulLogins": 1,
+        "numFailedPasswordsSinceLastLogin": 3
+      }
+    });
+    expect(details1.status).toStrictEqual(200);
+  });
+
+  test('Valid token with login reset', () => {
+    for (let i = 0; i < 3; i++) {
+      testLogin('roger@gmail.com', 'hieu1234533123');
+    }
+    testLogin('roger@gmail.com', 'hieu12345');
+    const token1 = user1.token;
+    const details1 = testGetDetails(token1);
+    expect(details1.response).toStrictEqual({
+      "user": {
+        "userId": expect.any(Number),
+        "name": "Roger Duong",
+        "email": "Roger@gmail.com",
+        "numSuccessfulLogins": 2,
+        "numFailedPasswordsSinceLastLogin": 0
+      }
+    });
+    expect(details1.status).toStrictEqual(200);
+  });
+});
 
 
 /*
-describe('adminAuthLogin', () => {
-  let user1;
-  beforeEach(() => {
-    user1 = adminAuthRegister('Roger@gmail.com', 'Roger1234', 'Roger', 'Duong')
-  });
-
-  test('Email address does not exist', () => {
-    expect(adminAuthLogin('Jade@gmail.com', 'Roger1234')).toStrictEqual(ERROR);
-    expect(adminAuthLogin('', 'Roger1234')).toStrictEqual(ERROR);
-  })
-
-  test('Password is not correct for the given email', () => {
-    expect(adminAuthLogin('Roger@gmail.com', 'Roger12345')).toStrictEqual(ERROR);
-    expect(adminAuthLogin('Roger@gmail.com', '')).toStrictEqual(ERROR);
-  })
-
-  test('Successful login', () => {
-    expect(adminAuthLogin('Roger@gmail.com', 'Roger1234')).toStrictEqual({
-      authUserId: user1.authUserId
-    });
-  });
-
-  test('Login failed before registering, then succeeds after ', () => {
-    expect(adminAuthLogin('Jade@gmail.com', 'Roger1234')).toStrictEqual(ERROR);
-    const user2 = adminAuthRegister('Jade@gmail.com', 'Roger1234', 'Roger', 'Duong');
-    expect(adminAuthLogin('Jade@gmail.com', 'Roger1234')).toStrictEqual({
-      authUserId: user2.authUserId
-    });
-  });
-})
-
 describe('adminUserDetails', () => {
-  let user;
-  beforeEach(() => {
-    user = adminAuthRegister('roger@gmail.com', 'roger123', 'Roger', 'Duong');
-  });
-
-  test('AuthUserId is not a valid user', () => {
-    expect(adminUserDetails(user.authUserId + 1)).toStrictEqual(ERROR);
-  });
-
-  test('Valid authUserId no log in', () => {
-    expect(adminUserDetails(user.authUserId)).toStrictEqual({user :
-      {
-        userId: user.authUserId,
-        name : 'Roger Duong',
-        email : 'roger@gmail.com',
-        numSuccessfulLogins: 1,
-        numFailedPasswordsSinceLastLogin: 0,
-      }
-    });
-  });
-
-  test('Valid authUserId 1 successful login', () => {
-    adminAuthLogin('roger@gmail.com', 'roger123');
-    expect(adminUserDetails(user.authUserId)).toStrictEqual({user :
-      {
-        userId: user.authUserId,
-        name : 'Roger Duong',
-        email : 'roger@gmail.com',
-        numSuccessfulLogins: 2,
-        numFailedPasswordsSinceLastLogin: 0,
-      }
-    });
-  });
-
-  test('Valid authUserId multiple successful login', () => {
-    adminAuthLogin('roger@gmail.com', 'roger123');
-    adminAuthLogin('roger@gmail.com', 'roger123');
-    adminAuthLogin('roger@gmail.com', 'roger123');
-    expect(adminUserDetails(user.authUserId)).toStrictEqual({user :
-      {
-        userId: user.authUserId,
-        name : 'Roger Duong',
-        email : 'roger@gmail.com',
-        numSuccessfulLogins: 4,
-        numFailedPasswordsSinceLastLogin: 0,
-      }
-    });
-  });
-
-  test('Valid authUserId 1 failed log in', () => {
-    adminAuthLogin('roger@gmail.com', 'roger1234');
-    expect(adminUserDetails(user.authUserId)).toStrictEqual({user :
-      {
-        userId: user.authUserId,
-        name : 'Roger Duong',
-        email : 'roger@gmail.com',
-        numSuccessfulLogins: 1,
-        numFailedPasswordsSinceLastLogin: 1,
-      }
-    });
-  });
-
-  test('Valid authUserId multiple failed log in', () => {
-    adminAuthLogin('roger@gmail.com', 'roger1234');
-    adminAuthLogin('roger@gmail.com', 'messi1234');
-    adminAuthLogin('roger@gmail.com', 'neymar10');
-    expect(adminUserDetails(user.authUserId)).toStrictEqual({user :
-      {
-        userId: user.authUserId,
-        name : 'Roger Duong',
-        email : 'roger@gmail.com',
-        numSuccessfulLogins: 1,
-        numFailedPasswordsSinceLastLogin: 3,
-      }
-    });
-  });
-
-  test('Valid authUserId failed log in reset', () => {
-    adminAuthLogin('roger@gmail.com', 'roger1234');
-    adminAuthLogin('roger@gmail.com', 'messi1234');
-    adminAuthLogin('roger@gmail.com', 'neymar10');
-    adminAuthLogin('roger@gmail.com', 'roger123');
-    expect(adminUserDetails(user.authUserId)).toStrictEqual({user :
-      {
-        userId: user.authUserId,
-        name : 'Roger Duong',
-        email : 'roger@gmail.com',
-        numSuccessfulLogins: 2,
-        numFailedPasswordsSinceLastLogin: 0,
-      }
-    });
-  });
 
   test('Valid authUserId failed log in reset then failed log in again ', () => {
     adminAuthLogin('roger@gmail.com', 'roger1234');
