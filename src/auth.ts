@@ -96,7 +96,7 @@ export function adminAuthLogin(email: string, password: string) {
   }
 
   const data = load();
-  userLogin = data.users.find((user) => user.userId === userLogin.userId)
+  userLogin = data.users.find((user) => user.userId === userLogin.userId);
 
   if (userLogin.password !== password) {
     userLogin.numFailedPasswordsSinceLastLogin++;
@@ -158,4 +158,3 @@ export function adminAuthLogin(email: string, password: string) {
 //     }
 //   }
 // }
-
