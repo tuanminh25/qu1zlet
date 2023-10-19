@@ -72,7 +72,7 @@ app.get('/v1/admin/user/details', (req: Request, res: Response) => {
   const response = adminUserDetails(String(token));
 
   if ('error' in response) {
-    return res.status(400).json(response);
+    return res.status(401).json(response);
   }
   res.json(response);
 })
