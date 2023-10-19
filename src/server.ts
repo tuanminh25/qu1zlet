@@ -9,6 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import process from 'process';
 import { adminAuthRegister } from './auth';
+import { clear } from './other';
 
 // Set up web app
 const app = express();
@@ -49,6 +50,13 @@ app.post('/v1/admin/auth/register', (req: Request, res: Response) => {
   }
   res.json(response);
 });
+
+app.delete('/v1/clear', (req: Request, res: Response) => {
+  const response = clear();
+
+  res.json(response);
+});
+
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
 // ====================================================================

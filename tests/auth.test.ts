@@ -1,12 +1,11 @@
 import request from 'sync-request-curl';
 import { port, url } from '../src/config.json';
-import { clear } from '../src/other.js';
 
 const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/'
 const ERROR = { error: expect.any(String) };
 
-function testRegister(
+export function testRegister(
   email: string, 
   password: string,
   nameFirst: string,
@@ -30,8 +29,7 @@ const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
 
 
 beforeEach(() => {
-  // testClear();
-  clear();
+  testClear();
 });
 
 describe('v1/admin/auth/register', () => {
