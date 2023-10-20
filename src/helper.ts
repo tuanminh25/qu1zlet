@@ -30,10 +30,17 @@ export interface Session {
   sessionId: string
 }
 
+export interface Ids {
+  userId: number;
+  quizId: number;
+  questionId: number
+}
+
 export interface DataStore {
   users: User[];
   quizzes: Quiz[];
-  sessions: Session[]
+  sessions: Session[];
+  ids: Ids
 }
 
 export function load(): DataStore {
