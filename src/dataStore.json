@@ -1,1 +1,6 @@
-{"users":[],"quizzes":[],"sessions":[]}
+{
+  "users": [],
+  "quizzes": [],
+  "sessions": [],
+  "ids": { "userId": 0, "quizId": 0, "questionId": 0 }
+}
