@@ -11,8 +11,6 @@ import {
 } from './helper';
 import { v4 as uuidv4 } from 'uuid';
 
-let userUniqueId = 0;
-
 /**
   * Register a user with an email, password, and names,
   * then returns their authUserId value.
@@ -55,10 +53,10 @@ export function adminAuthRegister(email: string, password: string, nameFirst: st
   }
   const data = load();
   const sessionId = uuidv4();
-  userUniqueId++;
+  const newUserId = ++data.ids.userId;
 
   const newUser: User = {
-    userId: userUniqueId,
+    userId: newUserId,
     nameFirst: nameFirst,
     nameLast: nameLast,
     email: email,
@@ -67,7 +65,7 @@ export function adminAuthRegister(email: string, password: string, nameFirst: st
     numFailedPasswordsSinceLastLogin: 0,
   };
   const newSession: Session = {
-    userId: userUniqueId,
+    userId: newUserId,
     sessionId: sessionId
   };
 

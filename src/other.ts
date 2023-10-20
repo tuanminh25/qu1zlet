@@ -11,6 +11,9 @@ export function clear() {
   data.users.length = 0;
   data.quizzes.length = 0;
   data.sessions.length = 0;
+  data.ids.userId = 0;
+  data.ids.quizId = 0;
+  data.ids.questionId = 0;
   save(data);
 
   return {};
