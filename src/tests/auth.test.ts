@@ -1,6 +1,5 @@
 import request from 'sync-request-curl';
 import { port, url } from '../config.json';
-import { testGetDetails } from './user.test';
 
 const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/'
@@ -51,7 +50,19 @@ export function testLogout(token: string) {
 );
 
 return { response: JSON.parse(res.body.toString()), status: res.statusCode };
-}
+};
+
+export function testGetDetails(token: string) {
+  const res = request('GET', SERVER_URL + '/v1/admin/user/details',
+    {
+      qs: {
+        token: token
+      }
+    }
+  );
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+};
 
 beforeEach(() => {
   testClear();

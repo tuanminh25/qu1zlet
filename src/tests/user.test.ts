@@ -1,21 +1,9 @@
 import request from 'sync-request-curl';
 import { port, url } from '../config.json';
-import { testRegister, testClear, testLogin, testLogout } from './auth.test';
+import { testRegister, testClear, testLogin, testGetDetails} from './auth.test';
 
 const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
-
-export function testGetDetails(token: string) {
-  const res = request('GET', SERVER_URL + '/v1/admin/user/details',
-    {
-      qs: {
-        token: token
-      }
-    }
-  );
-
-  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
-}
 
 beforeEach(() => {
 	testClear();
