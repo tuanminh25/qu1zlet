@@ -254,7 +254,7 @@ describe('/v1/admin/user/details', () => {
   });
 });
 
-describe('/v1/admin/user/logout', () => {
+describe('/v1/admin/auth/logout', () => {
   let user1: any;
   beforeEach(() => {
     user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;
