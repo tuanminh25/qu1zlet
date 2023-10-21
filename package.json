@@ -6,7 +6,8 @@
         "lint-fix": "eslint --fix src/**/*.{ts,js}",
         "start": "ts-node -T src/server.ts",
         "auth": "jest auth.test.ts",
-        "quiz": "jest quiz.test.js"
+        "quiz": "jest quiz.test.js",
+        "user": "jest user.test.ts"
     },
     "dependencies": {
         "cors": "^2.8.5",
