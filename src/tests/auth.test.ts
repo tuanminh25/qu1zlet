@@ -25,7 +25,7 @@ export function testRegister(
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 };
 
-const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
+export const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
 
 function testLogin(email: string, password: string) {
   const res = request('POST', SERVER_URL + auth + 'login', 
