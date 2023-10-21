@@ -27,7 +27,7 @@ export function testRegister(
 
 export const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
 
-function testLogin(email: string, password: string) {
+export function testLogin(email: string, password: string) {
   const res = request('POST', SERVER_URL + auth + 'login', 
     { 
       json: { 
@@ -52,7 +52,7 @@ function testGetDetails(token: string) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
-function testLogout(token: string) {
+export function testLogout(token: string) {
   const res = request('POST', SERVER_URL + auth + 'logout', 
   { 
     json: { 
