@@ -1,6 +1,6 @@
 import request from 'sync-request-curl';
 import { port, url } from '../config.json';
-import { testGetDetails } from './user.tests';
+import { testGetDetails } from './user.test';
 
 const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/'
