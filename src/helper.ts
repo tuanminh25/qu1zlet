@@ -12,6 +12,7 @@ export interface User {
   nameLast: string;
   email: string;
   password: string;
+  usedPasswords: string[],
   numSuccessfulLogins: number;
   numFailedPasswordsSinceLastLogin: number;
 }
