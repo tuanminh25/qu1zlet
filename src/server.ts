@@ -90,19 +90,19 @@ app.post('/v1/admin/auth/logout', (req: Request, res: Response) => {
 });
 
 app.put('/v1/admin/user/password', (req: Request, res: Response) => {
-  const { token, oldPassword, newPassword} = req.body;
+  const { token, oldPassword, newPassword } = req.body;
   const response = updatePassword(token, oldPassword, newPassword);
 
-  if ('token' in response) {
+  if (response.error === 'Invalid token') {
     return res.status(401).json(response);
   }
 
-  if ('password' in response) {
+  if ('error' in response) {
     return res.status(400).json(response);
   }
 
   res.json(response);
-})
+});
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
 // ====================================================================
