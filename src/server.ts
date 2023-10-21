@@ -8,7 +8,8 @@ import sui from 'swagger-ui-express';
 import fs from 'fs';
 import path from 'path';
 import process from 'process';
-import { adminAuthLogin, adminAuthRegister, adminUserDetails, adminAuthLogout } from './auth';
+import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
+import { adminUserDetails } from './user';
 import { clear } from './other';
 
 // Set up web app
