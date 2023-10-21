@@ -122,7 +122,7 @@ export function adminAuthLogin(email: string, password: string) {
 }
 
 /**
- * Should be called with a token that is returned 
+ * Should be called with a token that is returned
  * after either a login or register has been made
  *
  * @param {string} token
