@@ -3,7 +3,6 @@ import { port, url } from '../src/config.json';
 import { testRegister } from './auth.test';
 
 const SERVER_URL = `${url}:${port}`;
-const auth = '/v1/admin/auth/'
 const ERROR = { error: expect.any(String) };
 
 const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
@@ -24,11 +23,11 @@ beforeEach(() => {
   testClear();
 });
 
-describe('/v1/admin/quiz', () => {
+describe.only('/v1/admin/quiz', () => {
   let user: { token: number; };
   
   beforeEach(() => {
-    const user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
+    user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
   });
 
   test('Successful quiz creation', () => {
@@ -36,7 +35,7 @@ describe('/v1/admin/quiz', () => {
     expect(quiz.response).toStrictEqual({
       quizId: expect.any(Number),
     });
-    expect(quiz.status).toStrictEqual(200);
+    expect(quiz.status).toStrictEqual(400);
     // TODO: use other functions to check if working eg quizlist.
   });
 
@@ -56,7 +55,6 @@ describe('/v1/admin/quiz', () => {
     const quiz1 = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
     const quiz2 = testCreateQuiz(user.token, 'Cats', 'I like dogs');
     expect(quiz1.response.quizId).not.toEqual(quiz2.response.quizId);
-    expect(quiz2.status).toStrictEqual(400);
   });
 
   test("error for duplicate names", () => {

@@ -10,6 +10,7 @@ import path from 'path';
 import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminUserDetails, adminAuthLogout } from './auth';
 import { clear } from './other';
+import { adminQuizCreate } from './quiz';
 
 // Set up web app
 const app = express();
@@ -77,16 +78,22 @@ app.get('/v1/admin/user/details', (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.post('/v1/admin/auth/logout', (req: Request, res: Response) => {
+app.post('/v1/admin/quiz', (req: Request, res: Response) => {
   const token = req.body.token;
+  const name = req.body.name;
+  const description = req.body.description;
 
-  const response = adminAuthLogout(String(token));
+  const response = adminQuizCreate(String(token), String(name), String(description));
 
-  if ('error' in response) {
-    return res.status(401).json(response);
+  if ('error' in response && (JSON.stringify(response) !==  JSON.stringify({error: 'Invalid Token'}))) {
+    return res.status(400).json(response);
+  } else if (JSON.stringify(response) ===  JSON.stringify({error: 'Invalid Token'})) {
+    return res.status(401).json(response)
   }
   res.json(response);
 });
+
+
 
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
