@@ -394,10 +394,10 @@ components:
       in: query
       name: quizIds
       required: true
+      description: A string representing a JSONified array of quiz id numbers
       schema:
         type: string
         example: "[3,4,5,6,7]"
-        description: A JSONified array of quiz id numbers
   body:
     Token:
       in: body
