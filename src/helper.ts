@@ -55,7 +55,7 @@ export function save(data: DataStore) {
 }
 
 /**
-  * Given a quiz id
+  * Given a quiz id, returns the quiz and its
   *
   * @param {string} quizId
   * @returns { quiz:
@@ -69,7 +69,6 @@ export function save(data: DataStore) {
   * }
   * @returns {undefined} - quizId is not a valid quiz id
 */
-
 export function checkquizId(quizId: number) {
   const quiz = store.quizzes.find((quiz) => quiz.quizId === quizId);
   return quiz;
@@ -91,8 +90,8 @@ export function checkquizId(quizId: number) {
     * @returns {undefined} - AuthUserId is not a valid user
   */
 export function checkauthUserId(authUserId: number) {
-  const user = store.users.find((user) => user.userId === authUserId);
-  return user;
+  const data = load();
+  return data.users.find((user) => user.userId === authUserId);
 }
 
 /**
@@ -112,7 +111,7 @@ export function isPassword(password: string) {
 }
 
 /**
-  * Checks if password is valid
+  * Checks if username is valid
   *
   * @param {string} password
   * @returns {boolean}
@@ -171,4 +170,13 @@ export function isQuizDescription(name: string) {
   } else {
     return true;
   }
+}
+
+/**
+  * Creates a Timestamp
+  *
+  * @returns {number} 
+*/
+export function generateTime(): number {
+  return Date.now() * 1000;
 }
