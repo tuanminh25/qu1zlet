@@ -7,7 +7,7 @@ const ERROR = { error: expect.any(String) };
 
 const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
 
-function testCreateQuiz(token: number, name: string, description: string) {
+function testCreateQuiz(token: string, name: string, description: string) {
   const res = request('POST', SERVER_URL + '/v1/admin/quiz', {
     json: {
       token: token,
@@ -19,9 +19,19 @@ function testCreateQuiz(token: number, name: string, description: string) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
+function testQuizToTrash(token: string, quizId: number) {
+  const res = request('DELETE', SERVER_URL + '/v1/admin/quiz' + {quizId}, {
+    qs: {
+      token: token,
+      quizid: quizId, 
+    },
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
 
 describe('/v1/admin/quiz', () => {
-  let user: { token: number; };
+  let user: { token: string; };
   
   beforeEach(() => {
     testClear();
@@ -91,5 +101,61 @@ describe('/v1/admin/quiz', () => {
     const quizWithInvalidToken = testCreateQuiz(invalidToken, 'My Quiz', 'A description of my quiz');
     expect(quizWithInvalidToken.response).toStrictEqual(ERROR);
     expect(quizWithInvalidToken.status).toStrictEqual(401);
+  });
+});
+
+describe('/v1/admin/quiz/:quizid', () => {
+  let user: { token: string };
+  let quiz: {
+    quizId: number;
+    name: string;
+    timeCreated: number;
+    timeLastEdited: number;
+    description: string;
+    quizOwnedby: number,
+    duration: number,
+    numQuestions: number,
+    questions: any[]
+  }
+
+  beforeEach(() => {
+    testClear();
+    user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
+    quiz = testCreateQuiz(user.token, 'My Quiz Name', 'A description of my quiz').response;
+  });
+
+  test('Send Quiz to Trash - Successful', () => {
+    const initialTimeLastEdited = quiz.timeLastEdited;
+    const sendToTrash = testQuizToTrash(user.token, quiz.quizId);
+    expect(sendToTrash.status).toStrictEqual(200);
+    
+    // Check if timeLastEdited is updated
+    // const updatedQuiz = getQuizInfo(quiz.quizId); REPLACE
+    // expect(updatedQuiz.timeLastEdited).not.toStrictEqual(initialTimeLastEdited);
+  });
+
+  test('Non-Existent User', () => {
+    const nonExistentUserId = 'nonExistentUser123'; // Replace with a non-existent user ID
+    const sendToTrash = testQuizToTrash(nonExistentUserId, quiz.quizId);
+    expect(sendToTrash.status).toStrictEqual(401); 
+  });
+
+  test('Empty Token', () => {
+    const emptyToken = '';
+    const sendToTrash = testQuizToTrash(emptyToken, quiz.quizId);
+    expect(sendToTrash.status).toStrictEqual(401); 
+  });
+
+  test('Non-Existent Token', () => {
+    const nonExistentToken = 'nonExistentToken';
+    const sendToTrash = testQuizToTrash(nonExistentToken, quiz.quizId);
+    expect(sendToTrash.status).toStrictEqual(401);
+  });
+
+  test('Unauthorized', () => {
+    // Create a new user and use their token to attempt to send the quiz to trash
+    const unauthorizedUser = testRegister('unauthorized@example.com', 'password123', 'Unauthorized', 'User').response;
+    const sendToTrash = testQuizToTrash(unauthorizedUser.token, quiz.quizId);
+    expect(sendToTrash.status).toStrictEqual(403);
   });
 });

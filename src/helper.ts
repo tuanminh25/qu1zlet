@@ -23,7 +23,10 @@ export interface Quiz {
   timeCreated: number;
   timeLastEdited: number;
   description: string;
-  quizOwnedby: number
+  quizOwnedby: number,
+  duration: number,
+  numQuestions: number,
+  questions: any[]
 }
 
 export interface Session {
@@ -70,7 +73,8 @@ export function save(data: DataStore) {
   * @returns {undefined} - quizId is not a valid quiz id
 */
 export function checkquizId(quizId: number) {
-  const quiz = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  const data = load();
+  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
   return quiz;
 }
 

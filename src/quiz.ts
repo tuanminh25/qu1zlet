@@ -35,15 +35,16 @@ export function adminQuizCreate(token: string, name: string, description: string
     };
   } 
 
+  const user = isToken(token)
+
     // Error checking 401
-  if (!isToken(token)) {
+  if (!user) {
     return {
       error: 'Invalid Token'
     }
   }
 
-  const userId = isToken(token).userId
-  const userExists = checkauthUserId(userId);
+  const userExists = checkauthUserId(user.userId);
   if (!userExists) {
     return {
       error: 'Invalid Token'
@@ -56,7 +57,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     timeCreated: generateTime(),
     timeLastEdited: generateTime(),
     description: description,
-    quizOwnedby: userId,
+    quizOwnedby: user.userId,
     duration: 0,
     numQuestions: 0,
     questions: [] as any[] // TODO: change
