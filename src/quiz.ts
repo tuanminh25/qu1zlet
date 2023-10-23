@@ -59,7 +59,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     quizOwnedby: userId,
     duration: 0,
     numQuestions: 0,
-    questions: [] as any[] // TODO: change when making questions
+    questions: [] as any[] // TODO: change
   };
 
   data.quizzes.push(newQuiz);
