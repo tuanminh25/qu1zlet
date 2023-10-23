@@ -1,5 +1,5 @@
 // Do not delete this file
-import { echo } from '../src/echo/echo.js';
+import { echo } from '../echo/echo.js';
 
 test('Test successful echo', () => {
   let result = echo('1');
