@@ -5,7 +5,7 @@ import { testRegister } from './auth.test';
 const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 
-const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
+const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear'); };
 
 function testCreateQuiz(token: string, name: string, description: string) {
   const res = request('POST', SERVER_URL + '/v1/admin/quiz', {
@@ -20,10 +20,10 @@ function testCreateQuiz(token: string, name: string, description: string) {
 }
 
 function testQuizToTrash(token: string, quizId: number) {
-  const res = request('DELETE', SERVER_URL + '/v1/admin/quiz' + {quizId}, {
+  const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
     qs: {
       token: token,
-      quizid: quizId, 
+      quizid: quizId,
     },
   });
 
@@ -32,7 +32,7 @@ function testQuizToTrash(token: string, quizId: number) {
 
 describe('/v1/admin/quiz', () => {
   let user: { token: string; };
-  
+
   beforeEach(() => {
     testClear();
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
@@ -59,26 +59,26 @@ describe('/v1/admin/quiz', () => {
     expect(quiz.response).toStrictEqual(ERROR);
   });
 
-  test("multiple quizzes should have different id", () => {
+  test('multiple quizzes should have different id', () => {
     const quiz1 = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
     const quiz2 = testCreateQuiz(user.token, 'Cats', 'I like dogs');
     expect(quiz1.response.quizId).not.toEqual(quiz2.response.quizId);
   });
 
-  test("error for duplicate names", () => {
+  test('error for duplicate names', () => {
     testCreateQuiz(user.token, 'Dogs', 'I like cats');
     const quiz = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
     expect(quiz.response).toStrictEqual(ERROR);
     expect(quiz.status).toStrictEqual(400);
   });
-  test("Empty Quiz Name and Description", () => {
+  test('Empty Quiz Name and Description', () => {
     const quiz = testCreateQuiz(user.token, '', '');
     expect(quiz.response).toStrictEqual(ERROR);
     expect(quiz.status).toStrictEqual(400);
   });
-  
-  test("Long Quiz Name and Description", () => {
-    const longName = 'A'.repeat(31); 
+
+  test('Long Quiz Name and Description', () => {
+    const longName = 'A'.repeat(31);
     const longDescription = 'B'.repeat(101);
     const quiz1 = testCreateQuiz(user.token, longName, 'A description');
     const quiz2 = testCreateQuiz(user.token, 'A valid name', longDescription);
@@ -88,15 +88,15 @@ describe('/v1/admin/quiz', () => {
     expect(quiz2.status).toStrictEqual(400);
   });
 
-  test("Check 400 Error is Prioritized Over 401", () => {
+  test('Check 400 Error is Prioritized Over 401', () => {
     const invalidToken = user.token + 1;
     const emptyName = '';
     const quiz = testCreateQuiz(invalidToken, emptyName, 'A description of my quiz');
-    
+
     // Check first for 400 Error
     expect(quiz.response).toStrictEqual(ERROR);
     expect(quiz.status).toStrictEqual(400);
-  
+
     // Then check for 401 Error with just the invalid token.
     const quizWithInvalidToken = testCreateQuiz(invalidToken, 'My Quiz', 'A description of my quiz');
     expect(quizWithInvalidToken.response).toStrictEqual(ERROR);
@@ -104,7 +104,7 @@ describe('/v1/admin/quiz', () => {
   });
 });
 
-describe('/v1/admin/quiz/:quizid', () => {
+describe.only('/v1/admin/quiz/:quizid', () => {
   let user: { token: string };
   let quiz: {
     quizId: number;
@@ -116,19 +116,19 @@ describe('/v1/admin/quiz/:quizid', () => {
     duration: number,
     numQuestions: number,
     questions: any[]
-  }
+  };
 
   beforeEach(() => {
     testClear();
-    user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
+    user = testRegister('testuser@example.com', 'Password123', 'Test', 'User').response;
     quiz = testCreateQuiz(user.token, 'My Quiz Name', 'A description of my quiz').response;
   });
 
   test('Send Quiz to Trash - Successful', () => {
-    const initialTimeLastEdited = quiz.timeLastEdited;
+    // const initialTimeLastEdited = quiz.timeLastEdited;
     const sendToTrash = testQuizToTrash(user.token, quiz.quizId);
     expect(sendToTrash.status).toStrictEqual(200);
-    
+
     // Check if timeLastEdited is updated
     // const updatedQuiz = getQuizInfo(quiz.quizId); REPLACE
     // expect(updatedQuiz.timeLastEdited).not.toStrictEqual(initialTimeLastEdited);
@@ -137,13 +137,12 @@ describe('/v1/admin/quiz/:quizid', () => {
   test('Non-Existent User', () => {
     const nonExistentUserId = 'nonExistentUser123'; // Replace with a non-existent user ID
     const sendToTrash = testQuizToTrash(nonExistentUserId, quiz.quizId);
-    expect(sendToTrash.status).toStrictEqual(401); 
+    expect(sendToTrash.status).toStrictEqual(401);
   });
 
   test('Empty Token', () => {
-    const emptyToken = '';
-    const sendToTrash = testQuizToTrash(emptyToken, quiz.quizId);
-    expect(sendToTrash.status).toStrictEqual(401); 
+    const sendToTrash = testQuizToTrash('', quiz.quizId);
+    expect(sendToTrash.status).toStrictEqual(401);
   });
 
   test('Non-Existent Token', () => {

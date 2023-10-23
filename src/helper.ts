@@ -43,6 +43,7 @@ export interface Ids {
 export interface DataStore {
   users: User[];
   quizzes: Quiz[];
+  trash: Quiz[];
   sessions: Session[];
   ids: Ids
 }
