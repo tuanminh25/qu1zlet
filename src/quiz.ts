@@ -9,8 +9,6 @@ import {
   save
 } from './helper';
 
-const data = load();
-
 /**
   * Given basic details about a new quiz, create one for the logged in user.
   *  then returns a quizId.
@@ -21,7 +19,7 @@ const data = load();
   * @returns {{ quizId: number }}
 */
 export function adminQuizCreate(token: string, name: string, description: string) {
-
+  const data = load();
   // Error checking 400
   if (data.quizzes.some((quiz) => quiz.name === name)) {
     return {

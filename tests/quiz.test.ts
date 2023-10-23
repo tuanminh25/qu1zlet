@@ -19,14 +19,12 @@ function testCreateQuiz(token: number, name: string, description: string) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
-beforeEach(() => {
-  testClear();
-});
 
-describe.only('/v1/admin/quiz', () => {
+describe('/v1/admin/quiz', () => {
   let user: { token: number; };
   
   beforeEach(() => {
+    testClear();
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
   });
 
@@ -35,7 +33,7 @@ describe.only('/v1/admin/quiz', () => {
     expect(quiz.response).toStrictEqual({
       quizId: expect.any(Number),
     });
-    expect(quiz.status).toStrictEqual(400);
+    expect(quiz.status).toStrictEqual(200);
     // TODO: use other functions to check if working eg quizlist.
   });
 
@@ -90,7 +88,7 @@ describe.only('/v1/admin/quiz', () => {
     expect(quiz.status).toStrictEqual(400);
   
     // Then check for 401 Error with just the invalid token.
-    const quizWithInvalidToken = testCreateQuiz(invalidToken, 'My Quiz Name', 'A description of my quiz');
+    const quizWithInvalidToken = testCreateQuiz(invalidToken, 'My Quiz', 'A description of my quiz');
     expect(quizWithInvalidToken.response).toStrictEqual(ERROR);
     expect(quizWithInvalidToken.status).toStrictEqual(401);
   });

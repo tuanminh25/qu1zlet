@@ -89,8 +89,8 @@ export function checkquizId(quizId: number) {
     * @returns {undefined} - AuthUserId is not a valid user
   */
 export function checkauthUserId(authUserId: number) {
-  const user = store.users.find((user) => user.userId === authUserId);
-  return user;
+  const data = load();
+  return data.users.find((user) => user.userId === authUserId);
 }
 
 /**
