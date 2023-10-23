@@ -394,10 +394,10 @@ components:
       in: query
       name: quizIds
       required: true
+      description: A string representing a JSONified array of quiz id numbers
       schema:
         type: string
         example: "[3,4,5,6,7]"
-        description: A JSONified array of quiz id numbers
   body:
     Token:
       in: body
@@ -1117,12 +1117,6 @@ paths:
           description: Valid token is provided, but user is not an owner of this quiz
           schema:
             $ref: '#/components/return/Error'
-        400:
-          description: |
-            If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
-          schema:
-            $ref: '#/components/return/Error'
     get:
       summary: Get info about current quiz
       description: Get all of the relevant information about the current quiz including questions
@@ -1143,12 +1137,6 @@ paths:
             $ref: '#/components/return/Error'
         403:
           description: Valid token is provided, but user is not an owner of this quiz
-          schema:
-            $ref: '#/components/return/Error'
-        400:
-          description: |
-            If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
           schema:
             $ref: '#/components/return/Error'
   /v1/admin/quiz/{quizid}/name:
@@ -1177,7 +1165,6 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
             - Name contains invalid characters. Valid characters are alphanumeric and spaces
             - Name is either less than 3 characters long or more than 30 characters long
             - Name is already used by the current logged in user for another quiz
@@ -1209,7 +1196,6 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
             - Description is more than 100 characters in length (note: empty strings are OK)
           schema:
             $ref: '#/components/return/Error'
@@ -1257,7 +1243,6 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
             - Quiz name of the restored quiz is already used by another active quiz
             - Quiz ID refers to a quiz that is not currently in the trash
           schema:
@@ -1319,7 +1304,6 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
             - userEmail is not a real user
             - userEmail is the current logged in user
             - Quiz ID refers to a quiz that has a name that is already used by the target user
@@ -1354,7 +1338,6 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
             - Question string is less than 5 characters in length or greater than 50 characters in length
             - The question has more than 6 answers or less than 2 answers
             - The question duration is not a positive number
@@ -1394,7 +1377,6 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
             - Question Id does not refer to a valid question within this quiz
             - Question string is less than 5 characters in length or greater than 50 characters in length
             - The question has more than 6 answers or less than 2 answers
@@ -1432,7 +1414,6 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
             - Question Id does not refer to a valid question within this quiz
             - All sessions for this quiz must be in END state
           schema:
@@ -1466,7 +1447,6 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
             - Question Id does not refer to a valid question within this quiz
             - NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions
             - NewPosition is the position of the current question
@@ -1501,7 +1481,6 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - Quiz ID does not refer to a valid quiz
             - Question Id does not refer to a valid question within this quiz
           schema:
             $ref: '#/components/return/Error'

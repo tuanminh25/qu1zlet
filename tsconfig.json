@@ -4,11 +4,11 @@
     "noImplicitAny": true,
     "noEmit": true,
     "resolveJsonModule": true,
-    "allowJs": true
+    "allowJs": true,
+    "target": "es2015",
+    "module": "commonjs"
   },
   "exclude": [
     "**/**_broken.ts"
   ],
-  "target": "es2015",
-  "module": "commonjs"
 }

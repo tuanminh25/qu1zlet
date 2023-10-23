@@ -8,7 +8,8 @@ import sui from 'swagger-ui-express';
 import fs from 'fs';
 import path from 'path';
 import process from 'process';
-import { adminAuthLogin, adminAuthRegister, adminUserDetails, adminAuthLogout } from './auth';
+import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
+import { adminUserDetails, updatePassword } from './user';
 import { clear } from './other';
 import { adminQuizCreate } from './quiz';
 
@@ -104,8 +105,20 @@ app.post('/v1/admin/quiz', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.put('/v1/admin/user/password', (req: Request, res: Response) => {
+  const { token, oldPassword, newPassword } = req.body;
+  const response = updatePassword(token, oldPassword, newPassword);
 
+  if (response.error === 'Invalid token') {
+    return res.status(401).json(response);
+  }
 
+  if ('error' in response) {
+    return res.status(400).json(response);
+  }
+
+  res.json(response);
+});
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
 // ====================================================================

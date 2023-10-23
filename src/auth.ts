@@ -12,8 +12,7 @@ import {
 import { v4 as uuidv4 } from 'uuid';
 
 /**
-  * Register a user with an email, password, and names,
-  * then returns their authUserId value.
+  * Takes in information about a new admin user and registers them in the system
   *
   * @param {string} email
   * @param {string} password
@@ -61,6 +60,7 @@ export function adminAuthRegister(email: string, password: string, nameFirst: st
     nameLast: nameLast,
     email: email,
     password: password,
+    usedPasswords: [],
     numSuccessfulLogins: 1,
     numFailedPasswordsSinceLastLogin: 0,
   };
@@ -79,8 +79,7 @@ export function adminAuthRegister(email: string, password: string, nameFirst: st
 }
 
 /**
-  * Given a registered user's email and password
-  * returns their authUserId value.
+  * Takes in information about an admin user to determine if they can log in to manage quizzes
   *
   * @param {string} email
   * @param {string} password
@@ -123,47 +122,8 @@ export function adminAuthLogin(email: string, password: string) {
 }
 
 /**
-  * Given an admin user's authUserId, return details about the user.
-  *
-  * @param {string} token
-  * @returns { user:
-  *   {
-  *   userId: number,
-  *   name : string,
-  *   email : string,
-  *   numSuccessfulLogins: number,
-  *   numFailedPasswordsSinceLastLogin: number
-  *   }
-  * }
-  * @returns {error: string} - AuthUserId is not a valid user
-*/
-export function adminUserDetails(token: string) {
-  const session = isToken(token);
-
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
-
-  const data = load();
-  const user = data.users.find((user) => user.userId === session.userId);
-
-  const userName = user.nameFirst + ' ' + user.nameLast;
-  return {
-    user:
-    {
-      userId: user.userId,
-      name: userName,
-      email: user.email,
-      numSuccessfulLogins: user.numSuccessfulLogins,
-      numFailedPasswordsSinceLastLogin: user.numFailedPasswordsSinceLastLogin,
-    }
-  };
-}
-
-/**
- * Given an admin user's token and log out of session
+ * Should be called with a token that is returned
+ * after either a login or register has been made
  *
  * @param {string} token
  * @return {{}}
