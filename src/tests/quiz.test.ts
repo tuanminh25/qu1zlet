@@ -1,5 +1,5 @@
 import request from 'sync-request-curl';
-import { port, url } from '../src/config.json';
+import { port, url } from '../config.json';
 import { testRegister } from './auth.test';
 
 const SERVER_URL = `${url}:${port}`;
