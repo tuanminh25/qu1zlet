@@ -22,6 +22,20 @@ function testUpdatePassword(
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+function testUpdateAdminUserDetails(token: string, email: string, nameFirst: string, nameLast: string) {
+  const res = request('PUT', SERVER_URL + '/v1/admin/user/details', {
+    json: {
+      token: token,
+      email: email,
+      nameFirst: nameFirst,
+      nameLast: nameLast
+    },
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
 beforeEach(() => {
   testClear();
 });
@@ -201,4 +215,47 @@ describe('/v1/admin/user/password', () => {
     expect(update1.response).toStrictEqual(ERROR);
     expect(update1.status).toStrictEqual(401);
   });
+});
+
+describe('PUT /v1/admin/user/details', () => {
+  let user: string;
+  const validEmail = "hayden.smith@unsw.edu.au";
+
+  beforeEach(() => {
+    testClear();
+    user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response.token;
+  });
+
+  test.only('Successfully update user details', () => {
+    const result = testUpdateAdminUserDetails(user, validEmail, "Hayden", "Smith");
+    expect(result.status).toStrictEqual(200);
+    expect(result.response).toStrictEqual({});
+  });
+
+  test.each([
+    { email: "alreadyUsedEmail@example.com", nameFirst: "Hayden", nameLast: "Smith" },
+    { email: "invalidEmail", nameFirst: "Hayden", nameLast: "Smith" },
+    { email: validEmail, nameFirst: "Ha$den", nameLast: "Smith" },
+    { email: validEmail, nameFirst: "H", nameLast: "Smith" },
+    { email: validEmail, nameFirst: "H".repeat(21), nameLast: "Smith" },
+    { email: validEmail, nameFirst: "Hayden", nameLast: "Sm!th" },
+    { email: validEmail, nameFirst: "Hayden", nameLast: "S" },
+    { email: validEmail, nameFirst: "Hayden", nameLast: "S".repeat(21) }
+  ])('Invalid inputs - Email: $email, NameFirst: $nameFirst, NameLast: $nameLast', ({ email, nameFirst, nameLast }) => {
+    const result = testUpdateAdminUserDetails(user, email, nameFirst, nameLast);
+    expect(result.response).toStrictEqual(ERROR);
+    expect(result.status).toStrictEqual(400);
+  });
+
+  test('Empty or invalid token', () => {
+    const result = testUpdateAdminUserDetails('', validEmail, "Hayden", "Smith");
+    expect(result.status).toStrictEqual(401);
+    expect(result.response).toStrictEqual(ERROR);
+  });
+
+  test('Prioritize 400 over 401', () => {
+    const result = testUpdateAdminUserDetails("", "invalidEmail", "Hayden", "Smith");
+    expect(result.status).toBe(400);
+    expect(result.response).toStrictEqual(ERROR);
+  });``
 });
