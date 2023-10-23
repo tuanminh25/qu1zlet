@@ -51,7 +51,7 @@ export function adminQuizCreate(token: string, name: string, description: string
   }
 
   const newQuiz = {
-    quizId: data.ids.quizId++,
+    quizId: ++data.ids.quizId,
     name: name,
     timeCreated: generateTime(),
     timeLastEdited: generateTime(),
