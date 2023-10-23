@@ -9,7 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
-import { adminUserDetails, updatePassword } from './user';
+import { adminUserDetails, adminUserUpdate, updatePassword, } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizRemove } from './quiz';
 
@@ -132,6 +132,20 @@ app.delete('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
     return res.status(403).json(response);
   }
 
+  res.json(response);
+});
+
+app.put('/v1/admin/user/details', (req: Request, res: Response) => {
+  const { token, email, nameFirst, nameLast } = req.body;
+  const response = adminUserUpdate(token, email, nameFirst, nameLast);
+
+  if ('error' in response) {
+    if (response.error === 'Invalid token') {
+      return res.status(401).json(response);
+    }
+    return res.status(400).json(response);
+  }
+  
   res.json(response);
 });
 
