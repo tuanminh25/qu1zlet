@@ -5,7 +5,7 @@ import { testRegister } from './auth.test';
 const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 
-const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
+const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear'); };
 
 function testCreateQuiz(token: number, name: string, description: string) {
   const res = request('POST', SERVER_URL + '/v1/admin/quiz', {
@@ -19,10 +19,9 @@ function testCreateQuiz(token: number, name: string, description: string) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
-
 describe('/v1/admin/quiz', () => {
   let user: { token: number; };
-  
+
   beforeEach(() => {
     testClear();
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
@@ -49,26 +48,26 @@ describe('/v1/admin/quiz', () => {
     expect(quiz.response).toStrictEqual(ERROR);
   });
 
-  test("multiple quizzes should have different id", () => {
+  test('multiple quizzes should have different id', () => {
     const quiz1 = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
     const quiz2 = testCreateQuiz(user.token, 'Cats', 'I like dogs');
     expect(quiz1.response.quizId).not.toEqual(quiz2.response.quizId);
   });
 
-  test("error for duplicate names", () => {
+  test('error for duplicate names', () => {
     testCreateQuiz(user.token, 'Dogs', 'I like cats');
     const quiz = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
     expect(quiz.response).toStrictEqual(ERROR);
     expect(quiz.status).toStrictEqual(400);
   });
-  test("Empty Quiz Name and Description", () => {
+  test('Empty Quiz Name and Description', () => {
     const quiz = testCreateQuiz(user.token, '', '');
     expect(quiz.response).toStrictEqual(ERROR);
     expect(quiz.status).toStrictEqual(400);
   });
-  
-  test("Long Quiz Name and Description", () => {
-    const longName = 'A'.repeat(31); 
+
+  test('Long Quiz Name and Description', () => {
+    const longName = 'A'.repeat(31);
     const longDescription = 'B'.repeat(101);
     const quiz1 = testCreateQuiz(user.token, longName, 'A description');
     const quiz2 = testCreateQuiz(user.token, 'A valid name', longDescription);
@@ -78,15 +77,15 @@ describe('/v1/admin/quiz', () => {
     expect(quiz2.status).toStrictEqual(400);
   });
 
-  test("Check 400 Error is Prioritized Over 401", () => {
+  test('Check 400 Error is Prioritized Over 401', () => {
     const invalidToken = user.token + 1;
     const emptyName = '';
     const quiz = testCreateQuiz(invalidToken, emptyName, 'A description of my quiz');
-    
+
     // Check first for 400 Error
     expect(quiz.response).toStrictEqual(ERROR);
     expect(quiz.status).toStrictEqual(400);
-  
+
     // Then check for 401 Error with just the invalid token.
     const quizWithInvalidToken = testCreateQuiz(invalidToken, 'My Quiz', 'A description of my quiz');
     expect(quizWithInvalidToken.response).toStrictEqual(ERROR);
