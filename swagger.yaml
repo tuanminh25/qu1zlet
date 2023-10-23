@@ -1273,7 +1273,6 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - One or more of the Quiz IDs is not a valid quiz
             - One or more of the Quiz IDs refers to a quiz that this current user does not own
             - One or more of the Quiz IDs is not currently in the trash
           schema:
