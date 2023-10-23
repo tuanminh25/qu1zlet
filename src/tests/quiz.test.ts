@@ -7,7 +7,7 @@ const ERROR = { error: expect.any(String) };
 
 const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear') };
 
-function testCreateQuiz(token: number, name: string, description: string) {
+function testCreateQuiz(token: string, name: string, description: string) {
   const res = request('POST', SERVER_URL + '/v1/admin/quiz', {
     json: {
       token: token,
@@ -21,7 +21,7 @@ function testCreateQuiz(token: number, name: string, description: string) {
 
 
 describe('/v1/admin/quiz', () => {
-  let user: { token: number; };
+  let user: { token: string; };
   
   beforeEach(() => {
     testClear();
