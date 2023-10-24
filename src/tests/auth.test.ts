@@ -64,11 +64,11 @@ export function testGetDetails(token: string) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
-describe('v1/admin/auth/register', () => {
-  beforeEach(() => {
-    testClear();
-  });
+beforeEach(() => {
+  testClear();
+});
 
+describe('v1/admin/auth/register', () => {
   test('Successful Registeration', () => {
     const user1 = testRegister('Roger@gmail.com', 'Roger1234', 'Roger', 'Duong');
     expect(user1.response).toStrictEqual(
@@ -125,7 +125,6 @@ describe('v1/admin/auth/register', () => {
 
 describe('/v1/admin/auth/login', () => {
   beforeEach(() => {
-    testClear();
     testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong');
   });
 
@@ -157,7 +156,6 @@ describe('/v1/admin/auth/login', () => {
 describe('/v1/admin/auth/logout', () => {
   let user1: any;
   beforeEach(() => {
-    testClear();
     user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;
   });
 
@@ -186,4 +184,3 @@ describe('/v1/admin/auth/logout', () => {
     expect(details1.status).toStrictEqual(401);
   });
 });
-
