@@ -26,6 +26,7 @@ export interface Question {
   points: number,
   answers: Answer[]
 }
+
 export interface Quiz {
   quizId: number;
   name: string;

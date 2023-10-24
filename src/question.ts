@@ -98,6 +98,8 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
   };
 
   quiz.questions.push(newQuestion);
+  quiz.duration += questionBody.duration;
+  quiz.numQuestions++;
   quiz.timeLastEdited = generateTime();
 
   save(data);
