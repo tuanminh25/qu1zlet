@@ -1,6 +1,6 @@
 import request from 'sync-request-curl';
 import { port, url } from '../config.json';
-import { testRegister, testClear, testLogin, testGetDetails } from './auth.test';
+import { testRegister, testClear, testLogin, testGetDetails } from './testHelper';
 
 const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
