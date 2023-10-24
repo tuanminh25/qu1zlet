@@ -5,6 +5,7 @@ import {
   isQuizDescription,
   isQuizName,
   generateTime,
+  Quiz,
   load,
   save
 } from './helper';
@@ -50,7 +51,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     };
   }
 
-  const newQuiz = {
+  const newQuiz: Quiz = {
     quizId: ++data.ids.quizId,
     name: name,
     timeCreated: generateTime(),
@@ -59,7 +60,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     quizOwnedby: userId,
     duration: 0,
     numQuestions: 0,
-    questions: [] as any[] // TODO: change
+    questions: [],
   };
 
   data.quizzes.push(newQuiz);
