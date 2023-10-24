@@ -23,7 +23,20 @@ export interface Quiz {
   quizOwnedby: number,
   duration: number,
   numQuestions: number,
-  questions: any[]
+  questions: Question[]
+}
+
+export interface Question {
+  questionId: number
+  question: string,
+  duration: number,
+  points: number,
+  answers: Answer[]
+}
+
+export interface Answer {
+  answer: string,
+  correct: boolean
 }
 
 export interface Session {
@@ -180,5 +193,5 @@ export function isQuizDescription(name: string) {
   * @returns {number}
 */
 export function generateTime(): number {
-  return Date.now() / 1000;
+  return Math.floor(Date.now() / 1000);
 }

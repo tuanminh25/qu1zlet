@@ -5,6 +5,7 @@ import {
   isQuizDescription,
   isQuizName,
   generateTime,
+  Quiz,
   load,
   save
 } from './helper';
@@ -45,7 +46,15 @@ export function adminQuizCreate(token: string, name: string, description: string
     };
   }
 
-  const newQuiz = {
+  const userId = isToken(token).userId
+  const userExists = checkauthUserId(userId);
+  if (!userExists) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  const newQuiz: Quiz = {
     quizId: ++data.ids.quizId,
     name: name,
     timeCreated: generateTime(),
@@ -54,7 +63,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     quizOwnedby: user.userId,
     duration: 0,
     numQuestions: 0,
-    questions: [] as any[] // TODO: change
+    questions: [],
   };
 
   data.quizzes.push(newQuiz);
