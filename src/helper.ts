@@ -1,8 +1,5 @@
-import { getData } from './dataStore.js';
 import fs from 'fs';
 import path from 'path';
-
-const store = getData();
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -23,7 +20,10 @@ export interface Quiz {
   timeCreated: number;
   timeLastEdited: number;
   description: string;
-  quizOwnedby: number
+  quizOwnedby: number,
+  duration: number,
+  numQuestions: number,
+  questions: any[]
 }
 
 export interface Session {
@@ -40,6 +40,7 @@ export interface Ids {
 export interface DataStore {
   users: User[];
   quizzes: Quiz[];
+  trash: Quiz[];
   sessions: Session[];
   ids: Ids
 }

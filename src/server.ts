@@ -11,7 +11,7 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword } from './user';
 import { clear } from './other';
-import { adminQuizCreate } from './quiz';
+import { adminQuizCreate, adminQuizRemove } from './quiz';
 
 // Set up web app
 const app = express();
@@ -90,6 +90,21 @@ app.post('/v1/admin/auth/logout', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.put('/v1/admin/user/password', (req: Request, res: Response) => {
+  const { token, oldPassword, newPassword } = req.body;
+  const response = updatePassword(token, oldPassword, newPassword);
+
+  if (response.error === 'Invalid token') {
+    return res.status(401).json(response);
+  }
+
+  if ('error' in response) {
+    return res.status(400).json(response);
+  }
+
+  res.json(response);
+});
+
 app.post('/v1/admin/quiz', (req: Request, res: Response) => {
   const token = req.body.token;
   const name = req.body.name;
@@ -105,20 +120,22 @@ app.post('/v1/admin/quiz', (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.put('/v1/admin/user/password', (req: Request, res: Response) => {
-  const { token, oldPassword, newPassword } = req.body;
-  const response = updatePassword(token, oldPassword, newPassword);
+app.delete('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
+  const token = req.query.token; 
+  const { quizId } = req.params; 
 
-  if (response.error === 'Invalid token') {
+  const response = adminQuizRemove(String(token), parseInt(quizId));
+  console.log(response)
+  
+  if (response.error === 'Invalid Token') {
     return res.status(401).json(response);
+  } else if ('error' in response) {
+    return res.status(403).json(response);
   }
 
-  if ('error' in response) {
-    return res.status(400).json(response);
-  }
-
-  res.json(response);
+  res.status(200).json(response);
 });
+
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
 // ====================================================================
