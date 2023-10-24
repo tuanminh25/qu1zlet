@@ -29,7 +29,7 @@ function testQuizToTrash(token: string, quizId: number) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
-describe.skip('/v1/admin/quiz', () => {
+describe('/v1/admin/quiz', () => {
   let user: { token: string; };
 
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe.skip('/v1/admin/quiz', () => {
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
   });
 
-  test.only('Successful quiz creation', () => {
+  test('Successful quiz creation', () => {
     const quiz = testCreateQuiz(user.token, 'My Quiz Name', 'A description of my quiz');
     expect(quiz.status).toStrictEqual(200);
     // TODO: use other functions to check if working eg quizlist.

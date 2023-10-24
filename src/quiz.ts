@@ -103,6 +103,7 @@ export function adminQuizRemove(token: string, quizId: number) {
   quiz.timeLastEdited = generateTime();
   const index = data.quizzes.indexOf(quiz);
   data.quizzes.splice(index, 1);
+  data.trash.push(quiz);
   save(data);
   return {};
 }
