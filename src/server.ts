@@ -9,7 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
-import { adminUserDetails, updatePassword, userUpdateDetails } from './user';
+import { adminUserDetails, updatePassword } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizRemove } from './quiz';
 import { adminQuestionCreate } from './question';
