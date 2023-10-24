@@ -177,7 +177,7 @@ export function isQuizDescription(name: string) {
 /**
   * Creates a Timestamp
   *
-  * @returns {number} 
+  * @returns {number}
 */
 export function generateTime(): number {
   return Date.now() / 1000;

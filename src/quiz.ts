@@ -34,7 +34,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     return {
       error: 'Invalid quiz description'
     };
-  } 
+  }
 
   const user = isToken(token);
 
@@ -42,7 +42,7 @@ export function adminQuizCreate(token: string, name: string, description: string
   if (!user) {
     return {
       error: 'Invalid Token'
-    }
+    };
   }
 
   const newQuiz = {
@@ -82,7 +82,7 @@ export function adminQuizRemove(token: string, quizId: number) {
       error: 'Invalid Token'
     };
   }
-  
+
   const userExists = checkauthUserId(session.userId);
   if (!userExists) {
     return {
