@@ -25,7 +25,7 @@ import {
 */
 export function adminQuestionCreate(token: string, quizId: number, questionBody: Question):{ questionId?: number, error?: string } {
   const data = load();
-  const quiz = checkquizId(quizId);
+  const quiz = data.quizzes.find(q => q.quizId === quizId);
 
   // Error 400 checking
   if (questionBody.question.length < 5 || questionBody.question.length > 50) {
@@ -99,7 +99,6 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     answers: questionBody.answers
   };
 
-  quiz.questions = quiz.questions || [];
   quiz.questions.push(newQuestion);
   quiz.timeLastEdited = generateTime();
 
