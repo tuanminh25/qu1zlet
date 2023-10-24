@@ -7,7 +7,7 @@ const ERROR = { error: expect.any(String) };
 
 const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear'); };
 
-function testCreateQuiz(token: string, name: string, description: string) {
+export function testCreateQuiz(token: string, name: string, description: string) {
   const res = request('POST', SERVER_URL + '/v1/admin/quiz', {
     json: {
       token: token,
@@ -145,3 +145,5 @@ describe('/v1/admin/quiz/:quizid', () => {
     expect(sendToTrash.status).toStrictEqual(403);
   });
 });
+
+testClear();

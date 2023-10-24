@@ -1,12 +1,12 @@
-import { 
-  isToken, 
-  load, 
-  save, 
+import {
+  isToken,
+  load,
+  save,
   isUserName,
   isPassword,
-  checkEmail, } from './helper';
+  checkEmail
+} from './helper';
 import validator from 'validator';
-
 
 /**
   * For the given admin user that is logged in, return all of the relevant details
@@ -96,7 +96,6 @@ export function updatePassword(token: string, oldPassword: string, newPassword: 
   return {};
 }
 
-
 /**
   * Given a set of properties, update those properties of this logged in admin user.
   *
@@ -105,7 +104,7 @@ export function updatePassword(token: string, oldPassword: string, newPassword: 
   * @param {string} nameFirst
   * @param {string} nameLast
   * @returns {}
-  * @returns { error: string }`
+  * @returns { error: string }
 */
 export function adminUserUpdate(token: string, email: string, nameFirst: string, nameLast: string) {
   if (!validator.isEmail(email)) {
