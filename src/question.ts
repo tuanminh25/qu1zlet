@@ -23,16 +23,7 @@ import {
 * }} questionBody 
 * @returns {{ questionId?: number, error?: string }}
 */
-export function adminQuestionCreate(
-  token: string,
-  quizId: number,
-  questionBody: {
-    question: string,
-    duration: number,
-    points: number,
-    answers: Answer[]
-  }
-): { questionId?: number, error?: string } {
+export function adminQuestionCreate(token: string, quizId: number, questionBody: Question):{ questionId?: number, error?: string } {
   const data = load();
   const quiz = checkquizId(quizId);
 
@@ -83,25 +74,25 @@ export function adminQuestionCreate(
 
     // Error 401 checking
   if (!isToken(token)) {
-    return { error: 'Token is invalid' };
+    return { error: 'Invalid token' };
   }
 
   const userId = isToken(token).userId;
   if (!checkauthUserId(userId)) {
-    return { error: 'Token is invalid' };
+    return { error: 'Invalid token' };
   }
 
   if (!quiz) {
-    return { error: 'Token is invalid' };
+    return { error: 'Invalid token' };
   }
 
   // Error 403 checking
   if (quiz.quizOwnedby !== userId) {
-    return { error: 'User not authorized for this quiz' };
+    return { error: 'Unauthorised' };
   }
 
   const newQuestion: Question = {
-    questionId: (data.ids?.questionId || 0) + 1,
+    questionId: ++data.ids.questionId,
     question: questionBody.question,
     duration: questionBody.duration,
     points: questionBody.points,

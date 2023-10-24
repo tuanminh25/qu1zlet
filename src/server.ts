@@ -140,17 +140,15 @@ app.delete('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
 
 app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   const { token, questionText, questionBody } = req.body;
-  const quizId = parseInt(req.params.quizId);
+  const { quizId } = req.params; 
+  const response = adminQuestionCreate(token, parseInt(quizId), questionBody );
 
-  // Validate that quizId is a number
-  if (isNaN(quizId)) {
-    return res.status(400).json({ error: 'Invalid quizId' });
-  }
-
-  const response = adminQuestionCreate(token, quizId, questionBody );
-
-  if ('error' in response) {
+  if ('error' in response && response.error !== 'Invalid token' && response.error !== 'Unauthorised') {
     return res.status(400).json(response);
+  } else if (response.error === 'Invalid token') {
+    return res.status(401).json(response);
+  } else if (response.error === 'Unauthorised') {
+    return res.status(403).json(response);
   }
   res.json(response);
 });
