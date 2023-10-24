@@ -1,12 +1,4 @@
-import { 
-  isToken, 
-  load, 
-  save, 
-  isUserName,
-  isPassword,
-  checkEmail, } from './helper';
-import validator from 'validator';
-
+import { isToken, load, save, isPassword } from './helper';
 
 /**
   * For the given admin user that is logged in, return all of the relevant details
@@ -93,74 +85,5 @@ export function updatePassword(token: string, oldPassword: string, newPassword: 
   user.usedPasswords.push(oldPassword);
   user.password = newPassword;
   save(data);
-  return {};
-}
-
-
-/**
-  * Given a set of properties, update those properties of this logged in admin user.
-  *
-  * @param {string} token
-  * @param {string} email
-  * @param {string} nameFirst
-  * @param {string} nameLast
-  * @returns {}
-  * @returns { error: string }`
-*/
-export function adminUserUpdate(token: string, email: string, nameFirst: string, nameLast: string) {
-  if (!validator.isEmail(email)) {
-    return {
-      error: 'Invalid email'
-    };
-  }
-
-  if (checkEmail(email)) {
-    return {
-      error: 'Email address is used by another user'
-    };
-  }
-
-  if (!isUserName(nameFirst)) {
-    return {
-      error: 'Invalid first name'
-    };
-  }
-
-  if (!isUserName(nameLast)) {
-    return {
-      error: 'Invalid last name'
-    };
-  }
-
-  const session = isToken(token);
-
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
-
-  const data = load();
-  const usedEmail = data.users.find((user) => user.email === email && user.userId !== session.userId);
-  if (usedEmail) {
-    return {
-      error: 'Email is currently used by another user'
-    };
-  }
-
-  // Find the user to update
-  const user = data.users.find((user) => user.userId === session.userId);
-  if (!user) {
-    return {
-      error: 'User not found'
-    };
-  }
-
-  user.email = email;
-  user.nameFirst = nameFirst;
-  user.nameLast = nameLast;
-
-  save(data);
-
   return {};
 }

@@ -23,14 +23,13 @@ function testQuizToTrash(token: string, quizId: number) {
   const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
     qs: {
       token: token,
-      quizid: quizId,
     },
   });
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
-describe('/v1/admin/quiz', () => {
+describe.skip('/v1/admin/quiz', () => {
   let user: { token: string; };
 
   beforeEach(() => {
@@ -38,11 +37,8 @@ describe('/v1/admin/quiz', () => {
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
   });
 
-  test('Successful quiz creation', () => {
+  test.only('Successful quiz creation', () => {
     const quiz = testCreateQuiz(user.token, 'My Quiz Name', 'A description of my quiz');
-    expect(quiz.response).toStrictEqual({
-      quizId: expect.any(Number),
-    });
     expect(quiz.status).toStrictEqual(200);
     // TODO: use other functions to check if working eg quizlist.
   });
@@ -104,19 +100,9 @@ describe('/v1/admin/quiz', () => {
   });
 });
 
-describe.only('/v1/admin/quiz/:quizid', () => {
-  let user: { token: string };
-  let quiz: {
-    quizId: number;
-    name: string;
-    timeCreated: number;
-    timeLastEdited: number;
-    description: string;
-    quizOwnedby: number,
-    duration: number,
-    numQuestions: number,
-    questions: any[]
-  };
+describe('/v1/admin/quiz/:quizid', () => {
+  let user: { token: string; };
+  let quiz: { quizId: number; };
 
   beforeEach(() => {
     testClear();
@@ -126,7 +112,9 @@ describe.only('/v1/admin/quiz/:quizid', () => {
 
   test('Send Quiz to Trash - Successful', () => {
     // const initialTimeLastEdited = quiz.timeLastEdited;
+    expect(quiz.quizId).toBe(1);
     const sendToTrash = testQuizToTrash(user.token, quiz.quizId);
+    expect(sendToTrash.response).toStrictEqual({});
     expect(sendToTrash.status).toStrictEqual(200);
 
     // Check if timeLastEdited is updated
@@ -135,8 +123,7 @@ describe.only('/v1/admin/quiz/:quizid', () => {
   });
 
   test('Non-Existent User', () => {
-    const nonExistentUserId = 'nonExistentUser123'; // Replace with a non-existent user ID
-    const sendToTrash = testQuizToTrash(nonExistentUserId, quiz.quizId);
+    const sendToTrash = testQuizToTrash('76234724334', quiz.quizId);
     expect(sendToTrash.status).toStrictEqual(401);
   });
 

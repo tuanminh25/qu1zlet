@@ -20,6 +20,7 @@ import {
 */
 export function adminQuizCreate(token: string, name: string, description: string) {
   const data = load();
+
   // Error checking 400
   if (data.quizzes.some((quiz) => quiz.name === name)) {
     return {
@@ -42,13 +43,6 @@ export function adminQuizCreate(token: string, name: string, description: string
     return {
       error: 'Invalid Token'
     }
-  }
-
-  const userExists = checkauthUserId(user.userId);
-  if (!userExists) {
-    return {
-      error: 'Invalid Token'
-    };
   }
 
   const newQuiz = {
@@ -109,7 +103,6 @@ export function adminQuizRemove(token: string, quizId: number) {
   quiz.timeLastEdited = generateTime();
   const index = data.quizzes.indexOf(quiz);
   data.quizzes.splice(index, 1);
-  data.trash.push(quiz);
   save(data);
   return {};
 }
