@@ -12,6 +12,8 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword } from './user';
 import { clear } from './other';
 import { adminQuizCreate } from './quiz';
+import { adminQuestionCreate } from './question';
+
 
 // Set up web app
 const app = express();
@@ -119,6 +121,24 @@ app.put('/v1/admin/user/password', (req: Request, res: Response) => {
 
   res.json(response);
 });
+
+app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
+  const { token, questionText, questionBody } = req.body;
+  const quizId = parseInt(req.params.quizId);
+
+  // Validate that quizId is a number
+  if (isNaN(quizId)) {
+    return res.status(400).json({ error: 'Invalid quizId' });
+  }
+
+  const response = adminQuestionCreate(token, quizId, questionBody );
+
+  if ('error' in response) {
+    return res.status(400).json(response);
+  }
+  res.json(response);
+});
+
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
 // ====================================================================

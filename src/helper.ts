@@ -23,7 +23,23 @@ export interface Quiz {
   timeCreated: number;
   timeLastEdited: number;
   description: string;
-  quizOwnedby: number
+  quizOwnedby: number,
+  duration: number,
+  numQuestions: number,
+  questions: Question[]
+}
+
+export interface Question {
+  questionId: number
+  question: string,
+  duration: number,
+  points: number,
+  answers: Answer[]
+}
+
+export interface Answer {
+  answer: string,
+  correct: boolean
 }
 
 export interface Session {
@@ -40,6 +56,7 @@ export interface Ids {
 export interface DataStore {
   users: User[];
   quizzes: Quiz[];
+  trash: Quiz[];
   sessions: Session[];
   ids: Ids
 }
@@ -70,7 +87,8 @@ export function save(data: DataStore) {
   * @returns {undefined} - quizId is not a valid quiz id
 */
 export function checkquizId(quizId: number) {
-  const quiz = store.quizzes.find((quiz) => quiz.quizId === quizId);
+  const data = load();
+  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
   return quiz;
 }
 
