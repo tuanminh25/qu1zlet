@@ -112,21 +112,21 @@ app.post('/v1/admin/quiz', (req: Request, res: Response) => {
 
   const response = adminQuizCreate(String(token), String(name), String(description));
 
-  if ('error' in response && (JSON.stringify(response) !==  JSON.stringify({error: 'Invalid Token'}))) {
+  if ('error' in response && (JSON.stringify(response) !== JSON.stringify({ error: 'Invalid Token' }))) {
     return res.status(400).json(response);
-  } else if (JSON.stringify(response) ===  JSON.stringify({error: 'Invalid Token'})) {
-    return res.status(401).json(response)
+  } else if (JSON.stringify(response) === JSON.stringify({ error: 'Invalid Token' })) {
+    return res.status(401).json(response);
   }
   res.json(response);
 });
 
 app.delete('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
-  const token = req.query.token; 
-  const { quizId } = req.params; 
+  const token = req.query.token;
+  const { quizId } = req.params;
 
   const response = adminQuizRemove(String(token), parseInt(quizId));
-  console.log(response)
-  
+  console.log(response);
+
   if (response.error === 'Invalid Token') {
     return res.status(401).json(response);
   } else if ('error' in response) {
