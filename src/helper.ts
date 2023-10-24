@@ -193,5 +193,5 @@ export function isQuizDescription(name: string) {
   * @returns {number} 
 */
 export function generateTime(): number {
-  return Date.now() / 1000;
+  return Math.floor(Date.now() / 1000);
 }
