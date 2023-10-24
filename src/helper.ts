@@ -1,8 +1,5 @@
-import { getData } from './dataStore.js';
 import fs from 'fs';
 import path from 'path';
-
-const store = getData();
 
 const filePath = path.join(__dirname, 'dataStore.json');
 

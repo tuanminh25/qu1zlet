@@ -21,6 +21,7 @@ import {
 */
 export function adminQuizCreate(token: string, name: string, description: string) {
   const data = load();
+
   // Error checking 400
   if (data.quizzes.some((quiz) => quiz.name === name)) {
     return {
@@ -36,8 +37,10 @@ export function adminQuizCreate(token: string, name: string, description: string
     };
   } 
 
-    // Error checking 401
-  if (!isToken(token)) {
+  const user = isToken(token);
+
+  // Error checking 401
+  if (!user) {
     return {
       error: 'Invalid Token'
     }
@@ -57,7 +60,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     timeCreated: generateTime(),
     timeLastEdited: generateTime(),
     description: description,
-    quizOwnedby: userId,
+    quizOwnedby: user.userId,
     duration: 0,
     numQuestions: 0,
     questions: [],
@@ -69,4 +72,47 @@ export function adminQuizCreate(token: string, name: string, description: string
   return {
     quizId: newQuiz.quizId,
   };
+}
+
+/**
+  * Given a particular quiz, permanently remove the quiz.
+  *
+  * @param {string} token
+  * @param {number} quizId
+  * @returns {}
+*/
+export function adminQuizRemove(token: string, quizId: number) {
+  const data = load();
+  const quiz = checkquizId(quizId);
+  const session = isToken(token);
+
+  if (!session) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+  
+  const userExists = checkauthUserId(session.userId);
+  if (!userExists) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  if (!quiz) {
+    return {
+      error: 'Quiz does not exist'
+    };
+  } else if (quiz.quizOwnedby !== session.userId) {
+    return {
+      error: 'Person does not own the quiz'
+    };
+  }
+
+  quiz.timeLastEdited = generateTime();
+  const index = data.quizzes.indexOf(quiz);
+  data.quizzes.splice(index, 1);
+  data.trash.push(quiz);
+  save(data);
+  return {};
 }

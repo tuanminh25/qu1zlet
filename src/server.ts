@@ -92,6 +92,21 @@ app.post('/v1/admin/auth/logout', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.put('/v1/admin/user/password', (req: Request, res: Response) => {
+  const { token, oldPassword, newPassword } = req.body;
+  const response = updatePassword(token, oldPassword, newPassword);
+
+  if (response.error === 'Invalid token') {
+    return res.status(401).json(response);
+  }
+
+  if ('error' in response) {
+    return res.status(400).json(response);
+  }
+
+  res.json(response);
+});
+
 app.post('/v1/admin/quiz', (req: Request, res: Response) => {
   const token = req.body.token;
   const name = req.body.name;
@@ -107,13 +122,18 @@ app.post('/v1/admin/quiz', (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.put('/v1/admin/user/password', (req: Request, res: Response) => {
-  const { token, oldPassword, newPassword } = req.body;
-  const response = updatePassword(token, oldPassword, newPassword);
+app.delete('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
+  const token = req.query.token; 
+  const { quizId } = req.params; 
 
-  if (response.error === 'Invalid token') {
+  const response = adminQuizRemove(String(token), parseInt(quizId));
+  console.log(response)
+  
+  if (response.error === 'Invalid Token') {
     return res.status(401).json(response);
   }
+
+  const response = adminQuestionCreate(token, quizId, questionBody );
 
   if ('error' in response) {
     return res.status(400).json(response);
@@ -121,6 +141,7 @@ app.put('/v1/admin/user/password', (req: Request, res: Response) => {
 
   res.json(response);
 });
+
 
 app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   const { token, questionText, questionBody } = req.body;
