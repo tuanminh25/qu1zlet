@@ -89,11 +89,9 @@ describe('/v1/admin/quiz', () => {
     const emptyName = '';
     const quiz = testCreateQuiz(invalidToken, emptyName, 'A description of my quiz');
 
-
     // Check first for 400 Error
     expect(quiz.response).toStrictEqual(ERROR);
     expect(quiz.status).toStrictEqual(400);
-
 
     // Then check for 401 Error with just the invalid token.
     const quizWithInvalidToken = testCreateQuiz(invalidToken, 'My Quiz', 'A description of my quiz');
@@ -147,7 +145,6 @@ describe('/v1/admin/quiz/:quizid', () => {
     expect(sendToTrash.status).toStrictEqual(403);
   });
 });
-
 
 describe('/v1/admin/quiz/:quizid', () => {
   let user: { token: string; };
