@@ -14,7 +14,6 @@ import { clear } from './other';
 import { adminQuizCreate, adminQuizRemove } from './quiz';
 import { adminQuestionCreate } from './question';
 
-
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -139,9 +138,9 @@ app.delete('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
 });
 
 app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
-  const { token, questionText, questionBody } = req.body;
-  const { quizId } = req.params; 
-  const response = adminQuestionCreate(token, parseInt(quizId), questionBody );
+  const { token, questionBody } = req.body;
+  const { quizId } = req.params;
+  const response = adminQuestionCreate(token, parseInt(quizId), questionBody);
 
   if ('error' in response && response.error !== 'Invalid token' && response.error !== 'Unauthorised') {
     return res.status(400).json(response);

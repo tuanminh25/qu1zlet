@@ -46,7 +46,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     };
   }
 
-  const userId = isToken(token).userId
+  const userId = isToken(token).userId;
   const userExists = checkauthUserId(userId);
   if (!userExists) {
     return {

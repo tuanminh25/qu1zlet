@@ -1,13 +1,11 @@
 import {
   isToken,
   checkauthUserId,
-  checkquizId,
   generateTime,
   Question,
-  Answer,
   load,
   save
-  } from './helper';
+} from './helper';
 
 /**
   * Given details about a new question, add it to the specified quiz for the logged in user,
@@ -16,11 +14,11 @@ import {
   * @param {string} token - The authentication token of the logged-in user.
   * @param {number} quizId - The ID of the quiz where the question should be added.
   * @param {{
-*     question: string, 
-*     duration: number, 
+*     question: string,
+*     duration: number,
 *     points: number,
 *     answers: Answer[]
-* }} questionBody 
+* }} questionBody
 * @returns {{ questionId?: number, error?: string }}
 */
 export function adminQuestionCreate(token: string, quizId: number, questionBody: Question):{ questionId?: number, error?: string } {
@@ -45,15 +43,15 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
       error: 'The points awarded for the question are less than 1 or greater than 10'
     };
   }
-  
+
   const totalDuration = quiz.duration + questionBody.duration;
   if (totalDuration > 180) {
     return {
       error: 'The sum of the question durations in the quiz exceeds 3 minutes'
     };
-  };
+  }
 
-  for (let answer of questionBody.answers) {
+  for (const answer of questionBody.answers) {
     if (answer.answer.length < 1 || answer.answer.length > 30) {
       return {
         error: 'The length of an answer is shorter than 1 character long, or longer than 30 characters long'
@@ -72,7 +70,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     };
   }
 
-    // Error 401 checking
+  // Error 401 checking
   if (!isToken(token)) {
     return { error: 'Invalid token' };
   }

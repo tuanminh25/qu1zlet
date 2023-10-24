@@ -1,13 +1,9 @@
-import { 
-  isToken, 
-  load, 
-  save, 
-  isUserName,
+import {
+  isToken,
+  load,
+  save,
   isPassword,
-  checkEmail,
-  checkauthUserId, } from './helper';
-import validator from 'validator';
-
+} from './helper';
 
 /**
   * For the given admin user that is logged in, return all of the relevant details
