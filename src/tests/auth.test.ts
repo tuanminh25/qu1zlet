@@ -186,3 +186,4 @@ describe('/v1/admin/auth/logout', () => {
     expect(details1.status).toStrictEqual(401);
   });
 });
+
