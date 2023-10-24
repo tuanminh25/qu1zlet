@@ -1,1 +1,1 @@
-{"users":[{"userId":1,"nameFirst":"Roger","nameLast":"Duong","email":"Roger@gmail.com","password":"hieu12345","numSuccessfulLogins":1,"numFailedPasswordsSinceLastLogin":0}],"quizzes":[], "trash":[],"sessions":[],"ids":{"userId":1,"quizId":0,"questionId":0}}
+{"users":[],"quizzes":[],"sessions":[],"trash":[],"ids":{"userId":0,"quizId":0,"questionId":0}}

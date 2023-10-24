@@ -1,4 +1,9 @@
-import { isToken, load, save, isPassword } from './helper';
+import {
+  isToken,
+  load,
+  save,
+  isPassword,
+} from './helper';
 
 /**
   * For the given admin user that is logged in, return all of the relevant details
