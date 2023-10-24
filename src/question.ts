@@ -24,91 +24,97 @@ import {
 * @returns {{ questionId?: number, error?: string }}
 */
 export function adminQuestionCreate(
-  token: string, 
+  token: string,
   quizId: number,
   questionBody: {
-    question: string, 
-    duration: number, 
+    question: string,
+    duration: number,
     points: number,
     answers: Answer[]
   }
-  ): { questionId?: number, error?: string } {
+): { questionId?: number, error?: string } {
   const data = load();
+  const quiz = checkquizId(quizId);
 
-  // Error checking 400
-  if (!isToken(token)) {
+  // Error 400 checking
+  if (questionBody.question.length < 5 || questionBody.question.length > 50) {
     return {
-      error: 'Invalid Token'
+      error: 'Question string is less than 5 characters in length or greater than 50 characters in length'
     };
+  } else if (questionBody.answers.length < 2 || questionBody.answers.length > 6) {
+    return {
+      error: 'The question has more than 6 answers or less than 2 answers'
+    };
+  } else if (questionBody.duration <= 0) {
+    return {
+      error: 'The question duration is not a positive number'
+    };
+  } else if (questionBody.points < 1 || questionBody.points > 10) {
+    return {
+      error: 'The points awarded for the question are less than 1 or greater than 10'
+    };
+  }
+  
+  const totalDuration = quiz.duration + questionBody.duration;
+  if (totalDuration > 180) {
+    return {
+      error: 'The sum of the question durations in the quiz exceeds 3 minutes'
+    };
+  };
+
+  for (let answer of questionBody.answers) {
+    if (answer.answer.length < 1 || answer.answer.length > 30) {
+      return {
+        error: 'The length of an answer is shorter than 1 character long, or longer than 30 characters long'
+      };
+    }
+  }
+
+  const uniqueAnswers = new Set(questionBody.answers.map(ans => ans.answer));
+  if (uniqueAnswers.size !== questionBody.answers.length) {
+    return {
+      error: 'Any answer strings are duplicates of one another (within the same question)'
+    };
+  } else if (!questionBody.answers.some(ans => ans.correct)) {
+    return {
+      error: 'There are no correct answers'
+    };
+  }
+
+    // Error 401 checking
+  if (!isToken(token)) {
+    return { error: 'Token is invalid' };
   }
 
   const userId = isToken(token).userId;
-  const userExists = checkauthUserId(userId);
-  if (!userExists) {
-    return {
-      error: 'Invalid Token'
-    };
+  if (!checkauthUserId(userId)) {
+    return { error: 'Token is invalid' };
   }
 
-  const quiz = checkquizId(quizId);
   if (!quiz) {
-    return {
-      error: 'Invalid quizId'
-    };
+    return { error: 'Token is invalid' };
   }
 
+  // Error 403 checking
   if (quiz.quizOwnedby !== userId) {
-    return {
-      error: 'Not authorized to add questions to this quiz'
-    };
-  }
-
-  if (!questionBody.question || questionBody.question.length === 0) {
-    return {
-      error: 'Invalid question text'
-    };
-  }
-
-  if (!questionBody.duration || questionBody.duration <= 0) {
-    return {
-      error: 'Invalid question duration'
-    };
-  }
-
-  if (!questionBody.points || questionBody.points <= 0) {
-    return {
-      error: 'Invalid question points'
-    };
-  }
-
-  if (!questionBody.answers || questionBody.answers.length === 0) {
-    return {
-      error: 'Invalid answers'
-    };
-  }
-
-  // Check if any of the answers is marked correct
-  const hasCorrectAnswer = questionBody.answers.some(ans => ans.correct);
-  if (!hasCorrectAnswer) {
-    return {
-      error: 'At least one answer must be marked as correct'
-    };
+    return { error: 'User not authorized for this quiz' };
   }
 
   const newQuestion: Question = {
-    questionId: ++data.ids.questionId,
+    questionId: (data.ids?.questionId || 0) + 1,
     question: questionBody.question,
     duration: questionBody.duration,
     points: questionBody.points,
     answers: questionBody.answers
   };
 
+  quiz.questions = quiz.questions || [];
   quiz.questions.push(newQuestion);
   quiz.timeLastEdited = generateTime();
-  
+
   save(data);
 
   return {
-    questionId: newQuestion.questionId,
+    questionId: newQuestion.questionId
   };
 }

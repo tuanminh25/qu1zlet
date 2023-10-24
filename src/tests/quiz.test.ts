@@ -6,10 +6,8 @@ const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 
 const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear'); };
-const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear'); };
 
 export function testCreateQuiz(token: string, name: string, description: string) {
-function testCreateQuiz(token: string, name: string, description: string) {
   const res = request('POST', SERVER_URL + '/v1/admin/quiz', {
     json: {
       token: token,
@@ -30,19 +28,8 @@ function testQuizToTrash(token: string, quizId: number) {
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
-function testQuizToTrash(token: string, quizId: number) {
-  const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
-    qs: {
-      token: token,
-    },
-  });
-
-  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
-}
 
 describe('/v1/admin/quiz', () => {
-  let user: { token: string; };
-
   let user: { token: string; };
 
   beforeEach(() => {
@@ -69,13 +56,11 @@ describe('/v1/admin/quiz', () => {
   });
 
   test('multiple quizzes should have different id', () => {
-  test('multiple quizzes should have different id', () => {
     const quiz1 = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
     const quiz2 = testCreateQuiz(user.token, 'Cats', 'I like dogs');
     expect(quiz1.response.quizId).not.toEqual(quiz2.response.quizId);
   });
 
-  test('error for duplicate names', () => {
   test('error for duplicate names', () => {
     testCreateQuiz(user.token, 'Dogs', 'I like cats');
     const quiz = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
@@ -83,14 +68,10 @@ describe('/v1/admin/quiz', () => {
     expect(quiz.status).toStrictEqual(400);
   });
   test('Empty Quiz Name and Description', () => {
-  test('Empty Quiz Name and Description', () => {
     const quiz = testCreateQuiz(user.token, '', '');
     expect(quiz.response).toStrictEqual(ERROR);
     expect(quiz.status).toStrictEqual(400);
   });
-
-  test('Long Quiz Name and Description', () => {
-    const longName = 'A'.repeat(31);
 
   test('Long Quiz Name and Description', () => {
     const longName = 'A'.repeat(31);
@@ -103,7 +84,6 @@ describe('/v1/admin/quiz', () => {
     expect(quiz2.status).toStrictEqual(400);
   });
 
-  test('Check 400 Error is Prioritized Over 401', () => {
   test('Check 400 Error is Prioritized Over 401', () => {
     const invalidToken = user.token + 1;
     const emptyName = '';
