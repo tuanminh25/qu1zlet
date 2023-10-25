@@ -3,6 +3,7 @@ import { port, url } from '../config.json';
 
 const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/';
+const userUrl = '/v1/admin/user/';
 
 export function testRegister(
   email: string,
@@ -24,7 +25,11 @@ export function testRegister(
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
-export const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear'); };
+export function testClear() {
+  const res = request('DELETE', SERVER_URL + '/v1/clear');
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
 
 export function testLogin(email: string, password: string) {
   const res = request('POST', SERVER_URL + auth + 'login',
@@ -86,8 +91,43 @@ export function testCreateQuizQuestion(token: string, quizId: number, questionBo
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
+<<<<<<< HEAD
 export function testQuizInfo(token: string, quizId: number) {
   const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
+=======
+export function testUpdateUserDetails(token: string, email: string, nameFirst: string, nameLast: string) {
+  const res = request('PUT', SERVER_URL + '/v1/admin/user/details', {
+    json: {
+      token: token,
+      email: email,
+      nameFirst: nameFirst,
+      nameLast: nameLast
+    },
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testUpdatePassword(
+  token: string,
+  oldPassword: string,
+  newPassword: string
+) {
+  const res = request('PUT', SERVER_URL + userUrl + 'password',
+    {
+      json: {
+        token: token,
+        oldPassword: oldPassword,
+        newPassword: newPassword
+      }
+    });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testQuizToTrash(token: string, quizId: number) {
+  const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
+>>>>>>> 6a6f43f55ff3ad7fa2e561201b74025485a7bb51
     qs: {
       token: token,
     },
