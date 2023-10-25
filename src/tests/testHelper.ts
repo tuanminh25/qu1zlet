@@ -91,10 +91,6 @@ export function testCreateQuizQuestion(token: string, quizId: number, questionBo
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
-<<<<<<< HEAD
-export function testQuizInfo(token: string, quizId: number) {
-  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
-=======
 export function testUpdateUserDetails(token: string, email: string, nameFirst: string, nameLast: string) {
   const res = request('PUT', SERVER_URL + '/v1/admin/user/details', {
     json: {
@@ -127,7 +123,6 @@ export function testUpdatePassword(
 
 export function testQuizToTrash(token: string, quizId: number) {
   const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
->>>>>>> 6a6f43f55ff3ad7fa2e561201b74025485a7bb51
     qs: {
       token: token,
     },
@@ -135,3 +130,15 @@ export function testQuizToTrash(token: string, quizId: number) {
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testQuizInfo(token: string, quizId: number) {
+  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
+    qs: {
+      token: token,
+    },
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+	
