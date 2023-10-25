@@ -85,3 +85,13 @@ export function testCreateQuizQuestion(token: string, quizId: number, questionBo
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testQuizInfo(token: string, quizId: number) {
+  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
+    qs: {
+      token: token,
+    },
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
