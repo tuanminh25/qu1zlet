@@ -140,5 +140,3 @@ export function testQuizInfo(token: string, quizId: number) {
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
-
-	

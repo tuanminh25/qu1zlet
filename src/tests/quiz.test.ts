@@ -172,7 +172,7 @@ describe('/v1/admin/quiz/:quizid', () => {
   });
 });
 
-describe('/v1/admin/quiz/{quizid}', () => {
+describe('GET /v1/admin/quiz/:quizid', () => {
   let user: { token: string };
   let quiz: { quizId: number };
   const validQuestion = {
@@ -186,7 +186,7 @@ describe('/v1/admin/quiz/{quizid}', () => {
       { answer: 'Rome', correct: false }
     ]
   };
-  
+
   beforeEach(() => {
     testClear();
     user = testRegister('testuser@example.com', 'Password123', 'Test', 'User').response;
@@ -194,8 +194,8 @@ describe('/v1/admin/quiz/{quizid}', () => {
   });
 
   test('Display Quiz Info - Successful', () => {
-    const question = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion)
-    const quizinfo = testQuizInfo(user.token, quiz.quizId)
+    const question = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion);
+    const quizinfo = testQuizInfo(user.token, quiz.quizId);
     expect(quizinfo.response).toStrictEqual({
       quizId: expect.any(Number),
       name: 'My Quiz Name',
@@ -206,7 +206,7 @@ describe('/v1/admin/quiz/{quizid}', () => {
       questions: [question],
       duration: expect.any(Number),
     });
-    expect(quizinfo.status).toStrictEqual(200)
+    expect(quizinfo.status).toStrictEqual(200);
   });
 
   test('Display Quiz Info without Description or Questions - Successful', () => {
@@ -221,7 +221,7 @@ describe('/v1/admin/quiz/{quizid}', () => {
       questions: [],
       duration: 0,
     });
-    expect(badquiz.status).toStrictEqual(200)
+    expect(badquiz.status).toStrictEqual(200);
   });
 
   test('Invalid Token', () => {
@@ -244,5 +244,4 @@ describe('/v1/admin/quiz/{quizid}', () => {
     const quizinfo = testQuizInfo(unauthorizedUser.token, quiz.quizId);
     expect(quizinfo.status).toStrictEqual(403);
   });
-
-})
+});
