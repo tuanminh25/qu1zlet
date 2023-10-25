@@ -13,6 +13,8 @@
 * 11/10: Few minor system updates; Removed a 403 error from swagger for some routes because they weren't applicable
 * 14/10: Correction at the top of `4.1`; Unnecessary `400` error condition for `Quiz ID does not refer to a quiz that this user owns` removed from a number of places where this is covered by `403`.
 * 22/10: `/v1/admin/quiz/trash/empty` has had 400 and 403 error descriptions fixed up; removal of "All sessions for this quiz must be in END state" references.
+* 25/10: Clarity that errors are thrown in order 401, 403, 400. This was in the spec and the swagger had this order in source code, but swagger 
+was not rendering in a way to reflect that.
 
 ## 🫡 0. Aims:
 
@@ -1019,7 +1021,7 @@ Either a `400 (Bad Request)` or `401 (Unauthorized)` or `403 (Forbidden)` is thr
 
 To throw one of these errors, simply use the code `res.status(400).send(JSON.stringify({ error: 'specific error message here' }))` or `res.status(400).json({ error: 'specific error message here' })` in your server where 400 is the error.
 
-Errors are thrown in the order that they are defined in the swagger doc, which is typically 401, then 403, then 400.
+Errors are thrown in the following order: 401, then 403, then 400.
 
 ### 🐝 4.11. Working with the frontend
 
