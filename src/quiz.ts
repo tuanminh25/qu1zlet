@@ -110,8 +110,8 @@ export function adminQuizRemove(token: string, quizId: number) {
   }
 
   quiz.timeLastEdited = generateTime();
-  const index = data.quizzes.indexOf(quiz);
-  data.quizzes.splice(index, 1);
+  const filteredArray = data.quizzes.filter(obj => obj.quizId !== quizId);
+  data.quizzes = filteredArray;
   data.trash.push(quiz);
   save(data);
   return {};
