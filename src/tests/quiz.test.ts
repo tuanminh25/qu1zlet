@@ -2,7 +2,8 @@ import {
   testRegister,
   testCreateQuiz,
   testQuizToTrash,
-  testClear
+  testClear,
+  testQuizList
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
