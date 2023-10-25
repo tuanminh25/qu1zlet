@@ -187,12 +187,13 @@ describe('/v1/admin/quiz/:quizid', () => {
 });
 
 
-describe('testQuizList', () => {
+describe.only('testQuizList', () => {
   let user : {token: string};
   let quiz : {quizId: number};
 
   beforeEach(() => {
     testClear();
+
     // First person
     user = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
     quiz = testCreateQuiz(user.token, 'Quiz by Hayden', '').response;
@@ -201,15 +202,16 @@ describe('testQuizList', () => {
   // Working cases
 
   // One item in list 1 and 0 item in list 2
-  test('Successful case: one item in the list', () => {
+  test.only('Successful case: one item in the list', () => {
     // 2nd person
     const user2 = testRegister('jayden2.smith@unsw.edu.au', 'password2', 'nameFirst', 'nameLast').response;
 
     // 1 item in list 1
-    expect(testQuizList(user.token)).toStrictEqual({ quizzes: [{ quizId: quiz.quizId, name: 'Quiz by Hayden' }] });
+    expect(testQuizList(user.token).response).toStrictEqual({ quizzes: [{ quizId: quiz.quizId, name: 'Quiz by Hayden' }] });
+    expect(testQuizList(user.token).status).toStrictEqual(200);
 
     // No item in list 2
-    expect(testQuizList(user2.token)).toStrictEqual({ quizzes: [] });
+    expect(testQuizList(user2.token).response).toStrictEqual({ quizzes: [] });
   });
 
   // Many items in list
