@@ -1,22 +1,15 @@
 import request from 'sync-request-curl';
 import { port, url } from '../config.json';
-import { testRegister, testCreateQuiz } from './testHelper';
+import { testRegister, testCreateQuiz, testCreateQuizQuestion } from './testHelper';
 
 const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 
 const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear'); };
 
-export function testCreateQuizQuestion(token: string, quizId: number, questionBody: object) {
-  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/question`, {
-    json: {
-      token: token,
-      questionBody: questionBody
-    },
-  });
-
-  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
-}
+beforeEach(() => {
+  testClear();
+});
 
 describe('/v1/admin/quiz/{quizid}/question', () => {
   let user: { token: string; };
@@ -34,7 +27,6 @@ describe('/v1/admin/quiz/{quizid}/question', () => {
   };
 
   beforeEach(() => {
-    testClear();
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
     quiz = testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description').response;
   });
@@ -205,4 +197,19 @@ describe('/v1/admin/quiz/{quizid}/question', () => {
     expect(question.response).toStrictEqual(ERROR);
     expect(question.status).toBe(403);
   });
+
+  test('Prioritise 401 error over 400', () => {
+    const question = testCreateQuizQuestion('', 2384, validQuestion);
+    expect(question.response).toStrictEqual(ERROR);
+    expect(question.status).toBe(401);
+  });
+
+  test('Prioritise 403 error over 400', () => {
+    const anotherUser = testRegister('anotheruser@example.com', 'password1234', 'Another', 'User').response;
+    const question = testCreateQuizQuestion(anotherUser.token, quiz.quizId, validQuestion);
+    expect(question.response).toStrictEqual(ERROR);
+    expect(question.status).toBe(403);
+  });
 });
+
+testClear();

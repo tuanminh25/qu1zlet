@@ -25,6 +25,25 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
 
+  // Error 401 checking
+  if (!isToken(token)) {
+    return { error: 'Invalid token' };
+  }
+
+  const userId = isToken(token).userId;
+  if (!checkauthUserId(userId)) {
+    return { error: 'Invalid token' };
+  }
+
+  if (!quiz) {
+    return { error: 'Invalid token' };
+  }
+
+  // Error 403 checking
+  if (quiz.quizOwnedby !== userId) {
+    return { error: 'Unauthorised' };
+  }
+
   // Error 400 checking
   if (questionBody.question.length < 5 || questionBody.question.length > 50) {
     return {
@@ -70,25 +89,6 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     };
   }
 
-  // Error 401 checking
-  if (!isToken(token)) {
-    return { error: 'Invalid token' };
-  }
-
-  const userId = isToken(token).userId;
-  if (!checkauthUserId(userId)) {
-    return { error: 'Invalid token' };
-  }
-
-  if (!quiz) {
-    return { error: 'Invalid token' };
-  }
-
-  // Error 403 checking
-  if (quiz.quizOwnedby !== userId) {
-    return { error: 'Unauthorised' };
-  }
-
   const newQuestion: Question = {
     questionId: ++data.ids.questionId,
     question: questionBody.question,
@@ -98,7 +98,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
   };
 
   quiz.questions.push(newQuestion);
-  quiz.duration += questionBody.duration;
+  quiz.duration = totalDuration;
   quiz.numQuestions++;
   quiz.timeLastEdited = generateTime();
 
