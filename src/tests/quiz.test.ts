@@ -172,7 +172,7 @@ describe('/v1/admin/quiz/:quizid', () => {
   });
 });
 
-describe.only('testQuizList', () => {
+describe('testQuizList', () => {
   let user : {token: string};
   let quiz : {quizId: number};
 
