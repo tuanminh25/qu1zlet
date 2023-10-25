@@ -4,7 +4,6 @@ import {
   save,
   isUserName,
   isPassword,
-  checkEmail
 } from './helper';
 import validator from 'validator';
 
@@ -107,15 +106,16 @@ export function updatePassword(token: string, oldPassword: string, newPassword: 
   * @returns { error: string }
 */
 export function adminUserUpdate(token: string, email: string, nameFirst: string, nameLast: string) {
-  if (!validator.isEmail(email)) {
+  const session = isToken(token);
+  if (!session) {
     return {
-      error: 'Invalid email'
+      error: 'Invalid token'
     };
   }
 
-  if (checkEmail(email)) {
+  if (!validator.isEmail(email)) {
     return {
-      error: 'Email address is used by another user'
+      error: 'Invalid email'
     };
   }
 
@@ -131,14 +131,6 @@ export function adminUserUpdate(token: string, email: string, nameFirst: string,
     };
   }
 
-  const session = isToken(token);
-
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
-
   const data = load();
   const usedEmail = data.users.find((user) => user.email === email && user.userId !== session.userId);
   if (usedEmail) {
@@ -148,12 +140,6 @@ export function adminUserUpdate(token: string, email: string, nameFirst: string,
   }
 
   const user = data.users.find((user) => user.userId === session.userId);
-  if (!user) {
-    return {
-      error: 'User not found'
-    };
-  }
-
   user.email = email;
   user.nameFirst = nameFirst;
   user.nameLast = nameLast;

@@ -6,7 +6,7 @@ const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 const userUrl = '/v1/admin/user/';
 
-afterEach(() => {
+beforeEach(() => {
   testClear();
 });
 
@@ -144,7 +144,6 @@ describe('/v1/admin/user/details', () => {
 describe('/v1/admin/user/password', () => {
   let user1: any;
   beforeEach(() => {
-    testClear();
     user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;
   });
 
@@ -234,8 +233,8 @@ describe('PUT /v1/admin/user/details', () => {
   });
 
   test('Email is already used by another user', () => {
-    testRegister('Roger@gmail.com', 'hieu12345', 'Rager', 'Duang');
-    const result = testUpdateUserDetails(user1.token, 'Roger@gmail.com', 'Hayden', 'Smith');
+    const user2 = testRegister('Raaaager@gmail.com', 'hieu12345', 'Rager', 'Duang').response;
+    const result = testUpdateUserDetails(user2.token, 'Roger@gmail.com', 'Hayden', 'Smith');
     expect(result.status).toBe(400);
     expect(result.response).toEqual(ERROR);
   });
@@ -260,9 +259,9 @@ describe('PUT /v1/admin/user/details', () => {
     expect(result.response).toStrictEqual(ERROR);
   });
 
-  test('Prioritize 400 over 401', () => {
+  test('Prioritize 401 over 400', () => {
     const result = testUpdateUserDetails('', 'invalidEmail', 'Hayden', 'Smith');
-    expect(result.status).toBe(400);
+    expect(result.status).toBe(401);
     expect(result.response).toStrictEqual(ERROR);
   });
 });

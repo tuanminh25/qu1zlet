@@ -156,10 +156,10 @@ app.put('/v1/admin/user/details', (req: Request, res: Response) => {
   const { token, email, nameFirst, nameLast } = req.body;
   const response = adminUserUpdate(token, email, nameFirst, nameLast);
 
-  if ('error' in response && response.error !== 'Invalid token') {
-    return res.status(400).json(response);
-  } else if (response.error === 'Invalid token') {
+  if (response.error === 'Invalid token') {
     return res.status(401).json(response);
+  } else if ('error' in response) {
+    return res.status(400).json(response);
   }
 
   res.json(response);
