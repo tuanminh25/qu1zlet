@@ -137,7 +137,7 @@ export function adminQuizList(token: string) {
   // Check errors:
   // Invalid token
   if (session === undefined) {
-    return { error: "Token is empty or invalid"};
+    return { error: 'Token is empty or invalid' };
   }
 
   // Working cases:

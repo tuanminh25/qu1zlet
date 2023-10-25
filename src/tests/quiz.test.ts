@@ -8,9 +8,6 @@ import {
 
 const ERROR = { error: expect.any(String) };
 
-
-
-
 // Tests:
 describe('/v1/admin/quiz', () => {
   let user: { token: string; };
@@ -175,7 +172,6 @@ describe('/v1/admin/quiz/:quizid', () => {
   });
 });
 
-
 describe.only('testQuizList', () => {
   let user : {token: string};
   let quiz : {quizId: number};
@@ -202,7 +198,6 @@ describe.only('testQuizList', () => {
     // No item in list 2
     expect(testQuizList(user2.token).response).toStrictEqual({ quizzes: [] });
     expect(testQuizList(user.token).status).toStrictEqual(200);
-
   });
 
   // Many items in list
@@ -238,7 +233,7 @@ describe.only('testQuizList', () => {
   // Error cases:
   // Token is empty or invalid (does not refer to valid logged in user session)
   test('Token is empty or invalid (does not refer to valid logged in user session)', () => {
-    expect(testQuizList(user.token + 1).response).toStrictEqual({error: "Token is empty or invalid"});
+    expect(testQuizList(user.token + 1).response).toStrictEqual({ error: 'Token is empty or invalid' });
     expect(testQuizList(user.token + 1).status).toStrictEqual(401);
   });
 });
