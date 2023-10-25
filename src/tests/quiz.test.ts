@@ -1,23 +1,11 @@
 import request from 'sync-request-curl';
 import { port, url } from '../config.json';
-import { testRegister } from './auth.test';
+import { testRegister, testCreateQuiz } from './testHelper';
 
 const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 
 const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear'); };
-
-export function testCreateQuiz(token: string, name: string, description: string) {
-  const res = request('POST', SERVER_URL + '/v1/admin/quiz', {
-    json: {
-      token: token,
-      name: name,
-      description: description,
-    },
-  });
-
-  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
-}
 
 function testQuizToTrash(token: string, quizId: number) {
   const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
