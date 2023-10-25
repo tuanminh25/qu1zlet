@@ -30,7 +30,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     };
   }
 
-  const userId = session.userId;
+  const userId = isToken(token).userId;
   const userExists = checkauthUserId(userId);
   if (!userExists) {
     return {
@@ -59,7 +59,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     timeCreated: generateTime(),
     timeLastEdited: generateTime(),
     description: description,
-    quizOwnedby: user.userId,
+    quizOwnedby: session.userId,
     duration: 0,
     numQuestions: 0,
     questions: [],
