@@ -20,17 +20,17 @@ import {
   * @returns {{ quizId: number }}
 */
 export function adminQuizCreate(token: string, name: string, description: string) {
-  const user = isToken(token);
+  const session = isToken(token);
   const data = load();
 
   // Error checking 401
-  if (!user) {
+  if (!session) {
     return {
       error: 'Invalid Token'
     };
   }
 
-  const userId = isToken(token).userId;
+  const userId = session.userId;
   const userExists = checkauthUserId(userId);
   if (!userExists) {
     return {
