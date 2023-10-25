@@ -133,11 +133,11 @@ export function adminQuizRemove(token: string, quizId: number) {
 export function adminQuizList(token: string) {
   const data = load();
   const session = isToken(token);
-  
+
   // Check errors:
   // Invalid token
   if (session === undefined) {
-    return { error: "Token is empty or invalid" };
+    return { error: "Token is empty or invalid"};
   }
 
   // Working cases:

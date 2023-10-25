@@ -202,7 +202,7 @@ describe.only('testQuizList', () => {
   // Working cases
 
   // One item in list 1 and 0 item in list 2
-  test.only('Successful case: one item in the list', () => {
+  test('Successful case: one item in the list', () => {
     // 2nd person
     const user2 = testRegister('jayden2.smith@unsw.edu.au', 'password2', 'nameFirst', 'nameLast').response;
 
@@ -212,6 +212,8 @@ describe.only('testQuizList', () => {
 
     // No item in list 2
     expect(testQuizList(user2.token).response).toStrictEqual({ quizzes: [] });
+    expect(testQuizList(user.token).status).toStrictEqual(200);
+
   });
 
   // Many items in list
@@ -221,7 +223,7 @@ describe.only('testQuizList', () => {
     const quiz3 = testCreateQuiz(user.token, 'Phaden quiz', 'Phaden content').response;
     const quiz4 = testCreateQuiz(user.token, 'Warden quiz', 'Warden content').response;
 
-    expect(testQuizList(user.token)).toStrictEqual(
+    expect(testQuizList(user.token).response).toStrictEqual(
       {
         quizzes: [
           { quizId: quiz.quizId, name: 'Quiz by Hayden' },
@@ -234,7 +236,7 @@ describe.only('testQuizList', () => {
     // Removing quizzes
     testQuizToTrash(user.token, quiz3.quizId);
 
-    expect(testQuizList(user.token)).toStrictEqual(
+    expect(testQuizList(user.token).response).toStrictEqual(
       {
         quizzes: [
           { quizId: quiz.quizId, name: 'Quiz by Hayden' },

@@ -7,7 +7,8 @@
         "start": "ts-node -T src/server.ts",
         "auth": "jest auth.test.ts",
         "quiz": "jest quiz.test.js",
-        "user": "jest user.test.ts"
+        "user": "jest user.test.ts",
+        "startNodemon" : "nodemon src/server.ts localhost 3141"
     },
     "dependencies": {
         "cors": "^2.8.5",
