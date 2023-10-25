@@ -1,7 +1,8 @@
 import {
   testRegister,
-  testQuizInfo
+  testQuizInfo,
   testCreateQuiz,
+  testCreateQuizQuestion,
   testQuizToTrash,
   testClear
 } from './testHelper';
