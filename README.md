@@ -12,6 +12,7 @@
 * 10/10: Updated section `4.9` to try and elaborate in more detail about sessions.
 * 11/10: Few minor system updates; Removed a 403 error from swagger for some routes because they weren't applicable
 * 14/10: Correction at the top of `4.1`; Unnecessary `400` error condition for `Quiz ID does not refer to a quiz that this user owns` removed from a number of places where this is covered by `403`.
+* 22/10: `/v1/admin/quiz/trash/empty` has had 400 and 403 error descriptions fixed up; removal of "All sessions for this quiz must be in END state" references.
 
 ## 🫡 0. Aims:
 

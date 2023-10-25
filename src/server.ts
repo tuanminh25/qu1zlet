@@ -141,12 +141,12 @@ app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   const { quizId } = req.params;
   const response = adminQuestionCreate(token, parseInt(quizId), questionBody);
 
-  if ('error' in response && response.error !== 'Invalid token' && response.error !== 'Unauthorised') {
-    return res.status(400).json(response);
-  } else if (response.error === 'Invalid token') {
+  if (response.error === 'Invalid token') {
     return res.status(401).json(response);
   } else if (response.error === 'Unauthorised') {
     return res.status(403).json(response);
+  } else if ('error' in response) {
+    return res.status(400).json(response);
   }
   res.json(response);
 });
