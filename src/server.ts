@@ -9,7 +9,7 @@ import fs from 'fs';
 import path from 'path';
 import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
-import { adminUserDetails, updatePassword } from './user';
+import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizRemove } from './quiz';
 import { adminQuestionCreate } from './question';
@@ -149,6 +149,19 @@ app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   } else if (response.error === 'Unauthorised') {
     return res.status(403).json(response);
   }
+  res.json(response);
+});
+
+app.put('/v1/admin/user/details', (req: Request, res: Response) => {
+  const { token, email, nameFirst, nameLast } = req.body;
+  const response = adminUserUpdate(token, email, nameFirst, nameLast);
+
+  if (response.error === 'Invalid token') {
+    return res.status(401).json(response);
+  } else if ('error' in response) {
+    return res.status(400).json(response);
+  }
+
   res.json(response);
 });
 

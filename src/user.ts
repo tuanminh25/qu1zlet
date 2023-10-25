@@ -2,8 +2,10 @@ import {
   isToken,
   load,
   save,
+  isUserName,
   isPassword,
 } from './helper';
+import validator from 'validator';
 
 /**
   * For the given admin user that is logged in, return all of the relevant details
@@ -90,5 +92,59 @@ export function updatePassword(token: string, oldPassword: string, newPassword: 
   user.usedPasswords.push(oldPassword);
   user.password = newPassword;
   save(data);
+  return {};
+}
+
+/**
+  * Given a set of properties, update those properties of this logged in admin user.
+  *
+  * @param {string} token
+  * @param {string} email
+  * @param {string} nameFirst
+  * @param {string} nameLast
+  * @returns {}
+  * @returns { error: string }
+*/
+export function adminUserUpdate(token: string, email: string, nameFirst: string, nameLast: string) {
+  const session = isToken(token);
+  if (!session) {
+    return {
+      error: 'Invalid token'
+    };
+  }
+
+  if (!validator.isEmail(email)) {
+    return {
+      error: 'Invalid email'
+    };
+  }
+
+  if (!isUserName(nameFirst)) {
+    return {
+      error: 'Invalid first name'
+    };
+  }
+
+  if (!isUserName(nameLast)) {
+    return {
+      error: 'Invalid last name'
+    };
+  }
+
+  const data = load();
+  const usedEmail = data.users.find((user) => user.email === email && user.userId !== session.userId);
+  if (usedEmail) {
+    return {
+      error: 'Email is currently used by another user'
+    };
+  }
+
+  const user = data.users.find((user) => user.userId === session.userId);
+  user.email = email;
+  user.nameFirst = nameFirst;
+  user.nameLast = nameLast;
+
+  save(data);
+
   return {};
 }
