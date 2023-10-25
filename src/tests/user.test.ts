@@ -1,14 +1,13 @@
-import { 
-  testRegister, 
-  testClear, 
-  testLogin, 
+import {
+  testRegister,
+  testClear,
+  testLogin,
   testGetDetails,
   testUpdatePassword,
   testUpdateUserDetails
- } from './testHelper';
+} from './testHelper';
 
 const ERROR = { error: expect.any(String) };
-
 
 beforeEach(() => {
   testClear();

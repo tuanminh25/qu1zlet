@@ -1,16 +1,11 @@
-import request from 'sync-request-curl';
-import { port, url } from '../config.json';
-import { 
-  testRegister, 
-  testCreateQuiz, 
+import {
+  testRegister,
+  testCreateQuiz,
   testQuizToTrash,
-  testClear } from './testHelper';
+  testClear
+} from './testHelper';
 
-const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
-
-
-
 
 describe('/v1/admin/quiz', () => {
   let user: { token: string; };
