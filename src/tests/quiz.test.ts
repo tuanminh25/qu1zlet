@@ -50,11 +50,13 @@ describe('/v1/admin/quiz', () => {
   });
 
   test('error for duplicate names', () => {
-    testCreateQuiz(user.token, 'Dogs', 'I like cats');
-    const quiz = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
-    expect(quiz.response).toStrictEqual(ERROR);
-    expect(quiz.status).toStrictEqual(400);
+    const quiz1 = testCreateQuiz(user.token, 'Dogs', 'I like cats');
+    expect(quiz1.status).toStrictEqual(200);
+    const quiz2 = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
+    expect(quiz2.response).toStrictEqual(ERROR);
+    expect(quiz2.status).toStrictEqual(400);
   });
+
   test('Empty Quiz Name and Description', () => {
     const quiz = testCreateQuiz(user.token, '', '');
     expect(quiz.response).toStrictEqual(ERROR);
