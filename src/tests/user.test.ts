@@ -1,44 +1,18 @@
-import request from 'sync-request-curl';
-import { port, url } from '../config.json';
-import { testRegister, testClear, testLogin, testGetDetails } from './testHelper';
+import { 
+  testRegister, 
+  testClear, 
+  testLogin, 
+  testGetDetails,
+  testUpdatePassword,
+  testUpdateUserDetails
+ } from './testHelper';
 
-const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
-const userUrl = '/v1/admin/user/';
+
 
 beforeEach(() => {
   testClear();
 });
-
-function testUpdatePassword(
-  token: string,
-  oldPassword: string,
-  newPassword: string
-) {
-  const res = request('PUT', SERVER_URL + userUrl + 'password',
-    {
-      json: {
-        token: token,
-        oldPassword: oldPassword,
-        newPassword: newPassword
-      }
-    });
-
-  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
-}
-
-function testUpdateUserDetails(token: string, email: string, nameFirst: string, nameLast: string) {
-  const res = request('PUT', SERVER_URL + '/v1/admin/user/details', {
-    json: {
-      token: token,
-      email: email,
-      nameFirst: nameFirst,
-      nameLast: nameLast
-    },
-  });
-
-  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
-}
 
 describe('/v1/admin/user/details', () => {
   let user1: any;
