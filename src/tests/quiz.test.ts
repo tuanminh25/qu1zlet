@@ -1,10 +1,12 @@
 import request from 'sync-request-curl';
 import { port, url } from '../config.json';
-import { testRegister, testCreateQuiz } from './testHelper';
+import { testRegister, testCreateQuiz, testQuizList } from './testHelper';
 
 const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
 
+
+// Test functions:
 const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear'); };
 
 function testQuizToTrash(token: string, quizId: number) {
@@ -17,6 +19,10 @@ function testQuizToTrash(token: string, quizId: number) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
+
+
+
+// Tests:
 describe('/v1/admin/quiz', () => {
   let user: { token: string; };
 
@@ -177,5 +183,69 @@ describe('/v1/admin/quiz/:quizid', () => {
     const unauthorizedUser = testRegister('unauthorized@example.com', 'password123', 'Unauthorized', 'User').response;
     const sendToTrash = testQuizToTrash(unauthorizedUser.token, quiz.quizId);
     expect(sendToTrash.status).toStrictEqual(403);
+  });
+});
+
+
+describe('testQuizList', () => {
+  let user : {token: string};
+  let quiz : {quizId: number};
+
+  beforeEach(() => {
+    testClear();
+    // First person
+    user = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
+    quiz = testCreateQuiz(user.token, 'Quiz by Hayden', '').response;
+  });
+
+  // Working cases
+
+  // One item in list 1 and 0 item in list 2
+  test('Successful case: one item in the list', () => {
+    // 2nd person
+    const user2 = testRegister('jayden2.smith@unsw.edu.au', 'password2', 'nameFirst', 'nameLast').response;
+
+    // 1 item in list 1
+    expect(testQuizList(user.token)).toStrictEqual({ quizzes: [{ quizId: quiz.quizId, name: 'Quiz by Hayden' }] });
+
+    // No item in list 2
+    expect(testQuizList(user2.token)).toStrictEqual({ quizzes: [] });
+  });
+
+  // Many items in list
+  test('Successful case: many items in the list', () => {
+    // More quizzies from person 1
+    const quiz2 = testCreateQuiz(user.token, 'Jayden quiz', 'Jayden content').response;
+    const quiz3 = testCreateQuiz(user.token, 'Phaden quiz', 'Phaden content').response;
+    const quiz4 = testCreateQuiz(user.token, 'Warden quiz', 'Warden content').response;
+
+    expect(testQuizList(user.token)).toStrictEqual(
+      {
+        quizzes: [
+          { quizId: quiz.quizId, name: 'Quiz by Hayden' },
+          { quizId: quiz2.quizId, name: 'Jayden quiz' },
+          { quizId: quiz3.quizId, name: 'Phaden quiz' },
+          { quizId: quiz4.quizId, name: 'Warden quiz' },
+        ]
+      });
+
+    // Removing quizzes
+    testQuizToTrash(user.token, quiz3.quizId);
+
+    expect(testQuizList(user.token)).toStrictEqual(
+      {
+        quizzes: [
+          { quizId: quiz.quizId, name: 'Quiz by Hayden' },
+          { quizId: quiz2.quizId, name: 'Jayden quiz' },
+          { quizId: quiz4.quizId, name: 'Warden quiz' },
+        ]
+      });
+  });
+
+  // Error cases:
+  // Token is empty or invalid (does not refer to valid logged in user session)
+  test('Token is empty or invalid (does not refer to valid logged in user session)', () => {
+    expect(testQuizList(user.token + 1).response).toStrictEqual({error: "Token is empty or invalid"});
+    expect(testQuizList(user.token + 1).status).toStrictEqual(401);
   });
 });

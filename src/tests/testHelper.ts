@@ -74,3 +74,9 @@ export function testCreateQuiz(token: string, name: string, description: string)
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export const testQuizList = (token: string) => {
+  const res = request("GET", `${SERVER_URL}/v1/admin/quiz/list`, {qs: {token: token}});
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
