@@ -1,11 +1,11 @@
-import request from 'sync-request-curl';
-import { port, url } from '../config.json';
-import { testRegister, testCreateQuiz, testCreateQuizQuestion } from './testHelper';
+import {
+  testRegister,
+  testCreateQuiz,
+  testCreateQuizQuestion,
+  testClear
+} from './testHelper';
 
-const SERVER_URL = `${url}:${port}`;
 const ERROR = { error: expect.any(String) };
-
-const testClear = () => { request('DELETE', SERVER_URL + '/v1/clear'); };
 
 beforeEach(() => {
   testClear();
