@@ -20,24 +20,8 @@ import {
   * @returns {{ quizId: number }}
 */
 export function adminQuizCreate(token: string, name: string, description: string) {
-  const data = load();
-
-  // Error checking 400
-  if (data.quizzes.some((quiz) => quiz.name === name)) {
-    return {
-      error: 'Quiz name already exists'
-    };
-  } else if (!isQuizName(name)) {
-    return {
-      error: 'Invalid quiz name'
-    };
-  } else if (!isQuizDescription(description)) {
-    return {
-      error: 'Invalid quiz description'
-    };
-  }
-
   const user = isToken(token);
+  const data = load();
 
   // Error checking 401
   if (!user) {
@@ -51,6 +35,21 @@ export function adminQuizCreate(token: string, name: string, description: string
   if (!userExists) {
     return {
       error: 'Invalid Token'
+    };
+  }
+
+  // Error checking 400
+  if (data.quizzes.some((quiz) => quiz.name === name)) {
+    return {
+      error: 'Quiz name already exists'
+    };
+  } else if (!isQuizName(name)) {
+    return {
+      error: 'Invalid quiz name'
+    };
+  } else if (!isQuizDescription(description)) {
+    return {
+      error: 'Invalid quiz description'
     };
   }
 

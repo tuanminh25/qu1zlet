@@ -72,19 +72,12 @@ describe('/v1/admin/quiz', () => {
     expect(quiz2.status).toStrictEqual(400);
   });
 
-  test('Check 400 Error is Prioritized Over 401', () => {
+  test('Check 401 Error is Prioritized Over 400', () => {
     const invalidToken = user.token + 1;
     const emptyName = '';
     const quiz = testCreateQuiz(invalidToken, emptyName, 'A description of my quiz');
-
-    // Check first for 400 Error
     expect(quiz.response).toStrictEqual(ERROR);
-    expect(quiz.status).toStrictEqual(400);
-
-    // Then check for 401 Error with just the invalid token.
-    const quizWithInvalidToken = testCreateQuiz(invalidToken, 'My Quiz', 'A description of my quiz');
-    expect(quizWithInvalidToken.response).toStrictEqual(ERROR);
-    expect(quizWithInvalidToken.status).toStrictEqual(401);
+    expect(quiz.status).toStrictEqual(401);
   });
 });
 
