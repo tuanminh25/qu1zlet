@@ -20,7 +20,23 @@ import {
   * @returns {{ quizId: number }}
 */
 export function adminQuizCreate(token: string, name: string, description: string) {
+  const session = isToken(token);
   const data = load();
+
+  // Error checking 401
+  if (!session) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  const userId = isToken(token).userId;
+  const userExists = checkauthUserId(userId);
+  if (!userExists) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
 
   // Error checking 400
   if (data.quizzes.some((quiz) => quiz.name === name)) {
@@ -37,30 +53,13 @@ export function adminQuizCreate(token: string, name: string, description: string
     };
   }
 
-  const user = isToken(token);
-
-  // Error checking 401
-  if (!user) {
-    return {
-      error: 'Invalid Token'
-    };
-  }
-
-  const userId = isToken(token).userId;
-  const userExists = checkauthUserId(userId);
-  if (!userExists) {
-    return {
-      error: 'Invalid Token'
-    };
-  }
-
   const newQuiz: Quiz = {
     quizId: ++data.ids.quizId,
     name: name,
     timeCreated: generateTime(),
     timeLastEdited: generateTime(),
     description: description,
-    quizOwnedby: user.userId,
+    quizOwnedby: session.userId,
     duration: 0,
     numQuestions: 0,
     questions: [],
