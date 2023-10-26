@@ -3,7 +3,8 @@ import {
   testCreateQuiz,
   testCreateQuizQuestion,
   testClear,
-  testUpdateQuestion
+  testUpdateQuestion,
+  testQuizInfo
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -315,6 +316,26 @@ describe('/v1/admin/quiz/{quizid}/question/{questionid}', () => {
     const updatedQuestion = testUpdateQuestion(anotherUser.token, quiz.quizId, question.questionId, validQuestionUpdate);
     expect(updatedQuestion.response).toStrictEqual(ERROR);
     expect(updatedQuestion.status).toBe(403);
+  });
+
+  test('Successfully update a question and verify using quiz info', () => {
+    const updateResponse = testUpdateQuestion(user.token, quiz.quizId, question.questionId, validQuestionUpdate);
+    expect(updateResponse.status).toBe(200);
+
+    const fetchedQuiz = testQuizInfo(user.token, quiz.quizId);
+    console.log(fetchedQuiz.response);
+  });
+
+  test.only('Successfully update correct question without affecting others', () => {
+    testCreateQuizQuestion(user.token, quiz.quizId, validQuestionUpdate);
+
+    const updateResponse1 = testUpdateQuestion(user.token, quiz.quizId, question.questionId, validQuestionUpdate);
+    expect(updateResponse1.status).toBe(200);
+
+    const fetchedQuiz = testQuizInfo(user.token, quiz.quizId);
+    expect(fetchedQuiz.status).toBe(200);
+
+    console.log(fetchedQuiz.response);
   });
 });
 

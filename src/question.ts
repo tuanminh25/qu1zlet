@@ -135,6 +135,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
 export function adminQuestionUpdate(token: string, quizId: number, questionId: number, questionBody: any):{ error?: string } {
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
+  const question = quiz.questions.find(q => q.questionId === questionId);
 
   // Error 401 checking
   if (!isToken(token)) {
@@ -176,7 +177,7 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
     };
   }
 
-  const totalDurationWithoutCurrentQuestion = quiz.duration - (quiz.questions.find(q => q.questionId === questionId)?.duration || 0);
+  const totalDurationWithoutCurrentQuestion = quiz.duration - question.duration;
   const totalDurationWithUpdatedQuestion = totalDurationWithoutCurrentQuestion + questionBody.duration;
   if (totalDurationWithUpdatedQuestion > 180) {
     return {
@@ -211,15 +212,21 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
     };
   }
 
-  const questionToUpdate = quiz.questions.find(q => q.questionId === questionId);
-  if (questionToUpdate) {
-    questionToUpdate.question = questionBody.question;
-    questionToUpdate.duration = questionBody.duration;
-    questionToUpdate.points = questionBody.points;
-    questionToUpdate.answers = questionBody.answers;
-  }
+  quiz.duration = totalDurationWithUpdatedQuestion;
+  quiz.timeLastEdited = generateTime();
+  question.question = questionBody.question;
+  question.duration = questionBody.duration;
+  question.points = questionBody.points;
+
+  // Assign unique answerId and random colour for each answer in questionBody
+  question.answers = questionBody.answers.map((answer: object) => {
+    return {
+      ...answer,
+      answerId: +data.ids.answerId,
+      colour: randomColour()
+    };
+  });
 
   save(data);
-
   return {};
 }
