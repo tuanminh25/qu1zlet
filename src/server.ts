@@ -136,23 +136,6 @@ app.delete('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
   res.status(200).json(response);
 });
 
-app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
-  const token = req.query.token;
-  const { quizId } = req.params;
-
-  const response = adminQuizInfo(String(token), parseInt(quizId));
-  console.log(response);
-
-  if (typeof response === 'object' && 'error' in response) {
-    if (response.error === 'Invalid Token') {
-      return res.status(401).json({ error: 'Unauthorized' });
-    } else {
-      return res.status(403).json(response);
-    }
-  }
-
-  res.status(200).json(response);
-});
 
 app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   const { token, questionBody } = req.body;
