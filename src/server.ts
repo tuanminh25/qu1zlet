@@ -11,7 +11,7 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate } from './quiz';
+import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate } from './question';
 
 // Set up web app
@@ -188,6 +188,29 @@ app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
   }
 
   res.json(response);
+});
+
+app.put('/v1/admin/quiz/:quizId/name', (req: Request, res: Response) => {
+  const { token, name } = req.body;
+  const { quizId } = req.params;
+
+  const response = adminQuizNameUpdate(String(token), parseInt(quizId), String(name));
+
+  if ('error' in response) {
+    if (response.error === 'Invalid Quiz Name') {
+      return res.status(400).json(response);
+    }
+    if (response.error === 'Quiz name already exists') {
+      return res.status(400).json(response);
+    }
+    if (response.error === 'Invalid Token') {
+      return res.status(401).json(response);
+    } else if (response.error === 'Unauthorised') {
+      return res.status(403).json(response);
+    }
+  }
+
+  res.status(200).json(response);
 });
 
 app.put('/v1/admin/quiz/:quizId/description', (req: Request, res: Response) => {

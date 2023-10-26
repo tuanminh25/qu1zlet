@@ -207,6 +207,55 @@ export function adminQuizInfo(token: string, quizId: number) {
 }
 
 /**
+ adminQuizNameUpdate
+ Obtaining all relevant information about quiz\
+ @param {string} token - unique user identifier
+ @param {number} quizId - unique quiz identifier
+ @param {string} name - new name of quiz
+
+ @returns {} - updates name of quiz in datastore
+ @returns {error: string} - invalid parameters entered
+**/
+export function adminQuizNameUpdate(token: string, quizId : number, name: string): Record<string, never> | { error?: string } {
+  const data = load();
+  const session = isToken(token);
+  const quiz = data.quizzes.find(q => q.quizId === quizId);
+
+  // error 401
+  if (!session) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  // error 403
+  if (quiz.quizOwnedby !== session.userId) {
+    return {
+      error: 'Unauthorised'
+    };
+  }
+
+  // error 400
+  if (isQuizName(name) === false) {
+    return {
+      error: 'Invalid Quiz Name'
+    };
+  }
+  if (data.quizzes.some((quiz) => quiz.name === name)) {
+    return {
+      error: 'Quiz name already exists'
+    };
+  }
+
+  // Working case
+  quiz.name = name;
+  quiz.timeLastEdited = generateTime();
+
+  save(data);
+  return {};
+}
+
+/**
  * Update a quiz description
  *
  * @param {string} token - unique user identifier
