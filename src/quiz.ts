@@ -115,3 +115,43 @@ export function adminQuizRemove(token: string, quizId: number) {
   save(data);
   return {};
 }
+
+/**
+  * Given a token
+  * Return a list of all quizzes that are owned by the currently logged in user.
+  *
+  *
+  * @param {string} token
+  * @returns { quizzes: [
+*  {
+  *   quizId: number,
+  *   name: string,
+  *  }
+  * ]}
+*/
+export function adminQuizList(token: string) {
+  const data = load();
+  const session = isToken(token);
+
+  // Check errors:
+  // Invalid token
+  if (session === undefined) {
+    return { error: 'Token is empty or invalid' };
+  }
+
+  // Working cases:
+  // Find user corresponding to the token
+  const quizzes = [];
+  for (const quiz of data.quizzes) {
+    if (session.userId === quiz.quizOwnedby) {
+      quizzes.push({
+        name: quiz.name,
+        quizId: quiz.quizId,
+      });
+    }
+  }
+
+  return {
+    quizzes
+  };
+}
