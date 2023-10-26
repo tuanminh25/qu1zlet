@@ -215,7 +215,7 @@ describe('/v1/admin/quiz/{quizid}/question', () => {
   });
 });
 
-describe.only("Move A Quiz Question", () => {
+describe("Move A Quiz Question", () => {
   let user1: { token: string };
   let user2: { token: string };
   let quiz1: { quizId: number };
@@ -492,8 +492,8 @@ describe.only("Move A Quiz Question", () => {
 
     // Valid token is provided, quiz does not exist
     test("Valid token is provided, quiz does not exist", () => {
-      const res = testMoveQuizQuestion(user1.token, quiz1.quizId + 10 , question4.questionId, 3);
-      expect(res.response).toStrictEqual({error: "Valid token is provided, quiz does not exist: " + quiz1.quizId + 10});
+      const res = testMoveQuizQuestion(user1.token, 100 , question4.questionId, 3);
+      expect(res.response).toStrictEqual({error: "Valid token is provided, quiz does not exist: " + 100});
       expect(res.status).toStrictEqual(403);
     })
   })

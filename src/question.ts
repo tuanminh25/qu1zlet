@@ -141,16 +141,18 @@ export function listOfQuestions(token: string, quizId: number) {
 
 export function moveQuizQuestion(token: string, quizId: number, questionId: number, newPosition: number) {
   const data = load();
-  const quiz =  data.quizzes.find((quiz) => quiz.quizId === quizId);
-  const session = data.sessions.find((session) => session.sessionId === token);
-  const question = quiz.questions.find((question) => question.questionId === questionId);
+
+
+
   // Check errors
   // Invalid token
+  const session = data.sessions.find((session) => session.sessionId === token);
   if (!session) {
     return { error: 'Token is empty or invalid' };
   }
 
   // Non-existent quiz
+  const quiz =  data.quizzes.find((quiz) => quiz.quizId === quizId);
   if (quiz === undefined) {
     return { error: 'Valid token is provided, quiz does not exist: ' + quizId};
   }
@@ -161,6 +163,7 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
   }
   
   // Question Id does not belong to this quiz
+  const question = quiz.questions.find((question) => question.questionId === questionId);
   if (!question) {
     return {error: "Question Id does not refer to a valid question within this quiz: " + questionId}
   }
@@ -175,6 +178,7 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
   if (currentPosition === newPosition) {
     return {error: "NewPosition is the position of the current question: " + currentPosition};
   }
+  console.log(quiz);
 
   quiz.questions.splice(currentPosition, 1);
   quiz.questions.splice(newPosition, 0, question);
