@@ -115,3 +115,71 @@ export function adminQuizRemove(token: string, quizId: number) {
   save(data);
   return {};
 }
+
+/**
+ adminQuizInfo
+ Obtaining all relevant information about quiz
+ @param {string} token - unique user identifier
+ @param {number} quizId - unique quiz identifier
+
+ @returns {array
+  { quizId: number,
+    name: string,
+    timeCreated: number,
+    timeLastEdited: number,
+    description: string,
+    numQuestions: number,
+    questions: Question[
+      questionId: number
+      question: string,
+      duration: number,
+      points: number,
+      answers: Answer[
+        answer: string,
+        correct: boolean
+      ]
+    ],
+    duration
+  }
+} - returns information if valid authUserId and quizId entered
+@returns {error: string} - invalid parameters entered
+**/
+
+export function adminQuizInfo(token: string, quizId: number) {
+  const data = load();
+  const quiz = data.quizzes.find(q => q.quizId === quizId);
+  // Error Check 401
+  const user = isToken(token);
+
+  if (!user) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  const userId = isToken(token).userId;
+  const userExists = checkauthUserId(userId);
+  if (!userExists) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  // Error Check 403
+  if (quiz.quizOwnedby !== userId) {
+    return {
+      error: 'Unauthorised'
+    };
+  }
+
+  return {
+    quizId: quiz.quizId,
+    name: quiz.name,
+    timeCreated: quiz.timeCreated,
+    timeLastEdited: quiz.timeLastEdited,
+    description: quiz.description,
+    numQuestions: quiz.numQuestions,
+    questions: quiz.questions,
+    duration: quiz.duration,
+  };
+}
