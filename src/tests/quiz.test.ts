@@ -276,26 +276,26 @@ describe('GET /v1/admin/quiz/:quizid', () => {
             {
               answerId: expect.any(Number),
               answer: 'Berlin',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
             {
               answerId: expect.any(Number),
               answer: 'Madrid',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
             {
               answerId: expect.any(Number),
               answer: 'Paris',
-              correct: true,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: true
             },
             {
               answerId: expect.any(Number),
               answer: 'Rome',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
           ]
         }
@@ -349,20 +349,20 @@ describe('GET /v1/admin/quiz/:quizid', () => {
             {
               answerId: expect.any(Number),
               answer: 'Berlin',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
             {
               answerId: expect.any(Number),
               answer: 'Madrid',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
             {
               answerId: expect.any(Number),
               answer: 'Paris',
-              correct: true,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: true
             },
             {
               answerId: expect.any(Number),
@@ -381,32 +381,32 @@ describe('GET /v1/admin/quiz/:quizid', () => {
             {
               answerId: expect.any(Number),
               answer: 'Penaldo',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
             {
               answerId: expect.any(Number),
               answer: 'Pessi',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
             {
               answerId: expect.any(Number),
               answer: 'Peymar',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
             {
               answerId: expect.any(Number),
               answer: 'Paaland',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
             {
               answerId: expect.any(Number),
               answer: 'Darwizzy',
-              correct: true,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: true
             },
           ]
         },
@@ -419,20 +419,20 @@ describe('GET /v1/admin/quiz/:quizid', () => {
             {
               answerId: expect.any(Number),
               answer: 'Nopelol',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
             {
               answerId: expect.any(Number),
               answer: 'Yes yeah',
-              correct: false,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: false
             },
             {
               answerId: expect.any(Number),
               answer: 'Darwizzy',
-              correct: true,
-              colour: expect.any(String)
+              colour: expect.any(String),
+              correct: true
             },
           ]
         }

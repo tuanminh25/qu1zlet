@@ -19,8 +19,8 @@ export interface User {
 export interface Answer {
   answerId: number;
   answer: string;
-  correct: boolean;
   colour: string;
+  correct: boolean;
 }
 
 export interface Question {
