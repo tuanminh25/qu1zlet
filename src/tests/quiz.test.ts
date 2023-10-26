@@ -585,7 +585,7 @@ describe('/v1/admin/quiz/:quizid/name', () => {
   });
 });
 
-describe.only('/v1/admin/quiz/:quizid/description', () => {
+describe('/v1/admin/quiz/:quizid/description', () => {
   let user : {token: string};
   let quiz : {quizId: number};
   beforeEach(() => {
@@ -629,8 +629,7 @@ describe.only('/v1/admin/quiz/:quizid/description', () => {
 
   // Description is more than 100 characters in length (note: empty strings are OK)
   test('Description is more than 100 characters in length', () => {
-    const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId,
-      'avfwuevfg72q3fv3 r3y2urguyg23rg3t26rg32gr327gr7162gr671trgfjfjsbfsjfbsjhbfsbfsajbfjkwebf823g78grjwbfjewbqurweqbubrweuyrbuywqgruyweqgruwqgrwugreuwgruwgruwgruwgrweuygr293hrownfksnfkasdnfoihrf932hrhwrbjwabfwgf7ghseifbkwnf23noi32j893u2r9owhekfnwafbwafb732yr9q2yhriqwhrbfkwebfwakbf92qohrwqhefkasnfk,sa dfwhr9832urjwrnfefnoi3wjr0329jrowjflwnfmekqjr34jronfke fwrhf392hr9hjoqwnrlaenfa flwenmfo23ue021jeownrlewnfakbfhwgbfyu32gr8723gr92hrwenflasmnflam3902ur0ujonlwanfl');
+    const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId, 'a'.repeat(1000));
     expect(updateResponse.response).toStrictEqual({ error: 'Description is more than 100 characters in length' });
 
     expect(updateResponse.status).toStrictEqual(400);
