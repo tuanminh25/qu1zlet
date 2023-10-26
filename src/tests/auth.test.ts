@@ -5,7 +5,7 @@ beforeEach(() => {
   testClear();
 });
 
-describe('v1/admin/auth/register', () => {
+describe('adminAuthRegister', () => {
   test('Successful Registeration', () => {
     const user1 = testRegister('Roger@gmail.com', 'Roger1234', 'Roger', 'Duong');
     expect(user1.response).toStrictEqual(
@@ -60,7 +60,7 @@ describe('v1/admin/auth/register', () => {
   });
 });
 
-describe('/v1/admin/auth/login', () => {
+describe('adminAuthLogin', () => {
   beforeEach(() => {
     testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong');
   });
@@ -90,7 +90,7 @@ describe('/v1/admin/auth/login', () => {
   });
 });
 
-describe('/v1/admin/auth/logout', () => {
+describe('adminAuthLogout', () => {
   let user1: any;
   beforeEach(() => {
     user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;
