@@ -326,7 +326,7 @@ describe('/v1/admin/quiz/{quizid}/question/{questionid}', () => {
     console.log(fetchedQuiz.response);
   });
 
-  test.only('Successfully update correct question without affecting others', () => {
+  test('Successfully update correct question without affecting others', () => {
     testCreateQuizQuestion(user.token, quiz.quizId, validQuestionUpdate);
 
     const updateResponse1 = testUpdateQuestion(user.token, quiz.quizId, question.questionId, validQuestionUpdate);
