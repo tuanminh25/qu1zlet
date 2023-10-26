@@ -12,7 +12,7 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove } from './quiz';
-import { adminQuestionCreate } from './question';
+import { adminQuestionCreate, adminQuestionUpdate } from './question';
 
 // Set up web app
 const app = express();
@@ -173,6 +173,25 @@ app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
   }
 
   res.json(response);
+});
+
+app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
+  const token = req.query.token;
+  const quizId = Number(req.params.quizId);
+  const questionId = Number(req.params.questionId);
+  const questionBody = req.body;
+
+  const response = adminQuestionUpdate(String(token), quizId, questionId, questionBody);
+
+  if (response.error === 'Invalid token') {
+    return res.status(401).json(response);
+  } else if (response.error === 'Unauthorised') {
+    return res.status(403).json(response);
+  } else if (response.error) {
+    return res.status(400).json(response);
+  } else {
+    res.json(response);
+  }
 });
 
 // ====================================================================

@@ -36,10 +36,6 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     return { error: 'Invalid token' };
   }
 
-  if (!quiz) {
-    return { error: 'Invalid token' };
-  }
-
   // Error 403 checking
   if (quiz.quizOwnedby !== userId) {
     return { error: 'Unauthorised' };
@@ -125,16 +121,16 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
 * }} questionBody
 * @returns {{ questionId?: number, error?: string }}
 */
-export function adminQuestionUpdate(token: string, quizId: number, questionId: number, questionBody: any):{ questionId?: number, error?: string } {
+export function adminQuestionUpdate(token: string, quizId: number, questionId: number, questionBody: any):{ error?: string } {
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
 
   // Error 401 checking
-  if (!isToken(token)) {
+  const userId = isToken(token).userId;
+  if (!userId) {
     return { error: 'Invalid token' };
   }
 
-  const userId = isToken(token).userId;
   if (!checkauthUserId(userId)) {
     return { error: 'Invalid token' };
   }
@@ -211,8 +207,6 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
     questionToUpdate.points = questionBody.points;
     questionToUpdate.answers = questionBody.answers;
   }
-
-  save(data);
 
   save(data);
 

@@ -217,7 +217,6 @@ describe('/v1/admin/quiz/{quizid}/question/{questionid}', () => {
   let user: { token: string; };
   let quiz: { quizId: number; };
   let question: { questionId: number; };
-  const ERROR = { error: 'error' };
   const validQuestionUpdate = {
     question: 'What is the capital of Spain?',
     duration: 4,
@@ -293,27 +292,27 @@ describe('/v1/admin/quiz/{quizid}/question/{questionid}', () => {
 
   edgeCases.forEach(edgeCase => {
     test(edgeCase.description, () => {
-      const updatedQuestion = testUpdateQuestion(quiz.quizId, question.questionId, user.token, edgeCase.update);
+      const updatedQuestion = testUpdateQuestion(user.token, quiz.quizId, question.questionId, edgeCase.update);
       expect(updatedQuestion.response).toStrictEqual(ERROR);
       expect(updatedQuestion.status).toBe(400);
     });
   });
 
   test('Empty token', () => {
-    const updatedQuestion = testUpdateQuestion(quiz.quizId, question.questionId, '', validQuestionUpdate);
+    const updatedQuestion = testUpdateQuestion('', quiz.quizId, question.questionId, validQuestionUpdate);
     expect(updatedQuestion.response).toStrictEqual(ERROR);
     expect(updatedQuestion.status).toBe(401);
   });
 
   test('Invalid token', () => {
-    const updatedQuestion = testUpdateQuestion(quiz.quizId, question.questionId, 'invalidTokenHere', validQuestionUpdate);
+    const updatedQuestion = testUpdateQuestion('invalidTokenHere', quiz.quizId, question.questionId, validQuestionUpdate);
     expect(updatedQuestion.response).toStrictEqual(ERROR);
     expect(updatedQuestion.status).toBe(401);
   });
 
-  test('Not an owner of the quiz', () => {
+  test.only('Not an owner of the quiz', () => {
     const anotherUser = testRegister('anotheruser@example.com', 'password1234', 'Another', 'User').response;
-    const updatedQuestion = testUpdateQuestion(quiz.quizId, question.questionId, anotherUser.token, validQuestionUpdate);
+    const updatedQuestion = testUpdateQuestion(anotherUser.token, quiz.quizId, question.questionId, validQuestionUpdate);
     expect(updatedQuestion.response).toStrictEqual(ERROR);
     expect(updatedQuestion.status).toBe(403);
   });

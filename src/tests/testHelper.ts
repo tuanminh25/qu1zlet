@@ -137,9 +137,9 @@ export function testQuizToTrash(token: string, quizId: number) {
 }
 
 export function testUpdateQuestion(
+  token: string,
   quizId: number,
   questionId: number,
-  token: string,
   questionBody: object
 ) {
   const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}`,
