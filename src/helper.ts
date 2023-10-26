@@ -195,3 +195,16 @@ export function isQuizDescription(name: string) {
 export function generateTime(): number {
   return Math.floor(Date.now() / 1000);
 }
+
+/**
+ * Checks if question belong to the quiz 
+ *
+ * @param {number} quizId
+ * @param {number} questionId
+ * 
+ * @returns {Question}
+*/
+export function isQuizQuestion(quizId: number, questionId: number) {
+  const quiz = checkquizId(quizId)
+  return quiz.questions.find((question) => question.questionId === questionId);
+}

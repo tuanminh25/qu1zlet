@@ -220,14 +220,15 @@ describe.only("Move A Quiz Question", () => {
   let user2: { token: string };
   let quiz1: { quizId: number };
   let quiz2: { quizId: number };
+  let errorQuiz: {quizId: 100};
 
+  let question0: {questionId: number};
   let question1: {questionId: number};
   let question2: {questionId: number};
   let question3: {questionId: number};
   let question4: {questionId: number};
-  let question5: {questionId: number};
 
-  const validQuestion1 = {
+  const validQuestion0 = {
     question: 'What is the capital of France?',
     duration: 4,
     points: 5,
@@ -237,7 +238,7 @@ describe.only("Move A Quiz Question", () => {
     { answer: 'Rome', correct: false }]
   };
 
-  const validQuestion2 = {
+  const validQuestion1 = {
     question: 'What is the capital of Spain?',
     duration: 4,
     points: 5,
@@ -247,7 +248,7 @@ describe.only("Move A Quiz Question", () => {
     { answer: 'Rome', correct: false }]
   };
 
-  const validQuestion3 = {
+  const validQuestion2 = {
     question: 'What is the capital of Brazil?',
     duration: 4,
     points: 5,
@@ -257,7 +258,7 @@ describe.only("Move A Quiz Question", () => {
     { answer: 'Rome', correct: false }]
   };
 
-  const validQuestion4 = {
+  const validQuestion3 = {
     question: 'What is the capital of Vietnam?',
     duration: 4,
     points: 5,
@@ -267,7 +268,7 @@ describe.only("Move A Quiz Question", () => {
     { answer: 'Rome', correct: false }]
   };
 
-  const validQuestion5 = {
+  const validQuestion4 = {
     question: 'What is the capital of China?',
     duration: 4,
     points: 5,
@@ -278,7 +279,7 @@ describe.only("Move A Quiz Question", () => {
   };
 
   // Additional support test question
-  test.only("Question List test", () => {
+  test("Question List test", () => {
  
     testClear();
     // First person
@@ -286,11 +287,11 @@ describe.only("Move A Quiz Question", () => {
     user2 = testRegister('jayden.smith@unsw.edu.au', 'password123', 'nameFirst', 'nameLast').response;
 
     quiz1 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+    question0 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion0).response;
     question1 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion1).response;
     question2 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion2).response;
     question3 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion3).response;
     question4 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion4).response;
-    question5 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion5).response;
     
     // Second person
     quiz2 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
@@ -330,11 +331,11 @@ describe.only("Move A Quiz Question", () => {
       user2 = testRegister('jayden.smith@unsw.edu.au', 'password123', 'nameFirst', 'nameLast').response;
 
       quiz1 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+      question0 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion0).response;
       question1 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion1).response;
       question2 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion2).response;
       question3 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion3).response;
       question4 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion4).response;
-      question5 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion5).response;
       
       // Second person
       quiz2 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
@@ -343,47 +344,75 @@ describe.only("Move A Quiz Question", () => {
 
     // Succesfully move 1 question
     test("Succesfully move 1 question", () => {
-      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, 3);
+      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId, 3);
       expect(res.response).toStrictEqual({})
       expect(res.status).toStrictEqual(200);
-    })
-
-    // Succesfully move many ques
-    test("Succesfully move many questions", () => {
-      const res1 = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, 3);
-      expect(res1.response).toStrictEqual({})
-      expect(res1.status).toStrictEqual(200);
-
-      const res2 = testMoveQuizQuestion(user1.token, quiz1.quizId, question2.questionId, 4);
-      expect(res2.response).toStrictEqual({})
-      expect(res2.status).toStrictEqual(200);
-
-      const res3 = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, 3);
-      expect(res3.response).toStrictEqual({})
-      expect(res3.status).toStrictEqual(200);
 
       const list = testQuestionsList(user1.token, quiz1.quizId);
       expect(list.response).toStrictEqual([
         {
-          question: 'What is the capital of China?',
-          questionId: 5
-        },
-        {
-          question: 'What is the capital of Brazil?',
-          questionId: 3
+          question: 'What is the capital of France?',
+          questionId: 1
         },
         {
           question: 'What is the capital of Spain?',
           questionId: 2
         },
         {
-          question: 'What is the capital of Vietnam?',
-          questionId: 4
+          question: 'What is the capital of Brazil?',
+          questionId: 3
         },
         {
+          question: 'What is the capital of China?',
+          questionId: 5
+        },
+        {
+          question: 'What is the capital of Vietnam?',
+          questionId: 4
+        }
+      ])
+    })
+
+    // Succesfully move many ques
+    test("Succesfully move many questions", () => {
+      // China to position 3
+      const res1 = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId, 3);
+      expect(res1.response).toStrictEqual({})
+      expect(res1.status).toStrictEqual(200);
+
+      // Brazil to position 0
+      const res2 = testMoveQuizQuestion(user1.token, quiz1.quizId, question2.questionId, 0);
+      expect(res2.response).toStrictEqual({})
+      expect(res2.status).toStrictEqual(200);
+
+      // France to position 4
+      const res3 = testMoveQuizQuestion(user1.token, quiz1.quizId, question0.questionId, 4);
+      expect(res3.response).toStrictEqual({})
+      expect(res3.status).toStrictEqual(200);
+
+      const list = testQuestionsList(user1.token, quiz1.quizId);
+      expect(list.response).toStrictEqual([
+        {
+          question: 'What is the capital of Brazil?',
+          questionId: 3
+        },
+             {
+          question: 'What is the capital of Spain?',
+          questionId: 2
+        },
+
+        {
+          question: 'What is the capital of China?',
+          questionId: 5
+        },
+        {
+          question: 'What is the capital of Vietnam?',
+          questionId: 4
+        },       {
           question: 'What is the capital of France?',
           questionId: 1
-        }
+        },    
+
       ])
     })
   })
@@ -398,42 +427,41 @@ describe.only("Move A Quiz Question", () => {
       user2 = testRegister('jayden.smith@unsw.edu.au', 'password123', 'nameFirst', 'nameLast').response;
 
       quiz1 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+      question0 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion0).response;
       question1 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion1).response;
       question2 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion2).response;
       question3 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion3).response;
       question4 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion4).response;
-      question5 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion5).response;
 
       // Second person
       quiz2 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
-
     })
  
     // 400
     // Question Id does not refer to a valid question within this quiz
     test("Question Id does not refer to a valid question within this quiz", () => {
-      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId + 10, 4);
-      expect(res.response).toStrictEqual({error: "Question Id does not refer to a valid question within this quiz: " + question5.questionId})
+      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId + 10, 4);
+      expect(res.response).toStrictEqual({error: "Question Id does not refer to a valid question within this quiz: " + (question4.questionId + 10)})
       expect(res.status).toStrictEqual(400);
     })
 
     // NewPosition is less than 0, 
     test("NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions", () => {
-      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, 10);
+      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId, 10);
       expect(res.response).toStrictEqual({error: "NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions: " + 10})
       expect(res.status).toStrictEqual(400);
     })
 
     // or NewPosition is greater than n-1 where n is the number of questions
     test("NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions", () => {
-      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, -10);
+      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId, -10);
       expect(res.response).toStrictEqual({error: "NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions: " + -10})
       expect(res.status).toStrictEqual(400);
     })
 
     // NewPosition is the position of the current question
     test("NewPosition is the position of the current question", () => {
-      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, 4);
+      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId, 4);
       expect(res.response).toStrictEqual({error: "NewPosition is the position of the current question: " + 4})
       expect(res.status).toStrictEqual(400);
     })
@@ -442,14 +470,14 @@ describe.only("Move A Quiz Question", () => {
     // Token is empty or invalid (does not refer to valid logged in user session)
     // Invalid
     test("Token is empty or invalid", () => {
-      const res = testMoveQuizQuestion(user1.token + 10000, quiz1.quizId, question5.questionId, 3);
+      const res = testMoveQuizQuestion(user1.token + 10000, quiz1.quizId, question4.questionId, 3);
       expect(res.response).toStrictEqual({error: "Token is empty or invalid"})
       expect(res.status).toStrictEqual(401);
     })
 
     // Empty
     test("Token is empty or invalid", () => {
-      const res = testMoveQuizQuestion('', quiz1.quizId, question5.questionId, 3);
+      const res = testMoveQuizQuestion('', quiz1.quizId, question4.questionId, 3);
       expect(res.response).toStrictEqual({error: "Token is empty or invalid"})
       expect(res.status).toStrictEqual(401);
     })
@@ -457,11 +485,17 @@ describe.only("Move A Quiz Question", () => {
     // 403
     // Valid token is provided, but user is not an owner of this quiz
     test("Valid token is provided, but user is not an owner of this quiz", () => {
-      const res = testMoveQuizQuestion(user2.token, quiz1.quizId, question5.questionId, 3);
+      const res = testMoveQuizQuestion(user2.token, quiz1.quizId, question4.questionId, 3);
       expect(res.response).toStrictEqual({error: "Valid token is provided, but user is not an owner of this quiz"});
       expect(res.status).toStrictEqual(403);
     })
 
+    // Valid token is provided, quiz does not exist
+    test("Valid token is provided, quiz does not exist", () => {
+      const res = testMoveQuizQuestion(user1.token, 100 , question4.questionId, 3);
+      expect(res.response).toStrictEqual({error: "Valid token is provided, quiz does not exist: " + 100});
+      expect(res.status).toStrictEqual(403);
+    })
   })
 
 

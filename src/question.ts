@@ -5,7 +5,8 @@ import {
   Question,
   load,
   save,
-  checkquizId
+  checkquizId,
+  isQuizQuestion
 } from './helper';
 
 /**
@@ -136,4 +137,48 @@ export function listOfQuestions(token: string, quizId: number) {
   }
 
   return list;
+}
+
+export function moveQuizQuestion(token: string, quizId: number, questionId: number, newPosition: number) {
+  const data = load();
+  const quiz =  data.quizzes.find((quiz) => quiz.quizId === quizId);
+  const session = data.sessions.find((session) => session.sessionId === token);
+  const question = quiz.questions.find((question) => question.questionId === questionId);
+  // Check errors
+  // Invalid token
+  if (!session) {
+    return { error: 'Token is empty or invalid' };
+  }
+
+  // Non-existent quiz
+  if (quiz === undefined) {
+    return { error: 'Valid token is provided, quiz does not exist: ' + quizId};
+  }
+
+  // User is not owner of the quiz
+  if (session.userId !== quiz.quizOwnedby) {
+    return {error: "Valid token is provided, but user is not an owner of this quiz"};
+  }
+  
+  // Question Id does not belong to this quiz
+  if (!question) {
+    return {error: "Question Id does not refer to a valid question within this quiz: " + questionId}
+  }
+
+  // Out of range newPosition
+  if (newPosition < 0 || newPosition > quiz.questions.length - 1) {
+    return {error: "NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions: " + newPosition}
+  }
+
+  // Current position === new position
+  const currentPosition = quiz.questions.findIndex(question => question.questionId === questionId);
+  if (currentPosition === newPosition) {
+    return {error: "NewPosition is the position of the current question: " + currentPosition};
+  }
+
+  quiz.questions.splice(currentPosition, 1);
+  quiz.questions.splice(newPosition, 0, question);
+  save(data);
+  return {};
+
 }
