@@ -261,7 +261,7 @@ describe.only('GET /v1/admin/quiz/:quizid', () => {
   });
 });
 
-describe('/v1/admin/quiz/:quizid/description', () => {
+describe.only('/v1/admin/quiz/:quizid/description', () => {
   let user : {token: string};
   let quiz : {quizId: number};
   beforeEach(()=> {
@@ -274,7 +274,11 @@ describe('/v1/admin/quiz/:quizid/description', () => {
   // Empty description cases
   test("Successfully update description", () => {
     let inforObjectOriginal = testQuizInfo(user.token, quiz.quizId).response;
-    expect(testQuizDescriptionUpdate(user.token, quiz.quizId, '')).toStrictEqual({});
+
+    const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId, '');
+    expect(updateResponse.response).toStrictEqual({});
+    expect(updateResponse.status).toStrictEqual(200);
+    
     let inforObjectNew = testQuizInfo(user.token, quiz.quizId).response;
     expect(inforObjectNew.description).toStrictEqual('');
   
@@ -285,7 +289,11 @@ describe('/v1/admin/quiz/:quizid/description', () => {
   // Any normal cases
   test("Successfully update description", () => {
     let inforObjectOriginal = testQuizInfo(user.token, quiz.quizId).response;
-    expect(testQuizDescriptionUpdate(user.token, quiz.quizId, 'Hello there, hi new updated description')).toStrictEqual({});
+
+    const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId, 'Hello there, hi new updated description');
+    expect(updateResponse.response).toStrictEqual({});
+    expect(updateResponse.status).toStrictEqual(200);
+    
     let inforObjectNew = testQuizInfo(user.token, quiz.quizId).response;
     expect(inforObjectNew.description).toStrictEqual('Hello there, hi new updated description');
 
@@ -297,28 +305,28 @@ describe('/v1/admin/quiz/:quizid/description', () => {
 
   // Description is more than 100 characters in length (note: empty strings are OK)
   test("Description is more than 100 characters in length", () => {
-    expect(testQuizDescriptionUpdate(user.token, quiz.quizId, 
-      'avfwuevfg72q3fv3 r3y2urguyg23rg3t26rg32gr327gr7162gr671trgfjfjsbfsjfbsjhbfsbfsajbfjkwebf823g78grjwbfjewbqurweqbubrweuyrbuywqgruyweqgruwqgrwugreuwgruwgruwgruwgrweuygr293hrownfksnfkasdnfoihrf932hrhwrbjwabfwgf7ghseifbkwnf23noi32j893u2r9owhekfnwafbwafb732yr9q2yhriqwhrbfkwebfwakbf92qohrwqhefkasnfk,sa dfwhr9832urjwrnfefnoi3wjr0329jrowjflwnfmekqjr34jronfke fwrhf392hr9hjoqwnrlaenfa flwenmfo23ue021jeownrlewnfakbfhwgbfyu32gr8723gr92hrwenflasmnflam3902ur0ujonlwanfl').response
-    ).toStrictEqual({error: "Description is more than 100 characters in length"});
+    const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId, 
+      'avfwuevfg72q3fv3 r3y2urguyg23rg3t26rg32gr327gr7162gr671trgfjfjsbfsjfbsjhbfsbfsajbfjkwebf823g78grjwbfjewbqurweqbubrweuyrbuywqgruyweqgruwqgrwugreuwgruwgruwgruwgrweuygr293hrownfksnfkasdnfoihrf932hrhwrbjwabfwgf7ghseifbkwnf23noi32j893u2r9owhekfnwafbwafb732yr9q2yhriqwhrbfkwebfwakbf92qohrwqhefkasnfk,sa dfwhr9832urjwrnfefnoi3wjr0329jrowjflwnfmekqjr34jronfke fwrhf392hr9hjoqwnrlaenfa flwenmfo23ue021jeownrlewnfakbfhwgbfyu32gr8723gr92hrwenflasmnflam3902ur0ujonlwanfl');
+    expect(updateResponse.response).toStrictEqual({error: "Description is more than 100 characters in length"});
 
-    expect(testQuizDescriptionUpdate(user.token, quiz.quizId, 
-      'avfwuevfg72q3fv3 r3y2urguyg23rg3t26rg32gr327gr7162gr671trgfjfjsbfsjfbsjhbfsbfsajbfjkwebf823g78grjwbfjewbqurweqbubrweuyrbuywqgruyweqgruwqgrwugreuwgruwgruwgruwgrweuygr293hrownfksnfkasdnfoihrf932hrhwrbjwabfwgf7ghseifbkwnf23noi32j893u2r9owhekfnwafbwafb732yr9q2yhriqwhrbfkwebfwakbf92qohrwqhefkasnfk,sa dfwhr9832urjwrnfefnoi3wjr0329jrowjflwnfmekqjr34jronfke fwrhf392hr9hjoqwnrlaenfa flwenmfo23ue021jeownrlewnfakbfhwgbfyu32gr8723gr92hrwenflasmnflam3902ur0ujonlwanfl').status
-    ).toStrictEqual(400);
+    expect(updateResponse.status).toStrictEqual(400);
   
   });
 
 
   // Token is empty or invalid (does not refer to valid logged in user session)
   test("Token is empty or invalid", () => {
-    expect(testQuizDescriptionUpdate(user.token + 1, quiz.quizId, 'Token is empty or invalid').response).toStrictEqual({error: "Token is empty or invalid"});
-    expect(testQuizDescriptionUpdate(user.token + 1, quiz.quizId, 'Token is empty or invalid').status).toStrictEqual(401);
+    const updateResponse = testQuizDescriptionUpdate(user.token + 1, quiz.quizId, 'Token is empty or invalid');
+    expect(updateResponse.response).toStrictEqual({error: "Token is empty or invalid"});
+    expect(updateResponse.status).toStrictEqual(401);
 
   });
 
   // Quiz ID does not refer to a valid quiz
   test("Quiz ID does not refer to a valid quiz", () => {
-    expect(testQuizDescriptionUpdate(user.token, quiz.quizId + 1, 'This quiz id does no refer to any quiz').response).toStrictEqual({error: "Quiz ID does not refer to a valid quiz"});
-    expect(testQuizDescriptionUpdate(user.token, quiz.quizId + 1, 'This quiz id does no refer to any quiz').status).toStrictEqual(403);
+    const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId + 1, 'This quiz id does no refer to any quiz');
+    expect(updateResponse.response).toStrictEqual({error: "Quiz ID does not refer to a valid quiz"});
+    expect(updateResponse.status).toStrictEqual(403);
 
   });
 
@@ -326,8 +334,10 @@ describe('/v1/admin/quiz/:quizid/description', () => {
   test("Quiz ID does not refer to a quiz that this user owns, belongs to somebody else", () => {
     let user2 = testRegister('somebody@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2').response;
     let quiz2 = testCreateQuiz(user2.token, 'Quiz by user 2', 'User 2 quiz').response;
-    expect(testQuizDescriptionUpdate(user.token, quiz2.quizId, 'Try to update user 2 quiz').response).toStrictEqual(ERROR);
-    expect(testQuizDescriptionUpdate(user.token, quiz2.quizId, 'Try to update user 2 quiz').status).toStrictEqual(403);
+
+    const updateResponse = testQuizDescriptionUpdate(user.token, quiz2.quizId, 'Try to update user 2 quiz');
+    expect(updateResponse.response).toStrictEqual(ERROR);
+    expect(updateResponse.status).toStrictEqual(403);
    
   });
 
