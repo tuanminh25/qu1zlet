@@ -6,25 +6,9 @@ import {
   isQuizName,
   generateTime,
   Quiz,
-  Question,
   load,
   save
 } from './helper';
-
-interface QuizInfoReturn {
-  quizId: number;
-  name: string;
-  timeCreated: number;
-  timeLastEdited: number;
-  description: string;
-  numQuestions: number;
-  questions: Question[];
-  duration: number;
-}
-
-interface ErrorObject {
-  error: string;
-}
 
 /**
   * Given basic details about a new quiz, create one for the logged in user.
@@ -178,7 +162,15 @@ export function adminQuizList(token: string) {
  *
  * @param {string} token - unique user identifier
  * @param {number} quizId - unique quiz identifier
- * @returns {QuizInfoReturn}
+ * @returns {  quizId: number;
+ * name: string;
+ * timeCreated: number;
+ * timeLastEdited: number;
+ * description: string;
+ * numQuestions: number;
+ * questions: Question[];
+ * duration: number;
+*}
  * @returns {error: string}
  *
  */
@@ -219,7 +211,7 @@ export function adminQuizInfo(token: string, quizId: number) {
  * @param {string} token - unique user identifier
  * @param {number} quizId - unique quiz identifier
  * @param {string} description - description
- * 
+ *
  * @returns {error: string}
  * @returns {}
  *

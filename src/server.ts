@@ -136,7 +136,6 @@ app.delete('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
   res.status(200).json(response);
 });
 
-
 app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   const { token, questionBody } = req.body;
   const { quizId } = req.params;
