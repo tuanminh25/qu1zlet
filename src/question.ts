@@ -6,7 +6,6 @@ import {
   load,
   save,
   Answer,
-  Answer,
   randomColour
 } from './helper';
 
