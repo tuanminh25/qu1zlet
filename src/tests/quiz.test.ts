@@ -25,7 +25,6 @@ describe('adminQuizCreate', () => {
   test('Successful quiz creation', () => {
     const quiz = testCreateQuiz(user.token, 'My Quiz Name', 'A description of my quiz');
     expect(quiz.status).toStrictEqual(200);
-    // TODO: use other functions to check if working eg quizlist.
   });
   
   test('Successful quiz create with same name as quiz from another user', () => {
