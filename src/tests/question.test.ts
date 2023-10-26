@@ -14,7 +14,7 @@ beforeEach(() => {
   testClear();
 });
 
-describe('/v1/admin/quiz/{quizid}/question', () => {
+describe('CreateQuizQuestion', () => {
   let user: { token: string; };
   let quiz: { quizId: number; };
   const validQuestion = {
@@ -215,7 +215,7 @@ describe('/v1/admin/quiz/{quizid}/question', () => {
   });
 });
 
-describe('/v1/admin/quiz/{quizid}/question/{questionid}', () => {
+describe('UpdateQuizQuestion', () => {
   let user: { token: string; };
   let quiz: { quizId: number; };
   let question: { questionId: number; };
