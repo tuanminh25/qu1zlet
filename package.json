@@ -8,7 +8,7 @@
         "auth": "jest auth.test.ts",
         "quiz": "jest quiz.test.ts",
         "user": "jest user.test.ts",
-        "startNodemon": "nodemon src/server.ts localhost 3141"
+        "startNodemon": "nodemon src/server.ts"
     },
     "dependencies": {
         "cors": "^2.8.5",
