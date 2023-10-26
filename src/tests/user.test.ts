@@ -13,7 +13,7 @@ beforeEach(() => {
   testClear();
 });
 
-describe('/v1/admin/user/details', () => {
+describe('adminUserDetails', () => {
   let user1: any;
   beforeEach(() => {
     user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;
@@ -114,7 +114,7 @@ describe('/v1/admin/user/details', () => {
   });
 });
 
-describe('/v1/admin/user/password', () => {
+describe('adminUserPasswordUpdate', () => {
   let user1: any;
   beforeEach(() => {
     user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;
@@ -190,7 +190,7 @@ describe('/v1/admin/user/password', () => {
   });
 });
 
-describe('PUT /v1/admin/user/details', () => {
+describe('adminUserDetailsUpdate', () => {
   let user1: any;
 
   beforeEach(() => {
