@@ -1,3 +1,4 @@
+import exp from 'constants';
 import {
   testRegister,
   testCreateQuiz,
@@ -230,6 +231,32 @@ describe('/v1/admin/quiz/{quizid}/question/{questionid}', () => {
     ]
   };
 
+  const footballQues = {
+    question: 'England teams',
+    duration: 10,
+    points: 5,
+    answers: [
+      { answer: 'Madrid', correct: false },
+      { answer: 'Barcelona', correct: false },
+      { answer: 'Arsenal', correct: true },
+      { answer: 'Bayern', correct: false }
+    ]
+  };
+
+  const leagueQues = {
+    question: 'Champions',
+    duration: 15,
+    points: 5,
+    answers: [
+      { answer: 'jayce', correct: false },
+      { answer: 'tristana', correct: false },
+      { answer: 'lulu', correct: false },
+      { answer: 'leblanc', correct: true }
+    ]
+  };
+
+
+
   beforeEach(() => {
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
     quiz = testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description').response;
@@ -319,23 +346,187 @@ describe('/v1/admin/quiz/{quizid}/question/{questionid}', () => {
   });
 
   test('Successfully update a question and verify using quiz info', () => {
-    const updateResponse = testUpdateQuestion(user.token, quiz.quizId, question.questionId, validQuestionUpdate);
-    expect(updateResponse.status).toBe(200);
+    const initial = testQuizInfo(user.token, quiz.quizId);
+    expect(initial.response).toStrictEqual({
+      quizId: question.questionId,
+      name: 'Sample Quiz',
+      timeCreated: expect.any(Number),
+      timeLastEdited: expect.any(Number),
+      description: 'Sample Description',
+      numQuestions: 1,
+      questions: [
+        {
+          questionId: question.questionId,
+          question: 'What is the capital of Spain?',
+          duration: 4,
+          points: 5,
+          answers: [
+            {
+              answerId: expect.any(Number),
+              answer: 'Berlin',
+              colour: expect.any(String),
+              correct: false
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Madrid',
+              colour: expect.any(String),
+              correct: true
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Paris',
+              colour: expect.any(String),
+              correct: false
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Rome',
+              colour: expect.any(String),
+              correct: false
+            },
+          ]
+        }
+      ],
+      duration: 4,
+    });
+    expect(initial.status).toStrictEqual(200);
+
+    const updateResponse = testUpdateQuestion(user.token, quiz.quizId, question.questionId, footballQues);
+    expect(updateResponse.response).toStrictEqual({});
+    expect(updateResponse.status).toStrictEqual(200);
 
     const fetchedQuiz = testQuizInfo(user.token, quiz.quizId);
-    console.log(fetchedQuiz.response);
+    expect(fetchedQuiz.response).toStrictEqual({
+      quizId: question.questionId,
+      name: 'Sample Quiz',
+      timeCreated: expect.any(Number),
+      timeLastEdited: expect.any(Number),
+      description: 'Sample Description',
+      numQuestions: 1,
+      questions: [
+        {
+          questionId: question.questionId,
+          question: 'England teams',
+          duration: 10,
+          points: 5,
+          answers: [
+            {
+              answerId: expect.any(Number),
+              answer: 'Madrid',
+              colour: expect.any(String),
+              correct: false
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Barcelona',
+              colour: expect.any(String),
+              correct: false
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Arsenal',
+              colour: expect.any(String),
+              correct: true
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Bayern',
+              colour: expect.any(String),
+              correct: false
+            },
+          ]
+        }
+      ],
+      duration: 10,
+    });
+    expect(fetchedQuiz.status).toStrictEqual(200);
   });
 
   test('Successfully update correct question without affecting others', () => {
-    testCreateQuizQuestion(user.token, quiz.quizId, validQuestionUpdate);
+    const question2 = testCreateQuizQuestion(user.token, quiz.quizId, footballQues).response;
 
-    const updateResponse1 = testUpdateQuestion(user.token, quiz.quizId, question.questionId, validQuestionUpdate);
-    expect(updateResponse1.status).toBe(200);
+    const updateResponse1 = testUpdateQuestion(user.token, quiz.quizId, question2.questionId, leagueQues);
+    expect(updateResponse1.status).toStrictEqual(200);
+    expect(updateResponse1.response).toStrictEqual({});
 
     const fetchedQuiz = testQuizInfo(user.token, quiz.quizId);
-    expect(fetchedQuiz.status).toBe(200);
-
-    console.log(fetchedQuiz.response);
+    expect(fetchedQuiz.status).toStrictEqual(200);
+    expect(fetchedQuiz.response).toStrictEqual({
+      quizId: question.questionId,
+      name: 'Sample Quiz',
+      timeCreated: expect.any(Number),
+      timeLastEdited: expect.any(Number),
+      description: 'Sample Description',
+      numQuestions: 2,
+      questions: [
+        {
+          questionId: question.questionId,
+          question: 'What is the capital of Spain?',
+          duration: 4,
+          points: 5,
+          answers: [
+            {
+              answerId: expect.any(Number),
+              answer: 'Berlin',
+              colour: expect.any(String),
+              correct: false
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Madrid',
+              colour: expect.any(String),
+              correct: true
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Paris',
+              colour: expect.any(String),
+              correct: false
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Rome',
+              colour: expect.any(String),
+              correct: false
+            },
+          ]
+        },
+        {
+          questionId: question2.questionId,
+          question: 'Champions',
+          duration: 15,
+          points: 5,
+          answers: [
+            {
+              answerId: expect.any(Number),
+              answer: 'jayce',
+              colour: expect.any(String),
+              correct: false
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'tristana',
+              colour: expect.any(String),
+              correct: false
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'lulu',
+              colour: expect.any(String),
+              correct: false
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'leblanc',
+              colour: expect.any(String),
+              correct: true
+            },
+          ]
+        }
+      ],
+      duration: 19,
+    });
   });
 });
 
