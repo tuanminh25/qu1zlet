@@ -12,7 +12,7 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove } from './quiz';
-import { adminQuestionCreate } from './question';
+import { adminQuestionCreate, listOfQuestions} from './question';
 
 // Set up web app
 const app = express();
@@ -174,6 +174,16 @@ app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
 
   res.json(response);
 });
+
+app.get('/v1/admin/quiz/listOfQuestions/:quizId', (req: Request, res: Response) => {
+  const token = req.query.token;
+  const {quizId} = req.params;
+
+  const response = listOfQuestions(String(token), parseInt(quizId));
+
+
+  res.json(response);
+})
 
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================

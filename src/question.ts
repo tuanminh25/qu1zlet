@@ -4,7 +4,8 @@ import {
   generateTime,
   Question,
   load,
-  save
+  save,
+  checkquizId
 } from './helper';
 
 /**
@@ -107,4 +108,32 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
   return {
     questionId: newQuestion.questionId
   };
+}
+
+// extra test function
+export function listOfQuestions(token: string, quizId: number) {
+  // Error 401 checking
+  if (!isToken(token)) {
+    return { error: 'Invalid token' };
+  }
+  
+  const quiz = checkquizId(quizId);
+  if (quiz === undefined) {
+    return { error: 'Quiz error, quizId:' + quizId };
+  }
+
+  let list = new Array();
+
+  if (quiz.questions.length === 0) {
+    return{ error: 'Quiz error, length: 0'} ;
+  }
+
+  for (let question of quiz.questions) {
+    list.push({
+      questionId: question.questionId,
+      question: question.question,
+    })
+  }
+
+  return list;
 }

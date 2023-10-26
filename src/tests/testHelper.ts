@@ -1,5 +1,6 @@
 import request from 'sync-request-curl';
 import { port, url } from '../config.json';
+import { query } from 'express';
 
 const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/';
@@ -149,3 +150,9 @@ export function testMoveQuizQuestion(token: string, quizId: number, questionId: 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
+// This function is used to test and debug purpose only
+export function testQuestionsList(token: string, quizId: number) {
+  const res = request('GET', SERVER_URL + '/v1/admin/quiz/listOfQuestions/' + quizId, {qs: {token: token}});
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+
+}

@@ -4,7 +4,8 @@ import {
   testCreateQuiz,
   testCreateQuizQuestion,
   testClear,
-  testMoveQuizQuestion
+  testMoveQuizQuestion,
+  testQuestionsList,
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -214,11 +215,11 @@ describe('/v1/admin/quiz/{quizid}/question', () => {
   });
 });
 
-describe("Move A Quiz Question", () => {
-  let user1: { token: string; };
-  let user2: { token: string; };
-  let quiz1: { quizId: number; };
-  let quiz2: { quizId: number; };
+describe.only("Move A Quiz Question", () => {
+  let user1: { token: string };
+  let user2: { token: string };
+  let quiz1: { quizId: number };
+  let quiz2: { quizId: number };
 
   let question1: {questionId: number};
   let question2: {questionId: number};
@@ -230,38 +231,96 @@ describe("Move A Quiz Question", () => {
     question: 'What is the capital of France?',
     duration: 4,
     points: 5,
-    answers: [{}]
+    answers: [     { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }]
   };
 
   const validQuestion2 = {
     question: 'What is the capital of Spain?',
     duration: 4,
     points: 5,
-    answers: [{}]
+    answers: [     { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }]
   };
 
   const validQuestion3 = {
     question: 'What is the capital of Brazil?',
     duration: 4,
     points: 5,
-    answers: [{}]
+    answers: [     { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }]
   };
 
   const validQuestion4 = {
     question: 'What is the capital of Vietnam?',
     duration: 4,
     points: 5,
-    answers: [{}]
+    answers: [     { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }]
   };
 
   const validQuestion5 = {
     question: 'What is the capital of China?',
     duration: 4,
     points: 5,
-    answers: [{}]
+    answers: [     { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }]
   };
 
+  // Additional support test question
+  test.only("Question List test", () => {
+ 
+    testClear();
+    // First person
+    user1 = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
+    user2 = testRegister('jayden.smith@unsw.edu.au', 'password123', 'nameFirst', 'nameLast').response;
 
+    quiz1 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+    question1 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion1).response;
+    question2 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion2).response;
+    question3 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion3).response;
+    question4 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion4).response;
+    question5 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion5).response;
+    
+    // Second person
+    quiz2 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+
+    
+    const list = testQuestionsList(user1.token, quiz1.quizId);
+    expect(list.response).toStrictEqual([
+      {
+        question: 'What is the capital of France?',
+        questionId: 1
+      },
+      {
+        question: 'What is the capital of Spain?',
+        questionId: 2
+      },
+      {
+        question: 'What is the capital of Brazil?',
+        questionId: 3
+      },
+      {
+        question: 'What is the capital of Vietnam?',
+        questionId: 4
+      },
+      {
+        question: 'What is the capital of China?',
+        questionId: 5
+      }
+    ])
+  })
+  
   // Working cases
   describe("Working cases:", () => {
     beforeEach(() => {
@@ -282,10 +341,51 @@ describe("Move A Quiz Question", () => {
 
     });
 
-    // test("Succesfully move 1 ques")
+    // Succesfully move 1 question
+    test("Succesfully move 1 question", () => {
+      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, 3);
+      expect(res.response).toStrictEqual({})
+      expect(res.status).toStrictEqual(200);
+    })
 
-    // test("Succesfully move many ques")
+    // Succesfully move many ques
+    test("Succesfully move many questions", () => {
+      const res1 = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, 3);
+      expect(res1.response).toStrictEqual({})
+      expect(res1.status).toStrictEqual(200);
 
+      const res2 = testMoveQuizQuestion(user1.token, quiz1.quizId, question2.questionId, 4);
+      expect(res2.response).toStrictEqual({})
+      expect(res2.status).toStrictEqual(200);
+
+      const res3 = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, 3);
+      expect(res3.response).toStrictEqual({})
+      expect(res3.status).toStrictEqual(200);
+
+      const list = testQuestionsList(user1.token, quiz1.quizId);
+      expect(list.response).toStrictEqual([
+        {
+          question: 'What is the capital of China?',
+          questionId: 5
+        },
+        {
+          question: 'What is the capital of Brazil?',
+          questionId: 3
+        },
+        {
+          question: 'What is the capital of Spain?',
+          questionId: 2
+        },
+        {
+          question: 'What is the capital of Vietnam?',
+          questionId: 4
+        },
+        {
+          question: 'What is the capital of France?',
+          questionId: 1
+        }
+      ])
+    })
   })
 
 
