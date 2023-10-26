@@ -26,7 +26,6 @@ interface ErrorObject {
   error: string;
 }
 
-
 /**
   * Given basic details about a new quiz, create one for the logged in user.
   *  then returns a quizId.
@@ -193,7 +192,7 @@ export function adminQuizInfo(token: string, quizId: number): QuizInfoReturn | E
     quizId: quiz.quizId,
     name: quiz.name,
     timeCreated: quiz.timeCreated,
-    timeLastEdited: quiz.timeLastEdited,
+    timeLastEdited: generateTime(),
     description: quiz.description,
     numQuestions: quiz.numQuestions,
     questions: quiz.questions,

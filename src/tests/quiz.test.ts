@@ -1,4 +1,3 @@
-import { valid } from 'semver';
 import {
   testRegister,
   testQuizInfo,
@@ -43,13 +42,11 @@ describe('/v1/admin/quiz', () => {
   });
 
   test('error for duplicate names', () => {
-    const quiz1 = testCreateQuiz(user.token, 'Dogs', 'I like cats');
-    expect(quiz1.status).toStrictEqual(200);
-    const quiz2 = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
-    expect(quiz2.response).toStrictEqual(ERROR);
-    expect(quiz2.status).toStrictEqual(400);
+    testCreateQuiz(user.token, 'Dogs', 'I like cats');
+    const quiz = testCreateQuiz(user.token, 'Dogs', 'I like dogs');
+    expect(quiz.response).toStrictEqual(ERROR);
+    expect(quiz.status).toStrictEqual(400);
   });
-
   test('Empty Quiz Name and Description', () => {
     const quiz = testCreateQuiz(user.token, '', '');
     expect(quiz.response).toStrictEqual(ERROR);
@@ -67,12 +64,19 @@ describe('/v1/admin/quiz', () => {
     expect(quiz2.status).toStrictEqual(400);
   });
 
-  test('Check 401 Error is Prioritized Over 400', () => {
+  test('Check 400 Error is Prioritized Over 401', () => {
     const invalidToken = user.token + 1;
     const emptyName = '';
     const quiz = testCreateQuiz(invalidToken, emptyName, 'A description of my quiz');
+
+    // Check first for 400 Error
     expect(quiz.response).toStrictEqual(ERROR);
-    expect(quiz.status).toStrictEqual(401);
+    expect(quiz.status).toStrictEqual(400);
+
+    // Then check for 401 Error with just the invalid token.
+    const quizWithInvalidToken = testCreateQuiz(invalidToken, 'My Quiz', 'A description of my quiz');
+    expect(quizWithInvalidToken.response).toStrictEqual(ERROR);
+    expect(quizWithInvalidToken.status).toStrictEqual(401);
   });
 });
 
@@ -190,8 +194,7 @@ describe('GET /v1/admin/quiz/:quizid', () => {
   });
 
   test('Display Quiz Info - Successful', () => {
-    const question = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion);
-    const questioninfo = [validQuestion, question.response]
+    const question = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion).response;
     const quizinfo = testQuizInfo(user.token, quiz.quizId);
     expect(quizinfo.response).toStrictEqual({
       quizId: expect.any(Number),
@@ -200,18 +203,31 @@ describe('GET /v1/admin/quiz/:quizid', () => {
       timeLastEdited: expect.any(Number),
       description: 'A description of my quiz',
       numQuestions: 1,
-      questions: questioninfo,
+      questions: [
+        {
+          questionId: question.questionId,
+          question: 'What is the capital of France?',
+          duration: 4,
+          points: 5,
+          answers: [
+            { answer: 'Berlin', correct: false },
+            { answer: 'Madrid', correct: false },
+            { answer: 'Paris', correct: true },
+            { answer: 'Rome', correct: false }
+          ]
+        }
+      ],
       duration: expect.any(Number),
     });
     expect(quizinfo.status).toStrictEqual(200);
   });
 
   test('Display Quiz Info without Description or Questions - Successful', () => {
-    const badquiz = testCreateQuiz(user.token, 'Bad Quiz', '').response;
-    const badquizinfo = testQuizInfo(user.token, badquiz.quizId);
-    expect(badquizinfo.response).toStrictEqual({
+    const badquiz = testCreateQuiz(user.token, 'My Quiz Nameeeee', '').response;
+    const quizinfo = testQuizInfo(user.token, badquiz.quizId);
+    expect(quizinfo.response).toStrictEqual({
       quizId: expect.any(Number),
-      name: 'Bad Quiz',
+      name: 'My Quiz Nameeeee',
       timeCreated: expect.any(Number),
       timeLastEdited: expect.any(Number),
       description: '',
@@ -219,7 +235,7 @@ describe('GET /v1/admin/quiz/:quizid', () => {
       questions: [],
       duration: 0,
     });
-    expect(badquizinfo.status).toStrictEqual(200);
+    expect(quizinfo.status).toStrictEqual(200);
   });
 
   test('Invalid Token', () => {
