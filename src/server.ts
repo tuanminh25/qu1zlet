@@ -11,7 +11,7 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizList, adminQuizRemove } from './quiz';
+import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate } from './question';
 
 // Set up web app
@@ -192,6 +192,21 @@ app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Respo
   } else {
     res.json(response);
   }
+});
+
+app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
+  const token = req.query.token;
+  const { quizId } = req.params;
+
+  const response = adminQuizInfo(String(token), parseInt(quizId));
+
+  if (response.error === 'Invalid Token') {
+    return res.status(401).json(response);
+  } else if (response.error === 'Unauthorised') {
+    return res.status(403).json(response);
+  }
+
+  res.json(response);
 });
 
 // ====================================================================

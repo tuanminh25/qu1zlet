@@ -6,7 +6,7 @@
         "lint-fix": "eslint --fix src/**/*.{ts,js}",
         "start": "ts-node -T src/server.ts",
         "auth": "jest auth.test.ts",
-        "quiz": "jest quiz.test.js",
+        "quiz": "jest quiz.test.ts",
         "user": "jest user.test.ts",
         "startNodemon": "nodemon src/server.ts localhost 3141"
     },

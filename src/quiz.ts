@@ -155,3 +155,53 @@ export function adminQuizList(token: string) {
     quizzes
   };
 }
+
+/**
+ * Get all of the relevant information about the current quiz
+ * including questions
+ *
+ * @param {string} token - unique user identifier
+ * @param {number} quizId - unique quiz identifier
+ * @returns {
+ *  quizId: number,
+ *  name: string,
+ *  timeCreated: number,
+ *  timeLastEdited: number,
+ *  description: string,
+ *  numQuestions: number,
+ *  questions: Question[],
+ *  duration
+ * }
+ * @returns {error: string}
+ *
+ */
+export function adminQuizInfo(token: string, quizId: number) {
+  const data = load();
+  const quiz = data.quizzes.find(q => q.quizId === quizId);
+  // Error Check 401
+  const session = isToken(token);
+
+  if (!session) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  // Error Check 403
+  if (quiz.quizOwnedby !== session.userId) {
+    return {
+      error: 'Unauthorised'
+    };
+  }
+
+  return {
+    quizId: quiz.quizId,
+    name: quiz.name,
+    timeCreated: quiz.timeCreated,
+    timeLastEdited: generateTime(),
+    description: quiz.description,
+    numQuestions: quiz.numQuestions,
+    questions: quiz.questions,
+    duration: quiz.duration,
+  };
+}

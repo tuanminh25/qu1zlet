@@ -15,6 +15,7 @@ export function clear() {
   data.ids.userId = 0;
   data.ids.quizId = 0;
   data.ids.questionId = 0;
+  data.ids.answerId = 0;
   save(data);
 
   return {};
