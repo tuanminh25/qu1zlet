@@ -221,17 +221,6 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
   const session = isToken(token);
   const quiz = data.quizzes.find(q => q.quizId === quizId);
 
-  // error 400
-  if (isQuizName(name) === false) {
-    return {
-      error: 'Invalid Quiz Name'
-    };
-  }
-  if (data.quizzes.some((quiz) => quiz.name === name)) {
-    return {
-      error: 'Quiz name already exists'
-    };
-  }
   // error 401
   if (!session) {
     return {
@@ -245,6 +234,18 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
       error: 'Unauthorised'
     };
   }
+
+    // error 400
+    if (isQuizName(name) === false) {
+      return {
+        error: 'Invalid Quiz Name'
+      };
+    }
+    if (data.quizzes.some((quiz) => quiz.name === name)) {
+      return {
+        error: 'Quiz name already exists'
+      };
+    }
 
   // Working case
   quiz.name = name;
