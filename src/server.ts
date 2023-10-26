@@ -213,12 +213,12 @@ app.put('/v1/admin/quiz/:quizId/name', (req: Request, res: Response) => {
   res.status(200).json(response);
 });
 
-app.post('/v1/admin/quiz/:quizid/transfer', (req: Request, res: Response) => {
+app.post('/v1/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
   const { token, userEmail } = req.body;
   const { quizId } = req.params;
 
   const response = adminQuizTransfer(String(token), parseInt(quizId), String(userEmail));
-  
+
   if ('error' in response) {
     if (response.error === 'Email not found') {
       return res.status(400).json(response);

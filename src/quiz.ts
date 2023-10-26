@@ -39,7 +39,8 @@ export function adminQuizCreate(token: string, name: string, description: string
   }
 
   // Error checking 400
-  if (data.quizzes.some((quiz) => quiz.name === name)) {
+  const quizExists = data.quizzes.find((quiz) => quiz.name === name);
+  if (quizExists && quizExists.quizOwnedby === userId) {
     return {
       error: 'Quiz name already exists'
     };
