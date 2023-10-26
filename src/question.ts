@@ -4,7 +4,8 @@ import {
   generateTime,
   Question,
   load,
-  save
+  save,
+  Answer
 } from './helper';
 
 /**
@@ -124,7 +125,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
 * }} questionBody
 * @returns {{ questionId?: number, error?: string }}
 */
-export function adminQuestionUpdate(token: string, quizId: number, questionId: number, questionBody: object):{ questionId?: number, error?: string } {
+export function adminQuestionUpdate(token: string, quizId: number, questionId: number, questionBody: any):{ questionId?: number, error?: string } {
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
 
@@ -190,26 +191,30 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
     }
   }
 
-  const uniqueAnswers = new Set(questionBody.answers.map(ans => ans.answer));
+  const uniqueAnswers = new Set(questionBody.answers.map((ans: Answer) => ans.answer));
   if (uniqueAnswers.size !== questionBody.answers.length) {
     return {
       error: 'Any answer strings are duplicates of one another (within the same question)'
     };
   }
 
-  if (!questionBody.answers.some(ans => ans.correct)) {
+  if (!questionBody.answers.some((ans: Answer) => ans.correct)) {
     return {
       error: 'There are no correct answers'
     };
   }
 
-  quiz.duration = totalDuration;
-  quiz.numQuestions++;
-  quiz.timeLastEdited = generateTime();
+  const questionToUpdate = quiz.questions.find(q => q.questionId === questionId);
+  if (questionToUpdate) {
+    questionToUpdate.question = questionBody.question;
+    questionToUpdate.duration = questionBody.duration;
+    questionToUpdate.points = questionBody.points;
+    questionToUpdate.answers = questionBody.answers;
+  }
 
   save(data);
 
-  return {
-    questionId: newQuestion.questionId
-  };
+  save(data);
+
+  return {};
 }
