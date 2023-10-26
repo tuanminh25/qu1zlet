@@ -534,7 +534,7 @@ describe('Question Delete', () => {
   let ques: { questionId: number };
   const validQuestion = {
     question: 'What is the capital of France?',
-    duration: 4,
+    duration: 6,
     points: 5,
     answers: [
       { answer: 'Berlin', correct: false },
@@ -585,7 +585,7 @@ describe('Question Delete', () => {
   });
 
   test('Unathorised user', () => {
-    const user2 = testRegister('nopelol@gmail.com', 'password123', 'Test', 'User').response;
+    const user2 = testRegister('anotheruser@example.com', 'password1234', 'Another', 'User').response;
     const delete1 = testQuestionDelete(user2.token, quiz.quizId, ques.questionId);
     expect(delete1.response).toStrictEqual(ERROR);
     expect(delete1.status).toStrictEqual(403);
@@ -610,7 +610,7 @@ describe('Question Delete', () => {
         timeCreated: expect.any(Number),
         timeLastEdited: expect.any(Number),
         description: 'Sample Description',
-        numQuestions: 1,
+        numQuestions: 0,
         questions: [],
         duration: 0
       }
@@ -633,12 +633,12 @@ describe('Question Delete', () => {
         timeCreated: expect.any(Number),
         timeLastEdited: expect.any(Number),
         description: 'Sample Description',
-        numQuestions: 1,
+        numQuestions: 2,
         questions: [
           {
             questionId: ques.questionId,
             question: 'What is the capital of France?',
-            duration: 4,
+            duration: 6,
             points: 5,
             answers: [
               {
@@ -669,7 +669,7 @@ describe('Question Delete', () => {
           },
           {
             questionId: ques3.questionId,
-            question: 'Championis',
+            question: 'Champions',
             duration: 15,
             points: 5,
             answers: [
@@ -700,7 +700,7 @@ describe('Question Delete', () => {
             ]
           }
         ],
-        duration: 19
+        duration: 21
       }
     );
   });
