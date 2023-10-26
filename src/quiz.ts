@@ -156,11 +156,10 @@ export function adminQuizList(token: string) {
   };
 }
 
-
 /**
- * Get all of the relevant information about the current quiz 
+ * Get all of the relevant information about the current quiz
  * including questions
- * 
+ *
  * @param {string} token - unique user identifier
  * @param {number} quizId - unique quiz identifier
  * @returns {
@@ -174,10 +173,8 @@ export function adminQuizList(token: string) {
  *  duration
  * }
  * @returns {error: string}
- * 
+ *
  */
-
-
 export function adminQuizInfo(token: string, quizId: number) {
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
