@@ -12,7 +12,7 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate } from './quiz';
-import { adminQuestionCreate } from './question';
+import { adminQuestionCreate, adminQuestionUpdate } from './question';
 
 // Set up web app
 const app = express();
