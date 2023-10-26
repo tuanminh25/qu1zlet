@@ -162,7 +162,8 @@ export function adminQuizList(token: string) {
  *
  * @param {string} token - unique user identifier
  * @param {number} quizId - unique quiz identifier
- * @returns {  quizId: number;
+ * @returns {  
+ * quizId: number;
  * name: string;
  * timeCreated: number;
  * timeLastEdited: number;
@@ -170,7 +171,7 @@ export function adminQuizList(token: string) {
  * numQuestions: number;
  * questions: Question[];
  * duration: number;
-*}
+ * }
  * @returns {error: string}
  *
  */
