@@ -254,3 +254,48 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
   save(data);
   return {};
 }
+
+/**
+ * Update a quiz description
+ *
+ * @param {string} token - unique user identifier
+ * @param {number} quizId - unique quiz identifier
+ * @param {string} description - description
+ *
+ * @returns {error: string}
+ * @returns {}
+ *
+ */
+
+export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string) {
+  const data = load();
+  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+  const session = isToken(token);
+
+  // Returning errors
+  if (session === undefined) {
+    return { error: 'Token is empty or invalid' };
+  }
+
+  if (quiz === undefined) {
+    return { error: 'Quiz ID does not refer to a valid quiz' };
+  }
+
+  // Quiz ID does not refer to a quiz that this user owns
+  if (quiz.quizOwnedby !== session.userId) {
+    return { error: 'Quiz ID does not refer to a quiz that this user owns' };
+  }
+
+  // Over length description
+  if (description.length > 100) {
+    return { error: 'Description is more than 100 characters in length' };
+  }
+
+  // Working case
+  quiz.description = description;
+  quiz.timeLastEdited = generateTime();
+  save(data);
+  return {
+
+  };
+}
