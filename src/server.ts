@@ -11,7 +11,7 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizRemove, adminQuizInfo } from './quiz';
+import { adminQuizCreate, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate } from './question';
 
 // Set up web app
@@ -183,6 +183,22 @@ app.put('/v1/admin/user/details', (req: Request, res: Response) => {
 
   res.json(response);
 });
+
+app.put('/v1/admin/:quizid/description', (req: Request, res: Response) => {
+  const {token , quizId, description} = req.body;
+  const response = adminQuizDescriptionUpdate (String(token), parseInt(quizId), String(description));
+
+  if (response.error === "Token is empty or invalid") {
+    return res.status(401).json(response);
+  } else if (response.error === 'Description is more than 100 characters in length') {
+    return res.status(400).json(response);
+  } else if (response.error === 'Quiz ID does not refer to a valid quiz' || 
+    response.error === 'Quiz ID does not refer to a quiz that this user owns') {
+    return res.status(403).json(response);
+  }
+
+  res.json(response);
+})
 
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================

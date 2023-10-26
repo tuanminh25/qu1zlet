@@ -199,3 +199,34 @@ export function adminQuizInfo(token: string, quizId: number): QuizInfoReturn | E
     duration: quiz.duration,
   };
 }
+
+export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string) {
+  const quiz = checkquizId(quizId);
+  const session = isToken(token);
+
+  // Returning errors
+  if (session === undefined) {
+    return { error: 'Token is empty or invalid' };
+  }
+
+  if (quiz === undefined) {
+    return { error: 'Quiz ID does not refer to a valid quiz' };
+  }
+
+  // Quiz ID does not refer to a quiz that this user owns
+  if (quiz.quizOwnedby !== session.userId) {
+    return { error: 'Quiz ID does not refer to a quiz that this user owns' };
+  }
+
+  // Over length description
+  if (description.length > 100) {
+    return { error: 'Description is more than 100 characters in length' };
+  }
+
+  // Working case
+  quiz.description = description;
+  quiz.timeLastEdited = Date.now() * 1000;
+  return {
+
+  };
+}
