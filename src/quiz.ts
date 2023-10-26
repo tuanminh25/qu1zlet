@@ -249,7 +249,7 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
 
   // Working case
   quiz.name = name;
-  quiz.timeLastEdited = Date.now() * 1000;
+  quiz.timeLastEdited = generateTime();
 
   save(data);
   return {};
