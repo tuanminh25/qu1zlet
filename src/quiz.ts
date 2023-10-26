@@ -178,16 +178,7 @@ export function adminQuizList(token: string) {
  *
  * @param {string} token - unique user identifier
  * @param {number} quizId - unique quiz identifier
- * @returns {
- *  quizId: number,
- *  name: string,
- *  timeCreated: number,
- *  timeLastEdited: number,
- *  description: string,
- *  numQuestions: number,
- *  questions: Question[],
- *  duration
- * }
+ * @returns {QuizInfoReturn}
  * @returns {error: string}
  *
  */
@@ -223,33 +214,16 @@ export function adminQuizInfo(token: string, quizId: number) {
 }
 
 /**
- adminQuizInfo
- Obtaining all relevant information about quiz
- @param {string} token - unique user identifier
- @param {number} quizId - unique quiz identifier
-
- @returns {array
-  { quizId: number,
-    name: string,
-    timeCreated: number,
-    timeLastEdited: number,
-    description: string,
-    numQuestions: number,
-    questions: Question[
-      questionId: number
-      question: string,
-      duration: number,
-      points: number,
-      answers: Answer[
-        answer: string,
-        correct: boolean
-      ]
-    ],
-    duration
-  }
-} - returns information if valid authUserId and quizId entered
-@returns {error: string} - invalid parameters entered
-**/
+ * Update a quiz description
+ *
+ * @param {string} token - unique user identifier
+ * @param {number} quizId - unique quiz identifier
+ * @param {string} description - description
+ * 
+ * @returns {error: string}
+ * @returns {}
+ *
+ */
 
 export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string) {
   const data = load();
@@ -277,8 +251,7 @@ export function adminQuizDescriptionUpdate (token: string, quizId: number, descr
 
   // Working case
   quiz.description = description;
-  quiz.timeLastEdited = Date.now() * 1000;
-
+  quiz.timeLastEdited = generateTime();
   save(data);
   return {
 
