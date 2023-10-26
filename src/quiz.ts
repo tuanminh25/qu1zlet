@@ -133,6 +133,96 @@ export function adminQuizRemove(token: string, quizId: number) {
 }
 
 /**
+  * Given a token
+  * Return a list of all quizzes that are owned by the currently logged in user.
+  *
+  *
+  * @param {string} token
+  * @returns { quizzes: [
+*  {
+  *   quizId: number,
+  *   name: string,
+  *  }
+  * ]}
+*/
+export function adminQuizList(token: string) {
+  const data = load();
+  const session = isToken(token);
+
+  // Check errors:
+  // Invalid token
+  if (session === undefined) {
+    return { error: 'Token is empty or invalid' };
+  }
+
+  // Working cases:
+  // Find user corresponding to the token
+  const quizzes = [];
+  for (const quiz of data.quizzes) {
+    if (session.userId === quiz.quizOwnedby) {
+      quizzes.push({
+        name: quiz.name,
+        quizId: quiz.quizId,
+      });
+    }
+  }
+
+  return {
+    quizzes
+  };
+}
+
+/**
+ * Get all of the relevant information about the current quiz
+ * including questions
+ *
+ * @param {string} token - unique user identifier
+ * @param {number} quizId - unique quiz identifier
+ * @returns {
+ *  quizId: number,
+ *  name: string,
+ *  timeCreated: number,
+ *  timeLastEdited: number,
+ *  description: string,
+ *  numQuestions: number,
+ *  questions: Question[],
+ *  duration
+ * }
+ * @returns {error: string}
+ *
+ */
+export function adminQuizInfo(token: string, quizId: number) {
+  const data = load();
+  const quiz = data.quizzes.find(q => q.quizId === quizId);
+  // Error Check 401
+  const session = isToken(token);
+
+  if (!session) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  // Error Check 403
+  if (quiz.quizOwnedby !== session.userId) {
+    return {
+      error: 'Unauthorised'
+    };
+  }
+
+  return {
+    quizId: quiz.quizId,
+    name: quiz.name,
+    timeCreated: quiz.timeCreated,
+    timeLastEdited: quiz.timeLastEdited,
+    description: quiz.description,
+    numQuestions: quiz.numQuestions,
+    questions: quiz.questions,
+    duration: quiz.duration,
+  };
+}
+
+/**
  adminQuizInfo
  Obtaining all relevant information about quiz
  @param {string} token - unique user identifier
@@ -160,45 +250,6 @@ export function adminQuizRemove(token: string, quizId: number) {
 } - returns information if valid authUserId and quizId entered
 @returns {error: string} - invalid parameters entered
 **/
-
-export function adminQuizInfo(token: string, quizId: number): QuizInfoReturn | ErrorObject {
-  const data = load();
-  const quiz = data.quizzes.find(q => q.quizId === quizId);
-  // Error Check 401
-  const user = isToken(token);
-
-  if (!user) {
-    return {
-      error: 'Invalid Token'
-    };
-  }
-
-  const userId = isToken(token).userId;
-  const userExists = checkauthUserId(userId);
-  if (!userExists) {
-    return {
-      error: 'Invalid Token'
-    };
-  }
-
-  // Error Check 403
-  if (quiz.quizOwnedby !== userId) {
-    return {
-      error: 'Unauthorised'
-    };
-  }
-
-  return {
-    quizId: quiz.quizId,
-    name: quiz.name,
-    timeCreated: quiz.timeCreated,
-    timeLastEdited: generateTime(),
-    description: quiz.description,
-    numQuestions: quiz.numQuestions,
-    questions: quiz.questions,
-    duration: quiz.duration,
-  };
-}
 
 export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string) {
   const data = load();
