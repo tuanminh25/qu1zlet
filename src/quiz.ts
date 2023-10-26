@@ -184,7 +184,7 @@ export function adminQuizInfo(token: string, quizId: number) {
   };
 }
 
-export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string) {ex
+export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string) {
   const quiz = checkquizId(quizId);
   const session = isToken(token);
 

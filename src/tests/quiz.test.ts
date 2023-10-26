@@ -254,9 +254,9 @@ describe('/v1/admin/quiz/:quizid/description', () => {
   // Working cases: 
   // Empty description cases
   test("Successfully update description", () => {
-    let inforObjectOriginal = testQuizInfo(user.token, quiz.quizId);
+    let inforObjectOriginal = testQuizInfo(user.token, quiz.quizId).response;
     expect(testQuizDescriptionUpdate(user.token, quiz.quizId, '')).toStrictEqual({});
-    let inforObjectNew = testQuizInfo(user.token, quiz.quizId);
+    let inforObjectNew = testQuizInfo(user.token, quiz.quizId).response;
     expect(inforObjectNew.description).toStrictEqual('');
   
     // Check for changes in time last edited
@@ -265,9 +265,9 @@ describe('/v1/admin/quiz/:quizid/description', () => {
 
   // Any normal cases
   test("Successfully update description", () => {
-    let inforObjectOriginal = testQuizInfo(user.token, quiz.quizId);
+    let inforObjectOriginal = testQuizInfo(user.token, quiz.quizId).response;
     expect(testQuizDescriptionUpdate(user.token, quiz.quizId, 'Hello there, hi new updated description')).toStrictEqual({});
-    let inforObjectNew = testQuizInfo(user.token, quiz.quizId);
+    let inforObjectNew = testQuizInfo(user.token, quiz.quizId).response;
     expect(inforObjectNew.description).toStrictEqual('Hello there, hi new updated description');
 
     // Check for changes in time last edited

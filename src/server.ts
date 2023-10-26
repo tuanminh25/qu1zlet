@@ -183,7 +183,7 @@ app.put('/v1/admin/user/details', (req: Request, res: Response) => {
 
 app.put('/v1/admin/:quizid/description', (req: Request, res: Response) => {
   const {token , quizId, description} = req.body;
-  const response = adminQuizDescriptionUpdate (token, quizId, description);
+  const response = adminQuizDescriptionUpdate (String(token), parseInt(quizId), String(description));
 
   if (response.error === "Token is empty or invalid") {
     return res.status(401).json(response);
