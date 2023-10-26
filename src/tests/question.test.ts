@@ -2,7 +2,8 @@ import {
   testRegister,
   testCreateQuiz,
   testCreateQuizQuestion,
-  testClear
+  testClear,
+  testUpdateQuestion
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -209,6 +210,112 @@ describe('/v1/admin/quiz/{quizid}/question', () => {
     const question = testCreateQuizQuestion(anotherUser.token, quiz.quizId, validQuestion);
     expect(question.response).toStrictEqual(ERROR);
     expect(question.status).toBe(403);
+  });
+});
+
+describe('/v1/admin/quiz/{quizid}/question/{questionid}', () => {
+  let user: { token: string; };
+  let quiz: { quizId: number; };
+  let question: { questionId: number; };
+  const ERROR = { error: 'error' };
+  const validQuestionUpdate = {
+    question: 'What is the capital of Spain?',
+    duration: 4,
+    points: 5,
+    answers: [
+      { answer: 'Berlin', correct: false },
+      { answer: 'Madrid', correct: true },
+      { answer: 'Paris', correct: false },
+      { answer: 'Rome', correct: false }
+    ]
+  };
+
+  beforeEach(() => {
+    user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
+    quiz = testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description').response;
+    question = testCreateQuizQuestion(user.token, quiz.quizId, validQuestionUpdate).response;
+  });
+
+  const edgeCases = [
+    {
+      description: 'Question string is too short',
+      update: { ...validQuestionUpdate, question: 'Who?' }
+    },
+    {
+      description: 'Question string is too long',
+      update: { ...validQuestionUpdate, question: 'A'.repeat(51) }
+    },
+    {
+      description: 'Too few answers',
+      update: { ...validQuestionUpdate, answers: [{ answer: 'Yes', correct: true }] }
+    },
+    {
+      description: 'Too many answers',
+      update: {
+        ...validQuestionUpdate,
+        answers: new Array(7).fill(0).map((_, idx) => ({ answer: `Answer ${idx}`, correct: idx === 0 }))
+      }
+    },
+    {
+      description: 'Negative question duration',
+      update: { ...validQuestionUpdate, duration: -4 }
+    },
+    {
+      description: 'Invalid points (too low)',
+      update: { ...validQuestionUpdate, points: 0 }
+    },
+    {
+      description: 'Invalid points (too high)',
+      update: { ...validQuestionUpdate, points: 11 }
+    },
+    {
+      description: 'Short answer string',
+      update: {
+        ...validQuestionUpdate,
+        answers: [{ answer: '', correct: true }, { answer: 'No', correct: false }]
+      }
+    },
+    {
+      description: 'Long answer string',
+      update: {
+        ...validQuestionUpdate,
+        answers: [{ answer: 'A'.repeat(31), correct: true }, { answer: 'B', correct: false }]
+      }
+    },
+    {
+      description: 'Duplicate answer strings',
+      update: {
+        ...validQuestionUpdate,
+        answers: [{ answer: 'Yes', correct: true }, { answer: 'Yes', correct: false }]
+      }
+    }
+  ];
+
+  edgeCases.forEach(edgeCase => {
+    test(edgeCase.description, () => {
+      const updatedQuestion = testUpdateQuestion(quiz.quizId, question.questionId, user.token, edgeCase.update);
+      expect(updatedQuestion.response).toStrictEqual(ERROR);
+      expect(updatedQuestion.status).toBe(400);
+    });
+  });
+
+  test('Empty token', () => {
+    const updatedQuestion = testUpdateQuestion(quiz.quizId, question.questionId, '', validQuestionUpdate);
+    expect(updatedQuestion.response).toStrictEqual(ERROR);
+    expect(updatedQuestion.status).toBe(401);
+  });
+
+  test('Invalid token', () => {
+    const updatedQuestion = testUpdateQuestion(quiz.quizId, question.questionId, 'invalidTokenHere', validQuestionUpdate);
+    expect(updatedQuestion.response).toStrictEqual(ERROR);
+    expect(updatedQuestion.status).toBe(401);
+  });
+
+  test('Not an owner of the quiz', () => {
+    const anotherUser = testRegister('anotheruser@example.com', 'password1234', 'Another', 'User').response;
+    const updatedQuestion = testUpdateQuestion(quiz.quizId, question.questionId, anotherUser.token, validQuestionUpdate);
+    expect(updatedQuestion.response).toStrictEqual(ERROR);
+    expect(updatedQuestion.status).toBe(403);
   });
 });
 
