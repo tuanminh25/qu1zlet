@@ -12,7 +12,7 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove } from './quiz';
-import { adminQuestionCreate, listOfQuestions, moveQuizQuestion} from './question';
+import { adminQuestionCreate, listOfQuestions, moveQuizQuestion } from './question';
 
 // Set up web app
 const app = express();
@@ -177,14 +177,14 @@ app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
 
 app.get('/v1/admin/quiz/listOfQuestions/:quizId', (req: Request, res: Response) => {
   const token = req.query.token;
-  const {quizId} = req.params;
+  const { quizId } = req.params;
   const response = listOfQuestions(String(token), parseInt(quizId));
   res.json(response);
-})
+});
 
 app.put('/v1/admin/quiz/:quizId/question/:questionId/move', (req: Request, res: Response) => {
-  const {token, newPosition} = req.body;
-  const {quizId, questionId} = req.params;
+  const { token, newPosition } = req.body;
+  const { quizId, questionId } = req.params;
 
   const response = moveQuizQuestion(String(token), parseInt(quizId), parseInt(questionId), parseInt(newPosition));
 
@@ -192,15 +192,14 @@ app.put('/v1/admin/quiz/:quizId/question/:questionId/move', (req: Request, res: 
     return res.status(401).json(response);
   } else if (response.error === 'Valid token is provided, quiz does not exist: ' + parseInt(quizId)) {
     return res.status(403).json(response);
-  } else if (response.error === "Valid token is provided, but user is not an owner of this quiz") {
+  } else if (response.error === 'Valid token is provided, but user is not an owner of this quiz') {
     return res.status(403).json(response);
-  } else if ( 'error' in response) {
-    return res.status(400).json(response); 
+  } else if ('error' in response) {
+    return res.status(400).json(response);
   }
 
   res.json(response);
-
-})
+});
 
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
