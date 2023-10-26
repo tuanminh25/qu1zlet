@@ -212,20 +212,21 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
     };
   }
 
+  const answers: Answer[] = [];
+  for (const item of questionBody.answers) {
+    answers.push({
+      answerId: ++data.ids.answerId,
+      answer: item.answer,
+      colour: randomColour(),
+      correct: item.correct
+    });
+  }
   quiz.duration = totalDurationWithUpdatedQuestion;
   quiz.timeLastEdited = generateTime();
   question.question = questionBody.question;
   question.duration = questionBody.duration;
   question.points = questionBody.points;
-
-  // Assign unique answerId and random colour for each answer in questionBody
-  question.answers = questionBody.answers.map((answer: object) => {
-    return {
-      ...answer,
-      answerId: +data.ids.answerId,
-      colour: randomColour()
-    };
-  });
+  question.answers = answers;
 
   save(data);
   return {};
