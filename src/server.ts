@@ -144,11 +144,14 @@ app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
   const response = adminQuizInfo(String(token), parseInt(quizId));
   console.log(response);
 
-  if (response.error === 'Invalid Token') {
-    return res.status(401).json(response);
-  } else if ('error' in response) {
-    return res.status(403).json(response);
+  if (typeof response === 'object' && 'error' in response) {
+    if (response.error === 'Invalid Token') {
+      return res.status(401).json({ error: 'Unauthorized' });
+    } else {
+      return res.status(403).json(response);
+    }
   }
+
 
   res.status(200).json(response);
 });
