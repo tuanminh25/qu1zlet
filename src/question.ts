@@ -153,7 +153,7 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
   }
 
   // Error 400 checking
-  if (!quiz.questions.some(q => q.questionId === questionId)) {
+  if (!question) {
     return {
       error: 'Question Id does not refer to a valid question within this quiz'
     };
