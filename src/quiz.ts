@@ -254,3 +254,60 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
   save(data);
   return {};
 }
+
+/**
+adminQuizTransfer transfers the ownership of a specific quiz to another user.
+@param {string} token - unique user identifier
+@param {number} quizId - unique quiz identifier
+@param {string} userEmail - Email the email will be transferred to
+
+@returns {} - updates name of quiz in datastore
+@returns {error: string} - invalid parameters entered
+**/
+export function adminQuizTransfer(token: string, quizId: number, userEmail: string): Record<string, never> | { error?: string } {
+  const data = load();
+  const session = isToken(token);
+  const quiz = data.quizzes.find(q => q.quizId === quizId);
+
+  // error 401
+  if (!session) {
+    return {
+      error: 'Invalid Token'
+    };
+  };
+
+  // error 403
+  if (quiz.quizOwnedby !== session.userId) {
+    return {
+      error: 'Unauthorised'
+    };
+  }
+
+  // error 400
+  const email = data.users.find(user => user.email === userEmail);
+  if (!email) {
+    return {
+      error: 'Email not found'
+    }
+  }
+
+  const user = checkauthUserId(session.userId);
+  const currEmail = user.email;
+  if (userEmail == currEmail) {
+    return {
+      error: 'userEmail cannot already be the owner of the quiz'
+    }
+  }
+
+  const userquizzes = data.quizzes.filter(quiz => quiz.quizOwnedby === email.userId);
+  const duplicateQuiz = userquizzes.find(quiz => quiz.name === quiz.name);
+  if (duplicateQuiz) {
+    return {
+      error: 'Quiz name already exists for target user',
+    };
+  }
+  quiz.quizOwnedby = email.userId;
+  save(data);
+
+  return {};
+}
