@@ -11,7 +11,7 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizDescriptionUpdate } from './quiz';
+import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete } from './question';
 
 // Set up web app
@@ -247,6 +247,31 @@ app.put('/v1/admin/quiz/:quizId/name', (req: Request, res: Response) => {
     }
   }
 
+  res.status(200).json(response);
+});
+
+app.post('/v1/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
+  const { token, userEmail } = req.body;
+  const { quizId } = req.params;
+
+  const response = adminQuizTransfer(String(token), parseInt(quizId), String(userEmail));
+
+  if ('error' in response) {
+    if (response.error === 'Email not found') {
+      return res.status(400).json(response);
+    }
+    if (response.error === 'userEmail cannot already be the owner of the quiz') {
+      return res.status(400).json(response);
+    }
+    if (response.error === 'Quiz name already exists for target user') {
+      return res.status(400).json(response);
+    }
+    if (response.error === 'Invalid Token') {
+      return res.status(401).json(response);
+    } else if (response.error === 'Unauthorised') {
+      return res.status(403).json(response);
+    }
+  }
   res.status(200).json(response);
 });
 

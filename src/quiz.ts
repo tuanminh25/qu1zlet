@@ -39,7 +39,8 @@ export function adminQuizCreate(token: string, name: string, description: string
   }
 
   // Error checking 400
-  if (data.quizzes.some((quiz) => quiz.name === name)) {
+  const quizExists = data.quizzes.find((quiz) => quiz.name === name);
+  if (quizExists && quizExists.quizOwnedby === userId) {
     return {
       error: 'Quiz name already exists'
     };
@@ -256,6 +257,63 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
 }
 
 /**
+adminQuizTransfer transfers the ownership of a specific quiz to another user.
+@param {string} token - unique user identifier
+@param {number} quizId - unique quiz identifier
+@param {string} userEmail - Email the email will be transferred to
+
+@returns {} - updates name of quiz in datastore
+@returns {error: string} - invalid parameters entered
+**/
+export function adminQuizTransfer(token: string, quizId: number, userEmail: string): Record<string, never> | { error?: string } {
+  const data = load();
+  const session = isToken(token);
+  const quizFound = data.quizzes.find(q => q.quizId === quizId);
+
+  // error 401
+  if (!session) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  // error 403
+  if (quizFound.quizOwnedby !== session.userId) {
+    return {
+      error: 'Unauthorised'
+    };
+  }
+
+  // error 400
+  const email = data.users.find(user => user.email === userEmail);
+  if (!email) {
+    return {
+      error: 'Email not found'
+    };
+  }
+
+  const user = checkauthUserId(session.userId);
+  const currEmail = user.email;
+  if (userEmail === currEmail) {
+    return {
+      error: 'userEmail cannot already be the owner of the quiz'
+    };
+  }
+
+  const userquizzes = data.quizzes.filter(quiz => quiz.quizOwnedby === email.userId);
+  const duplicateQuiz = userquizzes.find(quiz => quiz.name === quizFound.name);
+  if (duplicateQuiz) {
+    return {
+      error: 'Quiz name already exists for target user',
+    };
+  }
+  quizFound.quizOwnedby = email.userId;
+  save(data);
+
+  return {};
+}
+
+/**
  * Update a quiz description
  *
  * @param {string} token - unique user identifier
@@ -266,7 +324,6 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
  * @returns {}
  *
  */
-
 export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string) {
   const data = load();
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
@@ -295,7 +352,5 @@ export function adminQuizDescriptionUpdate (token: string, quizId: number, descr
   quiz.description = description;
   quiz.timeLastEdited = generateTime();
   save(data);
-  return {
-
-  };
+  return {};
 }
