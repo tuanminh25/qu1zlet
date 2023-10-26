@@ -235,17 +235,17 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
     };
   }
 
-    // error 400
-    if (isQuizName(name) === false) {
-      return {
-        error: 'Invalid Quiz Name'
-      };
-    }
-    if (data.quizzes.some((quiz) => quiz.name === name)) {
-      return {
-        error: 'Quiz name already exists'
-      };
-    }
+  // error 400
+  if (isQuizName(name) === false) {
+    return {
+      error: 'Invalid Quiz Name'
+    };
+  }
+  if (data.quizzes.some((quiz) => quiz.name === name)) {
+    return {
+      error: 'Quiz name already exists'
+    };
+  }
 
   // Working case
   quiz.name = name;
