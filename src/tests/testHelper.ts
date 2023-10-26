@@ -144,10 +144,10 @@ export function testQuizInfo(token: string, quizId: number) {
 export function testQuizDescriptionUpdate(token: string, quizId: number, description: string) {
   const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/description`, {
     json: {
-      token: token, 
+      token: token,
       description: description
     }
   });
 
-  return {response: JSON.parse(res.body.toString()), status: res.statusCode };
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }

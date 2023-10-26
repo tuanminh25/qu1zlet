@@ -264,37 +264,37 @@ describe.only('GET /v1/admin/quiz/:quizid', () => {
 describe.only('/v1/admin/quiz/:quizid/description', () => {
   let user : {token: string};
   let quiz : {quizId: number};
-  beforeEach(()=> {
+  beforeEach(() => {
     testClear();
     user = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
     quiz = testCreateQuiz(user.token, 'Quiz 1', 'This is quiz 1').response;
-  })
+  });
 
-  // Working cases: 
+  // Working cases:
   // Empty description cases
-  test("Successfully update description", () => {
-    let inforObjectOriginal = testQuizInfo(user.token, quiz.quizId).response;
+  test('Successfully update description', () => {
+    const inforObjectOriginal = testQuizInfo(user.token, quiz.quizId).response;
 
     const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId, '');
     expect(updateResponse.response).toStrictEqual({});
     expect(updateResponse.status).toStrictEqual(200);
-    
-    let inforObjectNew = testQuizInfo(user.token, quiz.quizId).response;
+
+    const inforObjectNew = testQuizInfo(user.token, quiz.quizId).response;
     expect(inforObjectNew.description).toStrictEqual('');
-  
+
     // Check for changes in time last edited
     expect(inforObjectOriginal.timeLastEdited !== inforObjectNew.timeLastEdited);
   });
 
   // Any normal cases
-  test("Successfully update description", () => {
-    let inforObjectOriginal = testQuizInfo(user.token, quiz.quizId).response;
+  test('Successfully update description', () => {
+    const inforObjectOriginal = testQuizInfo(user.token, quiz.quizId).response;
 
     const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId, 'Hello there, hi new updated description');
     expect(updateResponse.response).toStrictEqual({});
     expect(updateResponse.status).toStrictEqual(200);
-    
-    let inforObjectNew = testQuizInfo(user.token, quiz.quizId).response;
+
+    const inforObjectNew = testQuizInfo(user.token, quiz.quizId).response;
     expect(inforObjectNew.description).toStrictEqual('Hello there, hi new updated description');
 
     // Check for changes in time last edited
@@ -304,42 +304,35 @@ describe.only('/v1/admin/quiz/:quizid/description', () => {
   // Error cases:
 
   // Description is more than 100 characters in length (note: empty strings are OK)
-  test("Description is more than 100 characters in length", () => {
-    const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId, 
+  test('Description is more than 100 characters in length', () => {
+    const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId,
       'avfwuevfg72q3fv3 r3y2urguyg23rg3t26rg32gr327gr7162gr671trgfjfjsbfsjfbsjhbfsbfsajbfjkwebf823g78grjwbfjewbqurweqbubrweuyrbuywqgruyweqgruwqgrwugreuwgruwgruwgruwgrweuygr293hrownfksnfkasdnfoihrf932hrhwrbjwabfwgf7ghseifbkwnf23noi32j893u2r9owhekfnwafbwafb732yr9q2yhriqwhrbfkwebfwakbf92qohrwqhefkasnfk,sa dfwhr9832urjwrnfefnoi3wjr0329jrowjflwnfmekqjr34jronfke fwrhf392hr9hjoqwnrlaenfa flwenmfo23ue021jeownrlewnfakbfhwgbfyu32gr8723gr92hrwenflasmnflam3902ur0ujonlwanfl');
-    expect(updateResponse.response).toStrictEqual({error: "Description is more than 100 characters in length"});
+    expect(updateResponse.response).toStrictEqual({ error: 'Description is more than 100 characters in length' });
 
     expect(updateResponse.status).toStrictEqual(400);
-  
   });
 
-
   // Token is empty or invalid (does not refer to valid logged in user session)
-  test("Token is empty or invalid", () => {
+  test('Token is empty or invalid', () => {
     const updateResponse = testQuizDescriptionUpdate(user.token + 1, quiz.quizId, 'Token is empty or invalid');
-    expect(updateResponse.response).toStrictEqual({error: "Token is empty or invalid"});
+    expect(updateResponse.response).toStrictEqual({ error: 'Token is empty or invalid' });
     expect(updateResponse.status).toStrictEqual(401);
-
   });
 
   // Quiz ID does not refer to a valid quiz
-  test("Quiz ID does not refer to a valid quiz", () => {
+  test('Quiz ID does not refer to a valid quiz', () => {
     const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId + 1, 'This quiz id does no refer to any quiz');
-    expect(updateResponse.response).toStrictEqual({error: "Quiz ID does not refer to a valid quiz"});
+    expect(updateResponse.response).toStrictEqual({ error: 'Quiz ID does not refer to a valid quiz' });
     expect(updateResponse.status).toStrictEqual(403);
-
   });
 
   // Quiz ID does not refer to a quiz that this user owns
-  test("Quiz ID does not refer to a quiz that this user owns, belongs to somebody else", () => {
-    let user2 = testRegister('somebody@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2').response;
-    let quiz2 = testCreateQuiz(user2.token, 'Quiz by user 2', 'User 2 quiz').response;
+  test('Quiz ID does not refer to a quiz that this user owns, belongs to somebody else', () => {
+    const user2 = testRegister('somebody@unsw.edu.au', 'password2', 'nameFirst2', 'nameLast2').response;
+    const quiz2 = testCreateQuiz(user2.token, 'Quiz by user 2', 'User 2 quiz').response;
 
     const updateResponse = testQuizDescriptionUpdate(user.token, quiz2.quizId, 'Try to update user 2 quiz');
     expect(updateResponse.response).toStrictEqual(ERROR);
     expect(updateResponse.status).toStrictEqual(403);
-   
   });
-
-
-})
+});

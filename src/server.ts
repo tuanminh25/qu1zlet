@@ -152,7 +152,6 @@ app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
     }
   }
 
-
   res.status(200).json(response);
 });
 
@@ -185,21 +184,21 @@ app.put('/v1/admin/user/details', (req: Request, res: Response) => {
 });
 
 app.put('/v1/admin/quiz/:quizId/description', (req: Request, res: Response) => {
-  const {token , description} = req.body;
-  const {quizId} = req.params;
-  const response = adminQuizDescriptionUpdate (String(token), parseInt(quizId), String(description));
+  const { token, description } = req.body;
+  const { quizId } = req.params;
+  const response = adminQuizDescriptionUpdate(String(token), parseInt(quizId), String(description));
 
-  if (response.error === "Token is empty or invalid") {
+  if (response.error === 'Token is empty or invalid') {
     return res.status(401).json(response);
   } else if (response.error === 'Description is more than 100 characters in length') {
     return res.status(400).json(response);
-  } else if (response.error === 'Quiz ID does not refer to a valid quiz' || 
+  } else if (response.error === 'Quiz ID does not refer to a valid quiz' ||
     response.error === 'Quiz ID does not refer to a quiz that this user owns') {
     return res.status(403).json(response);
   }
 
   res.json(response);
-})
+});
 
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
