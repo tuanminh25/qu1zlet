@@ -1,4 +1,3 @@
-import exp from 'constants';
 import {
   testRegister,
   testCreateQuiz,
@@ -254,8 +253,6 @@ describe('/v1/admin/quiz/{quizid}/question/{questionid}', () => {
       { answer: 'leblanc', correct: true }
     ]
   };
-
-
 
   beforeEach(() => {
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
