@@ -6,9 +6,26 @@ import {
   isQuizName,
   generateTime,
   Quiz,
+  Question,
   load,
   save
 } from './helper';
+
+interface QuizInfoReturn {
+  quizId: number;
+  name: string;
+  timeCreated: number;
+  timeLastEdited: number;
+  description: string;
+  numQuestions: number;
+  questions: Question[];
+  duration: number;
+}
+
+interface ErrorObject {
+  error: string;
+}
+
 
 /**
   * Given basic details about a new quiz, create one for the logged in user.
@@ -146,7 +163,7 @@ export function adminQuizRemove(token: string, quizId: number) {
 @returns {error: string} - invalid parameters entered
 **/
 
-export function adminQuizInfo(token: string, quizId: number) {
+export function adminQuizInfo(token: string, quizId: number): QuizInfoReturn | ErrorObject {
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
   // Error Check 401
