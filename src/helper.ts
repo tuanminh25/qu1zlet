@@ -3,6 +3,8 @@ import path from 'path';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
+const Colours: string[] = ['red', 'blue', 'green', 'yellow', 'purple', 'brown', 'orange'];
+
 export interface User {
   userId: number;
   nameFirst: string;
@@ -15,8 +17,10 @@ export interface User {
 }
 
 export interface Answer {
-  answer: string,
-  correct: boolean
+  answerId: number;
+  answer: string;
+  correct: boolean;
+  colour: string;
 }
 
 export interface Question {
@@ -33,9 +37,9 @@ export interface Quiz {
   timeCreated: number;
   timeLastEdited: number;
   description: string;
-  quizOwnedby: number,
-  duration: number,
-  numQuestions: number,
+  quizOwnedby: number;
+  duration: number;
+  numQuestions: number;
   questions: Question[]
 }
 
@@ -47,7 +51,8 @@ export interface Session {
 export interface Ids {
   userId: number;
   quizId: number;
-  questionId: number
+  questionId: number;
+  answerId: number;
 }
 
 export interface DataStore {
@@ -194,4 +199,10 @@ export function isQuizDescription(name: string) {
 */
 export function generateTime(): number {
   return Math.floor(Date.now() / 1000);
+}
+
+export function randomColour(): string {
+  const randomIndex = Math.floor(Math.random() * Colours.length);
+  const colour = Colours[randomIndex];
+  return colour;
 }
