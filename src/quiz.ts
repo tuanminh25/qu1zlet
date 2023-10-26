@@ -201,7 +201,8 @@ export function adminQuizInfo(token: string, quizId: number): QuizInfoReturn | E
 }
 
 export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string) {
-  const quiz = checkquizId(quizId);
+  const data = load();
+  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
   const session = isToken(token);
 
   // Returning errors
@@ -226,6 +227,8 @@ export function adminQuizDescriptionUpdate (token: string, quizId: number, descr
   // Working case
   quiz.description = description;
   quiz.timeLastEdited = Date.now() * 1000;
+
+  save(data);
   return {
 
   };
