@@ -98,7 +98,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
       answer: item.answer,
       correct: item.correct,
       colour: randomColour()
-    })
+    });
   }
 
   const newQuestion: Question = {
