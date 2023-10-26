@@ -1,4 +1,3 @@
-import { number, string } from 'yargs';
 import {
   testRegister,
   testCreateQuiz,
@@ -274,34 +273,171 @@ describe('GET /v1/admin/quiz/:quizid', () => {
           duration: 4,
           points: 5,
           answers: [
-            { 
-              answerId: expect.any(number),
+            {
+              answerId: expect.any(Number),
               answer: 'Berlin',
-              correct: false ,
-              colour: expect.any(string)
+              correct: false,
+              colour: expect.any(String)
             },
-            { 
-              answerId: expect.any(number),
+            {
+              answerId: expect.any(Number),
               answer: 'Madrid',
-              correct: false ,
-              colour: expect.any(string)
+              correct: false,
+              colour: expect.any(String)
             },
-            { 
-              answerId: expect.any(number),
+            {
+              answerId: expect.any(Number),
               answer: 'Paris',
-              correct: true ,
-              colour: expect.any(string)
-            },            
-            { 
-              answerId: expect.any(number),
+              correct: true,
+              colour: expect.any(String)
+            },
+            {
+              answerId: expect.any(Number),
               answer: 'Rome',
-              correct: false ,
-              colour: expect.any(string)
+              correct: false,
+              colour: expect.any(String)
             },
           ]
         }
       ],
       duration: 4,
+    });
+    expect(quizinfo.status).toStrictEqual(200);
+  });
+
+  test('Display Quiz Info - multiple questions', () => {
+    const validQuestion2 = {
+      question: 'Who is the Goat',
+      duration: 10,
+      points: 9,
+      answers: [
+        { answer: 'Penaldo', correct: false },
+        { answer: 'Pessi', correct: false },
+        { answer: 'Peymar', correct: false },
+        { answer: 'Paaland', correct: false },
+        { answer: 'Darwizzy', correct: true },
+      ]
+    };
+    const validQuestion3 = {
+      question: 'XDhenlo',
+      duration: 10,
+      points: 9,
+      answers: [
+        { answer: 'Nopelol', correct: false },
+        { answer: 'Yes yeah', correct: false },
+        { answer: 'Darwizzy', correct: true },
+      ]
+    };
+    const question = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion).response;
+    const question2 = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion2).response;
+    const question3 = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion3).response;
+    const quizinfo = testQuizInfo(user.token, quiz.quizId);
+    expect(quizinfo.response).toStrictEqual({
+      quizId: question.questionId,
+      name: 'My Quiz Name',
+      timeCreated: expect.any(Number),
+      timeLastEdited: expect.any(Number),
+      description: 'A description of my quiz',
+      numQuestions: 3,
+      questions: [
+        {
+          questionId: question.questionId,
+          question: 'What is the capital of France?',
+          duration: 4,
+          points: 5,
+          answers: [
+            {
+              answerId: expect.any(Number),
+              answer: 'Berlin',
+              correct: false,
+              colour: expect.any(String)
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Madrid',
+              correct: false,
+              colour: expect.any(String)
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Paris',
+              correct: true,
+              colour: expect.any(String)
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Rome',
+              correct: false,
+              colour: expect.any(String)
+            },
+          ]
+        },
+        {
+          questionId: question2.questionId,
+          question: 'Who is the Goat',
+          duration: 10,
+          points: 9,
+          answers: [
+            {
+              answerId: expect.any(Number),
+              answer: 'Penaldo',
+              correct: false,
+              colour: expect.any(String)
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Pessi',
+              correct: false,
+              colour: expect.any(String)
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Peymar',
+              correct: false,
+              colour: expect.any(String)
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Paaland',
+              correct: false,
+              colour: expect.any(String)
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Darwizzy',
+              correct: true,
+              colour: expect.any(String)
+            },
+          ]
+        },
+        {
+          questionId: question3.questionId,
+          question: 'XDhenlo',
+          duration: 10,
+          points: 9,
+          answers: [
+            {
+              answerId: expect.any(Number),
+              answer: 'Nopelol',
+              correct: false,
+              colour: expect.any(String)
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Yes yeah',
+              correct: false,
+              colour: expect.any(String)
+            },
+            {
+              answerId: expect.any(Number),
+              answer: 'Darwizzy',
+              correct: true,
+              colour: expect.any(String)
+            },
+          ]
+        }
+      ],
+      duration: 24,
     });
     expect(quizinfo.status).toStrictEqual(200);
   });
