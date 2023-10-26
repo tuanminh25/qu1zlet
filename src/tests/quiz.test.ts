@@ -1,9 +1,12 @@
+import { number, string } from 'yargs';
 import {
   testRegister,
   testCreateQuiz,
   testQuizToTrash,
   testClear,
-  testQuizList
+  testQuizList,
+  testCreateQuizQuestion,
+  testQuizInfo
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -230,5 +233,110 @@ describe('testQuizList', () => {
   test('Token is empty or invalid (does not refer to valid logged in user session)', () => {
     expect(testQuizList(user.token + 1).response).toStrictEqual({ error: 'Token is empty or invalid' });
     expect(testQuizList(user.token + 1).status).toStrictEqual(401);
+  });
+});
+
+describe('GET /v1/admin/quiz/:quizid', () => {
+  let user: { token: string };
+  let quiz: { quizId: number };
+  const validQuestion = {
+    question: 'What is the capital of France?',
+    duration: 4,
+    points: 5,
+    answers: [
+      { answer: 'Berlin', correct: false },
+      { answer: 'Madrid', correct: false },
+      { answer: 'Paris', correct: true },
+      { answer: 'Rome', correct: false }
+    ]
+  };
+
+  beforeEach(() => {
+    testClear();
+    user = testRegister('testuser@example.com', 'Password123', 'Test', 'User').response;
+    quiz = testCreateQuiz(user.token, 'My Quiz Name', 'A description of my quiz').response;
+  });
+
+  test('Display Quiz Info - Successful', () => {
+    const question = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion).response;
+    const quizinfo = testQuizInfo(user.token, quiz.quizId);
+    expect(quizinfo.response).toStrictEqual({
+      quizId: question.questionId,
+      name: 'My Quiz Name',
+      timeCreated: expect.any(Number),
+      timeLastEdited: expect.any(Number),
+      description: 'A description of my quiz',
+      numQuestions: 1,
+      questions: [
+        {
+          questionId: question.questionId,
+          question: 'What is the capital of France?',
+          duration: 4,
+          points: 5,
+          answers: [
+            { 
+              answerId: expect.any(number),
+              answer: 'Berlin',
+              correct: false ,
+              colour: expect.any(string)
+            },
+            { 
+              answerId: expect.any(number),
+              answer: 'Madrid',
+              correct: false ,
+              colour: expect.any(string)
+            },
+            { 
+              answerId: expect.any(number),
+              answer: 'Paris',
+              correct: true ,
+              colour: expect.any(string)
+            },            
+            { 
+              answerId: expect.any(number),
+              answer: 'Rome',
+              correct: false ,
+              colour: expect.any(string)
+            },
+          ]
+        }
+      ],
+      duration: 4,
+    });
+    expect(quizinfo.status).toStrictEqual(200);
+  });
+
+  test('Display Quiz Info without Description or Questions - Successful', () => {
+    const badquiz = testCreateQuiz(user.token, 'My Quiz Nameeeee', '').response;
+    const quizinfo = testQuizInfo(user.token, badquiz.quizId);
+    expect(quizinfo.response).toStrictEqual({
+      quizId: expect.any(Number),
+      name: 'My Quiz Nameeeee',
+      timeCreated: expect.any(Number),
+      timeLastEdited: expect.any(Number),
+      description: '',
+      numQuestions: 0,
+      questions: [],
+      duration: 0,
+    });
+    expect(quizinfo.status).toStrictEqual(200);
+  });
+
+  test('Invalid Token', () => {
+    const quizinfo = testQuizInfo(user.token + 'abc', quiz.quizId);
+    expect(quizinfo.response).toStrictEqual(ERROR);
+    expect(quizinfo.status).toStrictEqual(401);
+  });
+
+  test('Empty Token', () => {
+    const quizinfo = testQuizInfo('', quiz.quizId);
+    expect(quizinfo.response).toStrictEqual(ERROR);
+    expect(quizinfo.status).toStrictEqual(401);
+  });
+
+  test('Unauthorized', () => {
+    const unauthorizedUser = testRegister('unauthorized@example.com', 'password123', 'Unauthorized', 'User').response;
+    const quizinfo = testQuizInfo(unauthorizedUser.token, quiz.quizId);
+    expect(quizinfo.status).toStrictEqual(403);
   });
 });
