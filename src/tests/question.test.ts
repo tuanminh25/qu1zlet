@@ -1,8 +1,10 @@
+import { Question, User } from '../helper';
 import {
   testRegister,
   testCreateQuiz,
   testCreateQuizQuestion,
-  testClear
+  testClear,
+  testMoveQuizQuestion
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -211,5 +213,159 @@ describe('/v1/admin/quiz/{quizid}/question', () => {
     expect(question.status).toBe(403);
   });
 });
+
+describe("Move A Quiz Question", () => {
+  let user1: { token: string; };
+  let user2: { token: string; };
+  let quiz1: { quizId: number; };
+  let quiz2: { quizId: number; };
+
+  let question1: {questionId: number};
+  let question2: {questionId: number};
+  let question3: {questionId: number};
+  let question4: {questionId: number};
+  let question5: {questionId: number};
+
+  const validQuestion1 = {
+    question: 'What is the capital of France?',
+    duration: 4,
+    points: 5,
+    answers: [{}]
+  };
+
+  const validQuestion2 = {
+    question: 'What is the capital of Spain?',
+    duration: 4,
+    points: 5,
+    answers: [{}]
+  };
+
+  const validQuestion3 = {
+    question: 'What is the capital of Brazil?',
+    duration: 4,
+    points: 5,
+    answers: [{}]
+  };
+
+  const validQuestion4 = {
+    question: 'What is the capital of Vietnam?',
+    duration: 4,
+    points: 5,
+    answers: [{}]
+  };
+
+  const validQuestion5 = {
+    question: 'What is the capital of China?',
+    duration: 4,
+    points: 5,
+    answers: [{}]
+  };
+
+
+  // Working cases
+  describe("Working cases:", () => {
+    beforeEach(() => {
+      testClear();
+      // First person
+      user1 = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
+      user2 = testRegister('jayden.smith@unsw.edu.au', 'password123', 'nameFirst', 'nameLast').response;
+
+      quiz1 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+      question1 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion1).response;
+      question2 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion2).response;
+      question3 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion3).response;
+      question4 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion4).response;
+      question5 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion5).response;
+      
+      // Second person
+      quiz2 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+
+    });
+
+    // test("Succesfully move 1 ques")
+
+    // test("Succesfully move many ques")
+
+  })
+
+
+  // Error cases:
+  describe("Error cases:", () => {
+    beforeEach(() => {
+      testClear();
+      // First person
+      user1 = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
+      user2 = testRegister('jayden.smith@unsw.edu.au', 'password123', 'nameFirst', 'nameLast').response;
+
+      quiz1 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+      question1 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion1).response;
+      question2 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion2).response;
+      question3 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion3).response;
+      question4 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion4).response;
+      question5 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion5).response;
+
+      // Second person
+      quiz2 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+
+    })
+ 
+    // 400
+    // Question Id does not refer to a valid question within this quiz
+    test("Question Id does not refer to a valid question within this quiz", () => {
+      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId + 10, 4);
+      expect(res.response).toStrictEqual({error: "Question Id does not refer to a valid question within this quiz: " + question5.questionId})
+      expect(res.status).toStrictEqual(400);
+    })
+
+    // NewPosition is less than 0, 
+    test("NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions", () => {
+      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, 10);
+      expect(res.response).toStrictEqual({error: "NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions: " + 10})
+      expect(res.status).toStrictEqual(400);
+    })
+
+    // or NewPosition is greater than n-1 where n is the number of questions
+    test("NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions", () => {
+      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, -10);
+      expect(res.response).toStrictEqual({error: "NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions: " + -10})
+      expect(res.status).toStrictEqual(400);
+    })
+
+    // NewPosition is the position of the current question
+    test("NewPosition is the position of the current question", () => {
+      const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question5.questionId, 4);
+      expect(res.response).toStrictEqual({error: "NewPosition is the position of the current question: " + 4})
+      expect(res.status).toStrictEqual(400);
+    })
+
+    // 401
+    // Token is empty or invalid (does not refer to valid logged in user session)
+    // Invalid
+    test("Token is empty or invalid", () => {
+      const res = testMoveQuizQuestion(user1.token + 10000, quiz1.quizId, question5.questionId, 3);
+      expect(res.response).toStrictEqual({error: "Token is empty or invalid"})
+      expect(res.status).toStrictEqual(401);
+    })
+
+    // Empty
+    test("Token is empty or invalid", () => {
+      const res = testMoveQuizQuestion('', quiz1.quizId, question5.questionId, 3);
+      expect(res.response).toStrictEqual({error: "Token is empty or invalid"})
+      expect(res.status).toStrictEqual(401);
+    })
+
+    // 403
+    // Valid token is provided, but user is not an owner of this quiz
+    test("Valid token is provided, but user is not an owner of this quiz", () => {
+      const res = testMoveQuizQuestion(user2.token, quiz1.quizId, question5.questionId, 3);
+      expect(res.response).toStrictEqual({error: "Valid token is provided, but user is not an owner of this quiz"});
+      expect(res.status).toStrictEqual(403);
+    })
+
+  })
+
+
+})
+
 
 testClear();
