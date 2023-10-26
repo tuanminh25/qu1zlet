@@ -231,3 +231,38 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
   save(data);
   return {};
 }
+
+export function adminQuestionDelete(token: string, quizId: number, questionId: number) {
+  const session = isToken(token);
+
+  if (!session) {
+    return {
+      error: 'Invalid token'
+    };
+  }
+
+  const data = load();
+  const quiz = data.quizzes.find((item) => item.quizId === quizId);
+
+  if (quiz.quizOwnedby !== session.userId) {
+    return {
+      error: 'Unauthorised'
+    };
+  }
+
+  const ques = quiz.questions.find((item) => item.questionId === questionId);
+
+  if (!ques) {
+    return {
+      error: 'Question Id does not refer to a valid question within this quiz'
+    };
+  }
+
+  const newQuestions = quiz.questions.filter((item) => item.questionId !== questionId);
+  quiz.questions = newQuestions;
+  quiz.duration -= ques.duration;
+  quiz.numQuestions--;
+
+  save(data);
+  return {};
+}

@@ -184,3 +184,13 @@ export function testQuizDescriptionUpdate(token: string, quizId: number, descrip
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testQuestionDelete(token: string, quizId: number, questionId: number) {
+  const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}`, {
+    qs: {
+      token: token
+    }
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
