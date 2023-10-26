@@ -136,6 +136,23 @@ export function testQuizToTrash(token: string, quizId: number) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
+export function testUpdateQuestion(
+  token: string,
+  quizId: number,
+  questionId: number,
+  questionBody: object
+) {
+  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}`,
+    {
+      json: {
+        token: token,
+        questionBody: questionBody
+      }
+    });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
 export function testQuizInfo(token: string, quizId: number) {
   const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
     qs: {
