@@ -6,7 +6,8 @@ import {
   testQuizList,
   testCreateQuizQuestion,
   testQuizInfo,
-  testQuizNameUpdate
+  testQuizNameUpdate,
+  testQuizDescriptionUpdate
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
