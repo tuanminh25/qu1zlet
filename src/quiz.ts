@@ -268,17 +268,17 @@ adminQuizTransfer transfers the ownership of a specific quiz to another user.
 export function adminQuizTransfer(token: string, quizId: number, userEmail: string): Record<string, never> | { error?: string } {
   const data = load();
   const session = isToken(token);
-  const quiz = data.quizzes.find(q => q.quizId === quizId);
+  const quizFound = data.quizzes.find(q => q.quizId === quizId);
 
   // error 401
   if (!session) {
     return {
       error: 'Invalid Token'
     };
-  };
+  }
 
   // error 403
-  if (quiz.quizOwnedby !== session.userId) {
+  if (quizFound.quizOwnedby !== session.userId) {
     return {
       error: 'Unauthorised'
     };
@@ -289,25 +289,25 @@ export function adminQuizTransfer(token: string, quizId: number, userEmail: stri
   if (!email) {
     return {
       error: 'Email not found'
-    }
+    };
   }
 
   const user = checkauthUserId(session.userId);
   const currEmail = user.email;
-  if (userEmail == currEmail) {
+  if (userEmail === currEmail) {
     return {
       error: 'userEmail cannot already be the owner of the quiz'
-    }
+    };
   }
 
   const userquizzes = data.quizzes.filter(quiz => quiz.quizOwnedby === email.userId);
-  const duplicateQuiz = userquizzes.find(quiz => quiz.name === quiz.name);
+  const duplicateQuiz = userquizzes.find(quiz => quiz.name === quizFound.name);
   if (duplicateQuiz) {
     return {
       error: 'Quiz name already exists for target user',
     };
   }
-  quiz.quizOwnedby = email.userId;
+  quizFound.quizOwnedby = email.userId;
   save(data);
 
   return {};

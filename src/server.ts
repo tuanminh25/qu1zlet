@@ -236,7 +236,7 @@ app.post('/v1/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
     }
   }
   res.status(200).json(response);
-})
+});
 
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================

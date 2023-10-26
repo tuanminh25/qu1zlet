@@ -26,10 +26,10 @@ describe('/v1/admin/quiz', () => {
     expect(quiz.status).toStrictEqual(200);
     // TODO: use other functions to check if working eg quizlist.
   });
-  
+
   test('Successful quiz create with same name as quiz from another user', () => {
     const quiz = testCreateQuiz(user.token, 'My Quiz Name', 'A description of my quiz');
-    let user2 = testRegister('testuser2@example.com', 'password321', 'User', 'Test').response;
+    const user2 = testRegister('testuser2@example.com', 'password321', 'User', 'Test').response;
     const quiz2 = testCreateQuiz(user2.token, 'My Quiz Name', 'A description of my quiz');
     expect(quiz.status).toStrictEqual(200);
     expect(quiz2.status).toStrictEqual(200);
