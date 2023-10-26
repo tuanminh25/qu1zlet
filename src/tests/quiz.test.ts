@@ -291,8 +291,8 @@ describe('/v1/admin/quiz/:quizid/description', () => {
 
   // Token is empty or invalid (does not refer to valid logged in user session)
   test("Token is empty or invalid", () => {
-    expect(testQuizDescriptionUpdate(user.token + 1, quiz.quizId, 'Auth user id is not valid here').response).toStrictEqual({error: "Token is empty or invalid"});
-    expect(testQuizDescriptionUpdate(user.token + 1, quiz.quizId, 'Auth user id is not valid here').status).toStrictEqual(401);
+    expect(testQuizDescriptionUpdate(user.token + 1, quiz.quizId, 'Token is empty or invalid').response).toStrictEqual({error: "Token is empty or invalid"});
+    expect(testQuizDescriptionUpdate(user.token + 1, quiz.quizId, 'Token is empty or invalid').status).toStrictEqual(401);
 
   });
 
