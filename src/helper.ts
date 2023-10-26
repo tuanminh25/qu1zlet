@@ -3,7 +3,7 @@ import path from 'path';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
-const Colours: String[] = ['red', 'blue', 'green', 'yellow', 'purple', 'brown', 'orange'];
+const Colours: string[] = ['red', 'blue', 'green', 'yellow', 'purple', 'brown', 'orange'];
 
 export interface User {
   userId: number;
@@ -52,7 +52,7 @@ export interface Ids {
   userId: number;
   quizId: number;
   questionId: number;
-  answerId: number
+  answerId: number;
 }
 
 export interface DataStore {
@@ -201,7 +201,7 @@ export function generateTime(): number {
   return Math.floor(Date.now() / 1000);
 }
 
-export function randomColour(): String {
+export function randomColour(): string {
   const randomIndex = Math.floor(Math.random() * Colours.length);
   const colour = Colours[randomIndex];
   return colour;

@@ -4,7 +4,9 @@ import {
   generateTime,
   Question,
   load,
-  save
+  save,
+  Answer,
+  randomColour
 } from './helper';
 
 /**
@@ -89,12 +91,22 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     };
   }
 
+  const answers: Answer[] = [];
+  for (const item of questionBody.answers) {
+    answers.push({
+      answerId: ++data.ids.answerId,
+      answer: item.answer,
+      correct: item.correct,
+      colour: randomColour()
+    })
+  }
+
   const newQuestion: Question = {
     questionId: ++data.ids.questionId,
     question: questionBody.question,
     duration: questionBody.duration,
     points: questionBody.points,
-    answers: questionBody.answers
+    answers: answers
   };
 
   quiz.questions.push(newQuestion);
