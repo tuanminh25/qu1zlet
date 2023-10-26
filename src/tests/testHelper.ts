@@ -131,6 +131,15 @@ export function testQuizToTrash(token: string, quizId: number) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
+export function testQuizInfo(token: string, quizId: number) {
+  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
+    qs: {
+      token: token,
+    },
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
 
 export function testQuizDescriptionUpdate(token: string, quizId: number, description: string) {
   const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/description`, {

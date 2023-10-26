@@ -1,6 +1,8 @@
 import {
   testRegister,
+  testQuizInfo,
   testCreateQuiz,
+  testCreateQuizQuestion,
   testQuizToTrash,
   testClear,
   testQuizDescriptionUpdate
@@ -171,6 +173,79 @@ describe('/v1/admin/quiz/:quizid', () => {
   });
 });
 
+describe('GET /v1/admin/quiz/:quizid', () => {
+  let user: { token: string };
+  let quiz: { quizId: number };
+  const validQuestion = {
+    question: 'What is the capital of France?',
+    duration: 4,
+    points: 5,
+    answers: [
+      { answer: 'Berlin', correct: false },
+      { answer: 'Madrid', correct: false },
+      { answer: 'Paris', correct: true },
+      { answer: 'Rome', correct: false }
+    ]
+  };
+
+  beforeEach(() => {
+    testClear();
+    user = testRegister('testuser@example.com', 'Password123', 'Test', 'User').response;
+    quiz = testCreateQuiz(user.token, 'My Quiz Name', 'A description of my quiz').response;
+  });
+
+  test('Display Quiz Info - Successful', () => {
+    const question = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion);
+    const quizinfo = testQuizInfo(user.token, quiz.quizId);
+    expect(quizinfo.response).toStrictEqual({
+      quizId: expect.any(Number),
+      name: 'My Quiz Name',
+      timeCreated: expect.any(Number),
+      timelastEdited: expect.any(Number),
+      description: 'A description of my quiz',
+      numQuestions: 1,
+      questions: [question],
+      duration: expect.any(Number),
+    });
+    expect(quizinfo.status).toStrictEqual(200);
+  });
+
+  test('Display Quiz Info without Description or Questions - Successful', () => {
+    const badquiz = testCreateQuiz(user.token, 'My Quiz Name', '');
+    expect(badquiz.response).toStrictEqual({
+      quizId: expect.any(Number),
+      name: 'My Quiz Name',
+      timeCreated: expect.any(Number),
+      timelastEdited: expect.any(Number),
+      description: '',
+      numQuestions: 0,
+      questions: [],
+      duration: 0,
+    });
+    expect(badquiz.status).toStrictEqual(200);
+  });
+
+  test('Invalid Token', () => {
+    const quizinfo = testQuizInfo(user.token + 'abc', quiz.quizId);
+    expect(quizinfo.status).toStrictEqual(401);
+  });
+
+  test('Empty Token', () => {
+    const quizinfo = testQuizInfo('', quiz.quizId);
+    expect(quizinfo.status).toStrictEqual(401);
+  });
+
+  test('Invalid User', () => {
+    const quizinfo = testQuizInfo('76234724334', quiz.quizId);
+    expect(quizinfo.status).toStrictEqual(401);
+  });
+
+  test('Unauthorized', () => {
+    const unauthorizedUser = testRegister('unauthorized@example.com', 'password123', 'Unauthorized', 'User').response;
+    const quizinfo = testQuizInfo(unauthorizedUser.token, quiz.quizId);
+    expect(quizinfo.status).toStrictEqual(403);
+  });
+});
 
 describe('/v1/admin/quiz/:quizid/description', () => {
   let user : {token: string};

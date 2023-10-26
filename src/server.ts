@@ -11,7 +11,7 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizRemove } from './quiz';
+import { adminQuizCreate, adminQuizRemove, adminQuizInfo } from './quiz';
 import { adminQuestionCreate } from './question';
 
 // Set up web app
@@ -126,6 +126,22 @@ app.delete('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
   const { quizId } = req.params;
 
   const response = adminQuizRemove(String(token), parseInt(quizId));
+  console.log(response);
+
+  if (response.error === 'Invalid Token') {
+    return res.status(401).json(response);
+  } else if ('error' in response) {
+    return res.status(403).json(response);
+  }
+
+  res.status(200).json(response);
+});
+
+app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
+  const token = req.query.token;
+  const { quizId } = req.params;
+
+  const response = adminQuizInfo(String(token), parseInt(quizId));
   console.log(response);
 
   if (response.error === 'Invalid Token') {
