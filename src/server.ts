@@ -176,10 +176,10 @@ app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
 });
 
 app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
-  const token = req.query.token;
-  const quizId = Number(req.params.quizId);
-  const questionId = Number(req.params.questionId);
-  const questionBody = req.body;
+  const token = req.body.token;
+  const quizId = parseInt(req.params.quizId);
+  const questionId = parseInt(req.params.questionId);
+  const questionBody = req.body.questionBody;
 
   const response = adminQuestionUpdate(String(token), quizId, questionId, questionBody);
 

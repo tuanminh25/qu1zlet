@@ -126,11 +126,11 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
   const quiz = data.quizzes.find(q => q.quizId === quizId);
 
   // Error 401 checking
-  const userId = isToken(token).userId;
-  if (!userId) {
+  if (!isToken(token)) {
     return { error: 'Invalid token' };
   }
 
+  const userId = isToken(token).userId;
   if (!checkauthUserId(userId)) {
     return { error: 'Invalid token' };
   }

@@ -310,7 +310,7 @@ describe('/v1/admin/quiz/{quizid}/question/{questionid}', () => {
     expect(updatedQuestion.status).toBe(401);
   });
 
-  test.only('Not an owner of the quiz', () => {
+  test('Not an owner of the quiz', () => {
     const anotherUser = testRegister('anotheruser@example.com', 'password1234', 'Another', 'User').response;
     const updatedQuestion = testUpdateQuestion(anotherUser.token, quiz.quizId, question.questionId, validQuestionUpdate);
     expect(updatedQuestion.response).toStrictEqual(ERROR);
