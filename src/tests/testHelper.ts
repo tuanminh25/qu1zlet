@@ -205,3 +205,9 @@ export function testQuestionDelete(token: string, quizId: number, questionId: nu
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export const testViewTrash = (token: string) => {
+  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/trash`, { qs: { token: token } });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+};
