@@ -585,7 +585,6 @@ describe.only("Duplicate Quiz Question", () => {
     // expect(res.response).toStrictEqual({newQuestionId: 6})
     expect(res.status).toStrictEqual(200);
 
-
     const list = testQuestionsList(user1.token, quiz1.quizId);
     expect(list.response).toStrictEqual([
       {
@@ -672,18 +671,6 @@ describe.only("Duplicate Quiz Question", () => {
     },
   ])
 })
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   // Error cases

@@ -123,11 +123,7 @@ export function listOfQuestions(token: string, quizId: number) {
   }
 
   const list = [];
-
-  if (quiz.questions.length === 0) {
-    return { error: 'Quiz error, length: 0' };
-  }
-
+  console.log(quiz.questions);
   for (const question of quiz.questions) {
     list.push({
       questionId: question.questionId,
@@ -175,10 +171,55 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
   if (currentPosition === newPosition) {
     return { error: 'NewPosition is the position of the current question: ' + currentPosition };
   }
-  console.log(quiz);
 
   quiz.questions.splice(currentPosition, 1);
   quiz.questions.splice(newPosition, 0, question);
   save(data);
   return {};
+}
+
+
+
+export function dupQuizQuestion(token: string, quizId: number, questionId: number) {
+  const data = load();
+
+  // Check errors
+  // Invalid token
+  const session = data.sessions.find((session) => session.sessionId === token);
+  if (!session) {
+    return { error: 'Token is empty or invalid' };
+  }
+
+
+  // Non-existent quiz
+  const quiz =  data.quizzes.find((quiz) => quiz.quizId === quizId);
+  if (quiz === undefined) {
+    return { error: 'Valid token is provided, quiz does not exist: ' + quizId};
+  }
+
+
+  // User is not owner of the quiz
+  if (session.userId !== quiz.quizOwnedby) {
+    return {error: "Valid token is provided, but user is not an owner of this quiz"};
+  }
+ 
+  // Question Id does not belong to this quiz
+  const question = quiz.questions.find((q) => q.questionId === questionId);
+  if (!question) {
+    return {error: "Question Id does not refer to a valid question within this quiz: " + questionId}
+  }
+
+
+  // Create new instance
+  // let dup = deepCopyQuestion(ques, quiz);
+  let dup = adminQuestionCreate(token, quizId, question);
+
+  // Update quiz
+  // quiz.questions.push(dup);
+  quiz.timeLastEdited = generateTime();
+
+
+  // Save data
+  save(data);
+  return {newQuestionId : dup.questionId};
 }

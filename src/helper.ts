@@ -195,3 +195,5 @@ export function isQuizDescription(name: string) {
 export function generateTime(): number {
   return Math.floor(Date.now() / 1000);
 }
+
+
