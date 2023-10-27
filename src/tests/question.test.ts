@@ -788,23 +788,23 @@ describe('Move A Quiz Question', () => {
     expect(list.response).toStrictEqual([
       {
         question: 'What is the capital of France?',
-        questionId: 1
+        questionId: question0.questionId
       },
       {
         question: 'What is the capital of Spain?',
-        questionId: 2
+        questionId: question1.questionId
       },
       {
         question: 'What is the capital of Brazil?',
-        questionId: 3
+        questionId: question2.questionId
       },
       {
         question: 'What is the capital of Vietnam?',
-        questionId: 4
+        questionId: question3.questionId
       },
       {
         question: 'What is the capital of China?',
-        questionId: 5
+        questionId: question4.questionId
       }
     ]);
   });
@@ -835,23 +835,23 @@ describe('Move A Quiz Question', () => {
       expect(list.response).toStrictEqual([
         {
           question: 'What is the capital of France?',
-          questionId: 1
+          questionId: question0.questionId
         },
         {
           question: 'What is the capital of Spain?',
-          questionId: 2
+          questionId: question1.questionId
         },
         {
           question: 'What is the capital of Brazil?',
-          questionId: 3
+          questionId: question2.questionId
         },
         {
           question: 'What is the capital of China?',
-          questionId: 5
+          questionId: question4.questionId
         },
         {
           question: 'What is the capital of Vietnam?',
-          questionId: 4
+          questionId: question3.questionId
         }
       ]);
     });
@@ -877,23 +877,23 @@ describe('Move A Quiz Question', () => {
       expect(list.response).toStrictEqual([
         {
           question: 'What is the capital of Brazil?',
-          questionId: 3
+          questionId: question2.questionId
         },
         {
           question: 'What is the capital of Spain?',
-          questionId: 2
+          questionId: question1.questionId
         },
 
         {
           question: 'What is the capital of China?',
-          questionId: 5
+          questionId: question4.questionId
         },
         {
           question: 'What is the capital of Vietnam?',
-          questionId: 4
+          questionId: question3.questionId
         }, {
           question: 'What is the capital of France?',
-          questionId: 1
+          questionId: question0.questionId
         },
 
       ]);
@@ -920,28 +920,28 @@ describe('Move A Quiz Question', () => {
     // Question Id does not refer to a valid question within this quiz
     test('Question Id does not refer to a valid question within this quiz', () => {
       const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId + 10, 4);
-      expect(res.response).toStrictEqual({ error: 'Question Id does not refer to a valid question within this quiz: ' + (question4.questionId + 10) });
+      expect(res.response).toStrictEqual(ERROR);
       expect(res.status).toStrictEqual(400);
     });
 
     // NewPosition is less than 0,
     test('NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions', () => {
       const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId, 10);
-      expect(res.response).toStrictEqual({ error: 'NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions: ' + 10 });
+      expect(res.response).toStrictEqual(ERROR);
       expect(res.status).toStrictEqual(400);
     });
 
     // or NewPosition is greater than n-1 where n is the number of questions
     test('NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions', () => {
       const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId, -10);
-      expect(res.response).toStrictEqual({ error: 'NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions: ' + -10 });
+      expect(res.response).toStrictEqual(ERROR);
       expect(res.status).toStrictEqual(400);
     });
 
     // NewPosition is the position of the current question
     test('NewPosition is the position of the current question', () => {
       const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId, 4);
-      expect(res.response).toStrictEqual({ error: 'NewPosition is the position of the current question: ' + 4 });
+      expect(res.response).toStrictEqual(ERROR);
       expect(res.status).toStrictEqual(400);
     });
 
@@ -950,14 +950,14 @@ describe('Move A Quiz Question', () => {
     // Invalid
     test('Token is empty or invalid', () => {
       const res = testMoveQuizQuestion(user1.token + 10000, quiz1.quizId, question4.questionId, 3);
-      expect(res.response).toStrictEqual({ error: 'Token is empty or invalid' });
+      expect(res.response).toStrictEqual(ERROR);
       expect(res.status).toStrictEqual(401);
     });
 
     // Empty
     test('Token is empty or invalid', () => {
       const res = testMoveQuizQuestion('', quiz1.quizId, question4.questionId, 3);
-      expect(res.response).toStrictEqual({ error: 'Token is empty or invalid' });
+      expect(res.response).toStrictEqual(ERROR);
       expect(res.status).toStrictEqual(401);
     });
 
@@ -965,14 +965,14 @@ describe('Move A Quiz Question', () => {
     // Valid token is provided, but user is not an owner of this quiz
     test('Valid token is provided, but user is not an owner of this quiz', () => {
       const res = testMoveQuizQuestion(user2.token, quiz1.quizId, question4.questionId, 3);
-      expect(res.response).toStrictEqual({ error: 'Valid token is provided, but user is not an owner of this quiz' });
+      expect(res.response).toStrictEqual(ERROR);
       expect(res.status).toStrictEqual(403);
     });
 
     // Valid token is provided, quiz does not exist
     test('Valid token is provided, quiz does not exist', () => {
       const res = testMoveQuizQuestion(user1.token, 100, question4.questionId, 3);
-      expect(res.response).toStrictEqual({ error: 'Valid token is provided, quiz does not exist: ' + 100 });
+      expect(res.response).toStrictEqual(ERROR);
       expect(res.status).toStrictEqual(403);
     });
   });
@@ -982,7 +982,6 @@ describe.only('Duplicate Quiz Question', () => {
   let user1: { token: string };
   let user2: { token: string };
   let quiz1: { quizId: number };
-  let quiz2: { quizId: number };
 
   let question0: {questionId: number};
   let question1: {questionId: number};
@@ -1052,9 +1051,6 @@ describe.only('Duplicate Quiz Question', () => {
     question2 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion2).response;
     question3 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion3).response;
     question4 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion4).response;
-
-    // Second person
-    quiz2 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
   });
 
   // Working cases
@@ -1072,27 +1068,27 @@ describe.only('Duplicate Quiz Question', () => {
     expect(list.response).toStrictEqual([
       {
         question: 'What is the capital of France?',
-        questionId: 1
+        questionId: question0.questionId
       },
       {
         question: 'What is the capital of Spain?',
-        questionId: 2
+        questionId: question1.questionId
       },
       {
         question: 'What is the capital of Brazil?',
-        questionId: 3
+        questionId: question2.questionId
       },
       {
         question: 'What is the capital of Vietnam?',
-        questionId: 4
+        questionId: question3.questionId
       },
       {
         question: 'What is the capital of China?',
-        questionId: 5
+        questionId: question4.questionId
       },
       {
         question: 'What is the capital of Brazil?',
-        questionId: 6
+        questionId: res.response.newQuestionId
       },
     ]);
   });
@@ -1118,35 +1114,35 @@ describe.only('Duplicate Quiz Question', () => {
     expect(list.response).toStrictEqual([
       {
         question: 'What is the capital of France?',
-        questionId: 1
+        questionId: question0.questionId
       },
       {
         question: 'What is the capital of Spain?',
-        questionId: 2
+        questionId: question1.questionId
       },
       {
         question: 'What is the capital of Brazil?',
-        questionId: 3
+        questionId: question2.questionId
       },
       {
         question: 'What is the capital of Vietnam?',
-        questionId: 4
+        questionId: question3.questionId
       },
       {
         question: 'What is the capital of China?',
-        questionId: 5
+        questionId: question4.questionId
       },
       {
         question: 'What is the capital of China?',
-        questionId: 6
+        questionId: res1.response.newQuestionId
       },
       {
         question: 'What is the capital of Brazil?',
-        questionId: 7
+        questionId: res2.response.newQuestionId
       },
       {
         question: 'What is the capital of France?',
-        questionId: 8
+        questionId: res3.response.newQuestionId
       },
     ]);
   });
@@ -1156,7 +1152,7 @@ describe.only('Duplicate Quiz Question', () => {
   // Question Id does not refer to a valid question within this quiz
   test('Question Id does not refer to a valid question within this quiz', () => {
     const res = testDupQuizQuestion(user1.token, quiz1.quizId, question4.questionId + 10);
-    expect(res.response).toStrictEqual({ error: 'Question Id does not refer to a valid question within this quiz: ' + (question4.questionId + 10) });
+    expect(res.response).toStrictEqual(ERROR);
     expect(res.status).toStrictEqual(400);
   });
 
@@ -1165,14 +1161,14 @@ describe.only('Duplicate Quiz Question', () => {
   // Invalid
   test('Token is empty or invalid', () => {
     const res = testDupQuizQuestion(user1.token + 10000, quiz1.quizId, question4.questionId);
-    expect(res.response).toStrictEqual({ error: 'Token is empty or invalid' });
+    expect(res.response).toStrictEqual(ERROR);
     expect(res.status).toStrictEqual(401);
   });
 
   // Empty
   test('Token is empty or invalid', () => {
     const res = testDupQuizQuestion('', quiz1.quizId, question4.questionId);
-    expect(res.response).toStrictEqual({ error: 'Token is empty or invalid' });
+    expect(res.response).toStrictEqual(ERROR);
     expect(res.status).toStrictEqual(401);
   });
 
@@ -1180,14 +1176,14 @@ describe.only('Duplicate Quiz Question', () => {
   // Valid token is provided, but user is not an owner of this quiz
   test('Valid token is provided, but user is not an owner of this quiz', () => {
     const res = testDupQuizQuestion(user2.token, quiz1.quizId, question4.questionId);
-    expect(res.response).toStrictEqual({ error: 'Valid token is provided, but user is not an owner of this quiz' });
+    expect(res.response).toStrictEqual(ERROR);
     expect(res.status).toStrictEqual(403);
   });
 
   // Valid token is provided, quiz does not exist
   test('Valid token is provided, quiz does not exist', () => {
     const res = testDupQuizQuestion(user1.token, 100, question4.questionId);
-    expect(res.response).toStrictEqual({ error: 'Valid token is provided, quiz does not exist: ' + 100 });
+    expect(res.response).toStrictEqual(ERROR);
     expect(res.status).toStrictEqual(403);
   });
 });
