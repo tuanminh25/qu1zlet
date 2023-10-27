@@ -769,7 +769,6 @@ describe('Move A Quiz Question', () => {
       { answer: 'Rome', correct: false }]
   };
 
-  
   // Working cases
   describe('Working cases:', () => {
     beforeEach(() => {
@@ -787,7 +786,7 @@ describe('Move A Quiz Question', () => {
     });
 
     // Succesfully move 1 question
-    test.only('Succesfully move 1 question', () => {
+    test('Succesfully move 1 question', () => {
       const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId, 3);
       expect(res.response).toStrictEqual({});
       expect(res.status).toStrictEqual(200);
@@ -842,7 +841,7 @@ describe('Move A Quiz Question', () => {
       expect(res3.response).toStrictEqual({});
       expect(res3.status).toStrictEqual(200);
 
-            const info = testQuizInfo(user1.token, quiz1.quizId).response.questions;
+      const info = testQuizInfo(user1.token, quiz1.quizId).response.questions;
       const list = [];
       for (const question of info) {
         list.push({
@@ -954,7 +953,7 @@ describe('Move A Quiz Question', () => {
   });
 });
 
-describe.only('Duplicate Quiz Question', () => {
+describe('Duplicate Quiz Question', () => {
   let user1: { token: string };
   let user2: { token: string };
   let quiz1: { quizId: number };
@@ -1035,19 +1034,17 @@ describe.only('Duplicate Quiz Question', () => {
   test('Succesfully duplicate 1 question', () => {
     // Duplicate mid
     const res = testDupQuizQuestion(user1.token, quiz1.quizId, question2.questionId);
-    // console.log(testQuizInfo(user1.token, quiz1.quizId));
-
     expect(res.response).toStrictEqual({ newQuestionId: 6 });
     expect(res.status).toStrictEqual(200);
 
-          const info = testQuizInfo(user1.token, quiz1.quizId).response.questions;
-      const list = [];
-      for (const question of info) {
-        list.push({
-          questionId: question.questionId,
-          question: question.question,
-        });
-      }
+    const info = testQuizInfo(user1.token, quiz1.quizId).response.questions;
+    const list = [];
+    for (const question of info) {
+      list.push({
+        questionId: question.questionId,
+        question: question.question,
+      });
+    }
     expect(list).toStrictEqual([
       {
         question: 'What is the capital of France?',

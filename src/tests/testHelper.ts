@@ -1,6 +1,5 @@
 import request from 'sync-request-curl';
 import { port, url } from '../config.json';
-import { Question } from '../helper';
 
 const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/';
@@ -224,7 +223,6 @@ export function testMoveQuizQuestion(token: string, quizId: number, questionId: 
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
-
 
 export function testDupQuizQuestion(token: string, quizId: number, questionId: number) {
   const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}/duplicate`, {
