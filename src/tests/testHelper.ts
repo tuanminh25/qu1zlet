@@ -136,6 +136,76 @@ export function testQuizToTrash(token: string, quizId: number) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
+export function testUpdateQuestion(
+  token: string,
+  quizId: number,
+  questionId: number,
+  questionBody: object
+) {
+  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}`,
+    {
+      json: {
+        token: token,
+        questionBody: questionBody
+      }
+    });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testQuizInfo(token: string, quizId: number) {
+  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
+    qs: {
+      token: token,
+    },
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testQuizNameUpdate(token: string, quizId: number, name: string) {
+  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/name`, {
+    json: {
+      token: token,
+      name: name
+    }
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testQuizTransfer(token: string, quizId: number, userEmail: string) {
+  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/transfer`, {
+    json: {
+      token: token,
+      userEmail: userEmail
+    }
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testQuizDescriptionUpdate(token: string, quizId: number, description: string) {
+  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/description`, {
+    json: {
+      token: token,
+      description: description
+    }
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testQuestionDelete(token: string, quizId: number, questionId: number) {
+  const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}`, {
+    qs: {
+      token: token
+    }
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
 export function testMoveQuizQuestion(token: string, quizId: number, questionId: number, newPosition: number) {
   const res = request('PUT', SERVER_URL + '/v1/admin/quiz/' + quizId + '/question/' + questionId + '/move',
     {

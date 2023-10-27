@@ -25,3 +25,18 @@ let data = {
 ```
 
 <!-- [Optional] short description:  -->
+
+interface QuizInfoReturn {
+  quizId: number;
+  name: string;
+  timeCreated: number;
+  timeLastEdited: number;
+  description: string;
+  numQuestions: number;
+  questions: Question[];
+  duration: number;
+}
+
+interface ErrorObject {
+  error: string;
+}

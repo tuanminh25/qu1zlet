@@ -39,7 +39,8 @@ export function adminQuizCreate(token: string, name: string, description: string
   }
 
   // Error checking 400
-  if (data.quizzes.some((quiz) => quiz.name === name)) {
+  const quizExists = data.quizzes.find((quiz) => quiz.name === name);
+  if (quizExists && quizExists.quizOwnedby === userId) {
     return {
       error: 'Quiz name already exists'
     };
@@ -154,4 +155,202 @@ export function adminQuizList(token: string) {
   return {
     quizzes
   };
+}
+
+/**
+ * Get all of the relevant information about the current quiz
+ * including questions
+ *
+ * @param {string} token - unique user identifier
+ * @param {number} quizId - unique quiz identifier
+ * @returns {
+ *  quizId: number,
+ *  name: string,
+ *  timeCreated: number,
+ *  timeLastEdited: number,
+ *  description: string,
+ *  numQuestions: number,
+ *  questions: Question[],
+ *  duration
+ * }
+ * @returns {error: string}
+ *
+ */
+export function adminQuizInfo(token: string, quizId: number) {
+  const data = load();
+  const quiz = data.quizzes.find(q => q.quizId === quizId);
+  // Error Check 401
+  const session = isToken(token);
+
+  if (!session) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  // Error Check 403
+  if (quiz.quizOwnedby !== session.userId) {
+    return {
+      error: 'Unauthorised'
+    };
+  }
+
+  return {
+    quizId: quiz.quizId,
+    name: quiz.name,
+    timeCreated: quiz.timeCreated,
+    timeLastEdited: quiz.timeLastEdited,
+    description: quiz.description,
+    numQuestions: quiz.numQuestions,
+    questions: quiz.questions,
+    duration: quiz.duration,
+  };
+}
+
+/**
+ adminQuizNameUpdate
+ Obtaining all relevant information about quiz\
+ @param {string} token - unique user identifier
+ @param {number} quizId - unique quiz identifier
+ @param {string} name - new name of quiz
+
+ @returns {} - updates name of quiz in datastore
+ @returns {error: string} - invalid parameters entered
+**/
+export function adminQuizNameUpdate(token: string, quizId : number, name: string): Record<string, never> | { error?: string } {
+  const data = load();
+  const session = isToken(token);
+  const quiz = data.quizzes.find(q => q.quizId === quizId);
+
+  // error 401
+  if (!session) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  // error 403
+  if (quiz.quizOwnedby !== session.userId) {
+    return {
+      error: 'Unauthorised'
+    };
+  }
+
+  // error 400
+  if (isQuizName(name) === false) {
+    return {
+      error: 'Invalid Quiz Name'
+    };
+  }
+  if (data.quizzes.some((quiz) => quiz.name === name)) {
+    return {
+      error: 'Quiz name already exists'
+    };
+  }
+
+  // Working case
+  quiz.name = name;
+  quiz.timeLastEdited = generateTime();
+
+  save(data);
+  return {};
+}
+
+/**
+adminQuizTransfer transfers the ownership of a specific quiz to another user.
+@param {string} token - unique user identifier
+@param {number} quizId - unique quiz identifier
+@param {string} userEmail - Email the email will be transferred to
+
+@returns {} - updates name of quiz in datastore
+@returns {error: string} - invalid parameters entered
+**/
+export function adminQuizTransfer(token: string, quizId: number, userEmail: string): Record<string, never> | { error?: string } {
+  const data = load();
+  const session = isToken(token);
+  const quizFound = data.quizzes.find(q => q.quizId === quizId);
+
+  // error 401
+  if (!session) {
+    return {
+      error: 'Invalid Token'
+    };
+  }
+
+  // error 403
+  if (quizFound.quizOwnedby !== session.userId) {
+    return {
+      error: 'Unauthorised'
+    };
+  }
+
+  // error 400
+  const email = data.users.find(user => user.email === userEmail);
+  if (!email) {
+    return {
+      error: 'Email not found'
+    };
+  }
+
+  const user = checkauthUserId(session.userId);
+  const currEmail = user.email;
+  if (userEmail === currEmail) {
+    return {
+      error: 'userEmail cannot already be the owner of the quiz'
+    };
+  }
+
+  const userquizzes = data.quizzes.filter(quiz => quiz.quizOwnedby === email.userId);
+  const duplicateQuiz = userquizzes.find(quiz => quiz.name === quizFound.name);
+  if (duplicateQuiz) {
+    return {
+      error: 'Quiz name already exists for target user',
+    };
+  }
+  quizFound.quizOwnedby = email.userId;
+  save(data);
+
+  return {};
+}
+
+/**
+ * Update a quiz description
+ *
+ * @param {string} token - unique user identifier
+ * @param {number} quizId - unique quiz identifier
+ * @param {string} description - description
+ *
+ * @returns {error: string}
+ * @returns {}
+ *
+ */
+export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string) {
+  const data = load();
+  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+  const session = isToken(token);
+
+  // Returning errors
+  if (session === undefined) {
+    return { error: 'Token is empty or invalid' };
+  }
+
+  if (quiz === undefined) {
+    return { error: 'Quiz ID does not refer to a valid quiz' };
+  }
+
+  // Quiz ID does not refer to a quiz that this user owns
+  if (quiz.quizOwnedby !== session.userId) {
+    return { error: 'Quiz ID does not refer to a quiz that this user owns' };
+  }
+
+  // Over length description
+  if (description.length > 100) {
+    return { error: 'Description is more than 100 characters in length' };
+  }
+
+  // Working case
+  quiz.description = description;
+  quiz.timeLastEdited = generateTime();
+  save(data);
+  return {};
 }

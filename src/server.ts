@@ -11,8 +11,8 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizList, adminQuizRemove } from './quiz';
-import { adminQuestionCreate, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
+import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
+import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, , listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
 
 // Set up web app
 const app = express();
@@ -170,6 +170,123 @@ app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
 
   if (response.error === 'Token is empty or invalid') {
     return res.status(401).json(response);
+  }
+
+  res.json(response);
+});
+
+app.delete('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
+  const token = req.query.token;
+  const quizId = parseInt(req.params.quizId);
+  const questionId = parseInt(req.params.questionId);
+
+  const response = adminQuestionDelete(String(token), quizId, questionId);
+
+  if (response.error === 'Invalid token') {
+    return res.status(401).json(response);
+  } else if (response.error === 'Unauthorised') {
+    return res.status(403).json(response);
+  } else if (response.error) {
+    return res.status(400).json(response);
+  } else {
+    res.json(response);
+  }
+});
+
+app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
+  const token = req.body.token;
+  const quizId = parseInt(req.params.quizId);
+  const questionId = parseInt(req.params.questionId);
+  const questionBody = req.body.questionBody;
+
+  const response = adminQuestionUpdate(String(token), quizId, questionId, questionBody);
+
+  if (response.error === 'Invalid token') {
+    return res.status(401).json(response);
+  } else if (response.error === 'Unauthorised') {
+    return res.status(403).json(response);
+  } else if (response.error) {
+    return res.status(400).json(response);
+  } else {
+    res.json(response);
+  }
+});
+
+app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
+  const token = req.query.token;
+  const { quizId } = req.params;
+
+  const response = adminQuizInfo(String(token), parseInt(quizId));
+
+  if (response.error === 'Invalid Token') {
+    return res.status(401).json(response);
+  } else if (response.error === 'Unauthorised') {
+    return res.status(403).json(response);
+  }
+
+  res.json(response);
+});
+
+app.put('/v1/admin/quiz/:quizId/name', (req: Request, res: Response) => {
+  const { token, name } = req.body;
+  const { quizId } = req.params;
+
+  const response = adminQuizNameUpdate(String(token), parseInt(quizId), String(name));
+
+  if ('error' in response) {
+    if (response.error === 'Invalid Quiz Name') {
+      return res.status(400).json(response);
+    }
+    if (response.error === 'Quiz name already exists') {
+      return res.status(400).json(response);
+    }
+    if (response.error === 'Invalid Token') {
+      return res.status(401).json(response);
+    } else if (response.error === 'Unauthorised') {
+      return res.status(403).json(response);
+    }
+  }
+
+  res.status(200).json(response);
+});
+
+app.post('/v1/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
+  const { token, userEmail } = req.body;
+  const { quizId } = req.params;
+
+  const response = adminQuizTransfer(String(token), parseInt(quizId), String(userEmail));
+
+  if ('error' in response) {
+    if (response.error === 'Email not found') {
+      return res.status(400).json(response);
+    }
+    if (response.error === 'userEmail cannot already be the owner of the quiz') {
+      return res.status(400).json(response);
+    }
+    if (response.error === 'Quiz name already exists for target user') {
+      return res.status(400).json(response);
+    }
+    if (response.error === 'Invalid Token') {
+      return res.status(401).json(response);
+    } else if (response.error === 'Unauthorised') {
+      return res.status(403).json(response);
+    }
+  }
+  res.status(200).json(response);
+});
+
+app.put('/v1/admin/quiz/:quizId/description', (req: Request, res: Response) => {
+  const { token, description } = req.body;
+  const { quizId } = req.params;
+  const response = adminQuizDescriptionUpdate(String(token), parseInt(quizId), String(description));
+
+  if (response.error === 'Token is empty or invalid') {
+    return res.status(401).json(response);
+  } else if (response.error === 'Description is more than 100 characters in length') {
+    return res.status(400).json(response);
+  } else if (response.error === 'Quiz ID does not refer to a valid quiz' ||
+    response.error === 'Quiz ID does not refer to a quiz that this user owns') {
+    return res.status(403).json(response);
   }
 
   res.json(response);
