@@ -212,6 +212,16 @@ export const testViewTrash = (token: string) => {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 };
 
+export function testRestoreTrash(token: string, quizId: number) {
+  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/restore`, {
+    json: {
+      token: token
+    }
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
 export function testMoveQuizQuestion(token: string, quizId: number, questionId: number, newPosition: number) {
   const res = request('PUT', SERVER_URL + '/v1/admin/quiz/' + quizId + '/question/' + questionId + '/move',
     {
