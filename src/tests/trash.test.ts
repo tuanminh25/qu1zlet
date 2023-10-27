@@ -2,7 +2,7 @@ import {
   testRegister,
   testCreateQuiz,
   testClear,
-	testQuizToTrash,
+  testQuizToTrash,
   testViewTrash
 } from './testHelper';
 
@@ -21,20 +21,20 @@ describe('View Trash', () => {
     quiz = testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description').response;
   });
 
-	test('Empty token', () => {
-		const trash = testViewTrash('');
-		expect(trash.status).toStrictEqual(401);
-		expect(trash.response).toStrictEqual(ERROR);
-	})
+  test('Empty token', () => {
+    const trash = testViewTrash('');
+    expect(trash.status).toStrictEqual(401);
+    expect(trash.response).toStrictEqual(ERROR);
+  });
 
-	test('Invalid token', () => {
-		const trash = testViewTrash(user.token + 'randome 2313');
-		expect(trash.status).toStrictEqual(401);
-		expect(trash.response).toStrictEqual(ERROR);
-	})
+  test('Invalid token', () => {
+    const trash = testViewTrash(user.token + 'randome 2313');
+    expect(trash.status).toStrictEqual(401);
+    expect(trash.response).toStrictEqual(ERROR);
+  });
 
   test('Simple View trash', () => {
-		testQuizToTrash(user.token, quiz.quizId);
+    testQuizToTrash(user.token, quiz.quizId);
     const trash = testViewTrash(user.token);
     expect(trash.status).toStrictEqual(200);
     expect(trash.response).toStrictEqual(
@@ -49,16 +49,16 @@ describe('View Trash', () => {
     );
   });
 
-	test('Many quiz in trash', () => {
-		const quiz2 = testCreateQuiz(user.token, 'Sample Quiz2', 'Sample Description2').response;
-		const quiz3 = testCreateQuiz(user.token, 'Sample Quiz3', 'Sample Description2').response;
-		const quiz4 = testCreateQuiz(user.token, 'Sample Quiz4', 'Sample Description2').response;
+  test('Many quiz in trash', () => {
+    const quiz2 = testCreateQuiz(user.token, 'Sample Quiz2', 'Sample Description2').response;
+    const quiz3 = testCreateQuiz(user.token, 'Sample Quiz3', 'Sample Description2').response;
+    const quiz4 = testCreateQuiz(user.token, 'Sample Quiz4', 'Sample Description2').response;
 
-		testQuizToTrash(user.token, quiz2.quizId);
-		testQuizToTrash(user.token, quiz3.quizId);
-		testQuizToTrash(user.token, quiz4.quizId);
+    testQuizToTrash(user.token, quiz2.quizId);
+    testQuizToTrash(user.token, quiz3.quizId);
+    testQuizToTrash(user.token, quiz4.quizId);
 
-		const trash = testViewTrash(user.token);
+    const trash = testViewTrash(user.token);
     expect(trash.status).toStrictEqual(200);
     expect(trash.response).toStrictEqual(
       {
@@ -67,23 +67,23 @@ describe('View Trash', () => {
             quizId: quiz2.quizId,
             name: 'Sample Quiz2'
           },
-					{
+          {
             quizId: quiz3.quizId,
             name: 'Sample Quiz3'
           },
-					{
+          {
             quizId: quiz4.quizId,
             name: 'Sample Quiz4'
           }
         ]
       }
     );
-	});
+  });
 
   test('Empty Trash', () => {
     const user2 = testRegister('empty@gmail.com', 'password1232', 'Testlol', 'Userxd').response;
     testQuizToTrash(user.token, quiz.quizId);
-    
+
     const trash = testViewTrash(user2.token);
     expect(trash.status).toStrictEqual(200);
     expect(trash.response).toStrictEqual(
@@ -91,7 +91,7 @@ describe('View Trash', () => {
         quizzes: []
       }
     );
-  })
+  });
 });
 
 testClear();

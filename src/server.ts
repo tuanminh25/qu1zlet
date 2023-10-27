@@ -187,7 +187,6 @@ app.get('/v1/admin/quiz/trash', (req: Request, res: Response) => {
   res.json(response);
 });
 
-
 app.delete('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
   const token = req.query.token;
   const quizId = parseInt(req.params.quizId);

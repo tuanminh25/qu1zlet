@@ -1,12 +1,11 @@
 import {
-	isToken,
-	load,
-	save
-} from './helper'
+  isToken,
+  load,
+} from './helper';
 
 /**
  * View the quizzes that are currently in the trash for the logged in user
- * 
+ *
  * @param {string} Token
  * @returns {
  *  {
@@ -20,15 +19,15 @@ import {
  * }
  */
 export function viewQuizzesInTrash(token: string) {
-	const data = load();
+  const data = load();
   const session = isToken(token);
 
   if (!session) {
-    return { 
-			error: 'Invalid token' 
-		};
+    return {
+      error: 'Invalid token'
+    };
   }
-  
+
   const quizzes = [];
   for (const quiz of data.trash) {
     if (session.userId === quiz.quizOwnedby) {
