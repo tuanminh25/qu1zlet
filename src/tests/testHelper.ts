@@ -231,6 +231,5 @@ export function testDupQuizQuestion(token: string, quizId: number, questionId: n
     }
   });
 
-
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }

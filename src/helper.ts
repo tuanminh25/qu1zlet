@@ -207,4 +207,8 @@ export function randomColour(): string {
   return colour;
 }
 
-
+export function isQuizQuestion(questionId: number, quizId: number) : Question {
+  const quiz = checkquizId(quizId);
+  const question = quiz.questions.find((q) => q.questionId === questionId);
+  return question;
+}

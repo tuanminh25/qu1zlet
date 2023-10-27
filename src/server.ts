@@ -12,7 +12,7 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
-import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, , listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
+import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
 
 // Set up web app
 const app = express();
@@ -319,30 +319,24 @@ app.put('/v1/admin/quiz/:quizId/question/:questionId/move', (req: Request, res: 
 });
 
 app.post('/v1/admin/quiz/:quizId/question/:questionId/duplicate', (req: Request, res: Response) => {
-  const {token} = req.body;
+  const { token } = req.body;
   const quizId = req.params.quizId;
   const questionId = req.params.questionId;
 
-
   const response = dupQuizQuestion(String(token), parseInt(quizId), parseInt(questionId));
-
 
   if (response.error === 'Token is empty or invalid') {
     return res.status(401).json(response);
   } else if (response.error === 'Valid token is provided, quiz does not exist: ' + parseInt(quizId)) {
     return res.status(403).json(response);
-  } else if (response.error === "Valid token is provided, but user is not an owner of this quiz") {
+  } else if (response.error === 'Valid token is provided, but user is not an owner of this quiz') {
     return res.status(403).json(response);
-  } else if ( 'error' in response) {
+  } else if ('error' in response) {
     return res.status(400).json(response);
   }
 
-
   res.json(response);
-
-
-})
-
+});
 
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================
