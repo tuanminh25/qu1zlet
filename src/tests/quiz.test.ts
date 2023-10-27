@@ -194,7 +194,7 @@ describe('adminQuizList', () => {
   // Error cases:
   // Token is empty or invalid (does not refer to valid logged in user session)
   test('Token is empty or invalid (does not refer to valid logged in user session)', () => {
-    expect(testQuizList(user.token + 1).response).toStrictEqual({ error: 'Token is empty or invalid' });
+    expect(testQuizList(user.token + 1).response).toStrictEqual(ERROR);
     expect(testQuizList(user.token + 1).status).toStrictEqual(401);
   });
 });
@@ -674,7 +674,7 @@ describe('QuizDescriptionUpdate', () => {
   // Description is more than 100 characters in length (note: empty strings are OK)
   test('Description is more than 100 characters in length', () => {
     const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId, 'a'.repeat(1000));
-    expect(updateResponse.response).toStrictEqual({ error: 'Description is more than 100 characters in length' });
+    expect(updateResponse.response).toStrictEqual(ERROR);
 
     expect(updateResponse.status).toStrictEqual(400);
   });
@@ -682,14 +682,14 @@ describe('QuizDescriptionUpdate', () => {
   // Token is empty or invalid (does not refer to valid logged in user session)
   test('Token is empty or invalid', () => {
     const updateResponse = testQuizDescriptionUpdate(user.token + 1, quiz.quizId, 'Token is empty or invalid');
-    expect(updateResponse.response).toStrictEqual({ error: 'Token is empty or invalid' });
+    expect(updateResponse.response).toStrictEqual(ERROR);
     expect(updateResponse.status).toStrictEqual(401);
   });
 
   // Quiz ID does not refer to a valid quiz
   test('Quiz ID does not refer to a valid quiz', () => {
     const updateResponse = testQuizDescriptionUpdate(user.token, quiz.quizId + 1, 'This quiz id does no refer to any quiz');
-    expect(updateResponse.response).toStrictEqual({ error: 'Quiz ID does not refer to a valid quiz' });
+    expect(updateResponse.response).toStrictEqual(ERROR);
     expect(updateResponse.status).toStrictEqual(403);
   });
 
