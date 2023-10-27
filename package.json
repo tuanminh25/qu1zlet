@@ -9,6 +9,7 @@
         "quiz": "jest quiz.test.ts",
         "user": "jest user.test.ts",
         "ques": "jest question.test.ts",
+        "trash": "jest trash.test.ts",
         "startNodemon": "nodemon src/server.ts"
     },
     "dependencies": {
