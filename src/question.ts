@@ -282,7 +282,6 @@ export function listOfQuestions(token: string, quizId: number) {
   }
 
   const list = [];
-  console.log(quiz.questions);
   for (const question of quiz.questions) {
     list.push({
       questionId: question.questionId,

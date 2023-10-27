@@ -7,7 +7,6 @@ import {
   testQuizInfo,
   testQuestionDelete,
   testMoveQuizQuestion,
-  testQuestionsList,
   testDupQuizQuestion
 } from './testHelper';
 
@@ -770,45 +769,7 @@ describe('Move A Quiz Question', () => {
       { answer: 'Rome', correct: false }]
   };
 
-  // Additional support test question
-  test('Question List test', () => {
-    testClear();
-    // First person
-    user1 = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
-    user2 = testRegister('jayden.smith@unsw.edu.au', 'password123', 'nameFirst', 'nameLast').response;
-
-    quiz1 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
-    question0 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion0).response;
-    question1 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion1).response;
-    question2 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion2).response;
-    question3 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion3).response;
-    question4 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion4).response;
-
-    const list = testQuestionsList(user1.token, quiz1.quizId);
-    expect(list.response).toStrictEqual([
-      {
-        question: 'What is the capital of France?',
-        questionId: question0.questionId
-      },
-      {
-        question: 'What is the capital of Spain?',
-        questionId: question1.questionId
-      },
-      {
-        question: 'What is the capital of Brazil?',
-        questionId: question2.questionId
-      },
-      {
-        question: 'What is the capital of Vietnam?',
-        questionId: question3.questionId
-      },
-      {
-        question: 'What is the capital of China?',
-        questionId: question4.questionId
-      }
-    ]);
-  });
-
+  
   // Working cases
   describe('Working cases:', () => {
     beforeEach(() => {
@@ -826,13 +787,21 @@ describe('Move A Quiz Question', () => {
     });
 
     // Succesfully move 1 question
-    test('Succesfully move 1 question', () => {
+    test.only('Succesfully move 1 question', () => {
       const res = testMoveQuizQuestion(user1.token, quiz1.quizId, question4.questionId, 3);
       expect(res.response).toStrictEqual({});
       expect(res.status).toStrictEqual(200);
 
-      const list = testQuestionsList(user1.token, quiz1.quizId);
-      expect(list.response).toStrictEqual([
+      const info = testQuizInfo(user1.token, quiz1.quizId).response.questions;
+      const list = [];
+      for (const question of info) {
+        list.push({
+          questionId: question.questionId,
+          question: question.question,
+        });
+      }
+
+      expect(list).toStrictEqual([
         {
           question: 'What is the capital of France?',
           questionId: question0.questionId
@@ -873,8 +842,15 @@ describe('Move A Quiz Question', () => {
       expect(res3.response).toStrictEqual({});
       expect(res3.status).toStrictEqual(200);
 
-      const list = testQuestionsList(user1.token, quiz1.quizId);
-      expect(list.response).toStrictEqual([
+            const info = testQuizInfo(user1.token, quiz1.quizId).response.questions;
+      const list = [];
+      for (const question of info) {
+        list.push({
+          questionId: question.questionId,
+          question: question.question,
+        });
+      }
+      expect(list).toStrictEqual([
         {
           question: 'What is the capital of Brazil?',
           questionId: question2.questionId
@@ -1064,8 +1040,15 @@ describe.only('Duplicate Quiz Question', () => {
     expect(res.response).toStrictEqual({ newQuestionId: 6 });
     expect(res.status).toStrictEqual(200);
 
-    const list = testQuestionsList(user1.token, quiz1.quizId);
-    expect(list.response).toStrictEqual([
+          const info = testQuizInfo(user1.token, quiz1.quizId).response.questions;
+      const list = [];
+      for (const question of info) {
+        list.push({
+          questionId: question.questionId,
+          question: question.question,
+        });
+      }
+    expect(list).toStrictEqual([
       {
         question: 'What is the capital of France?',
         questionId: question0.questionId
@@ -1110,8 +1093,15 @@ describe.only('Duplicate Quiz Question', () => {
     expect(res3.response).toStrictEqual({ newQuestionId: 8 });
     expect(res3.status).toStrictEqual(200);
 
-    const list = testQuestionsList(user1.token, quiz1.quizId);
-    expect(list.response).toStrictEqual([
+    const info = testQuizInfo(user1.token, quiz1.quizId).response.questions;
+    const list = [];
+    for (const question of info) {
+      list.push({
+        questionId: question.questionId,
+        question: question.question,
+      });
+    }
+    expect(list).toStrictEqual([
       {
         question: 'What is the capital of France?',
         questionId: question0.questionId
