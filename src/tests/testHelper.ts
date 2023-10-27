@@ -214,10 +214,10 @@ export const testViewTrash = (token: string) => {
 
 export function testRestoreTrash(token: string, quizId: number) {
   const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/restore`, {
-    json : {
+    json: {
       token: token
     }
   });
-  
+
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }

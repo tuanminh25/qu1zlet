@@ -136,7 +136,7 @@ describe('Restore Trash', () => {
   });
 
   test('Quiz name of the restored quiz is already used by another active quiz', () => {
-    testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description').response;
+    testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description');
     const restore = testRestoreTrash(user.token, quiz.quizId);
     expect(restore.status).toStrictEqual(400);
     expect(restore.response).toStrictEqual(ERROR);
@@ -148,7 +148,7 @@ describe('Restore Trash', () => {
       quizzes: [
         {
           quizId: quiz.quizId,
-          name: 'Sample Quiz' 
+          name: 'Sample Quiz'
         }
       ]
     });
@@ -162,7 +162,7 @@ describe('Restore Trash', () => {
       quizzes: [
         {
           quizId: quiz.quizId,
-          name: 'Sample Quiz' 
+          name: 'Sample Quiz'
         }
       ]
     });
@@ -182,25 +182,25 @@ describe('Restore Trash', () => {
     expect(restore.status).toStrictEqual(200);
     expect(restore.response).toStrictEqual({});
 
-    //in original order
+    // in original order
     const view = testQuizList(user.token).response;
     expect(view).toStrictEqual({
       quizzes: [
         {
           quizId: quiz.quizId,
-          name: 'Sample Quiz' 
+          name: 'Sample Quiz'
         },
         {
           quizId: quiz2.quizId,
-          name: 'Sample Quiz2' 
+          name: 'Sample Quiz2'
         },
         {
           quizId: quiz3.quizId,
-          name: 'Sample Quiz3' 
+          name: 'Sample Quiz3'
         },
         {
           quizId: quiz4.quizId,
-          name: 'Sample Quiz4' 
+          name: 'Sample Quiz4'
         }
       ]
     });
@@ -213,19 +213,19 @@ describe('Restore Trash', () => {
       quizzes: [
         {
           quizId: quiz.quizId,
-          name: 'Sample Quiz' 
+          name: 'Sample Quiz'
         },
         {
           quizId: quiz2.quizId,
-          name: 'Sample Quiz2' 
+          name: 'Sample Quiz2'
         },
         {
           quizId: quiz3.quizId,
-          name: 'Sample Quiz3' 
+          name: 'Sample Quiz3'
         },
         {
           quizId: quiz4.quizId,
-          name: 'Sample Quiz4' 
+          name: 'Sample Quiz4'
         }
       ]
     });
@@ -244,7 +244,7 @@ describe('Restore Trash', () => {
         { answer: 'Bayern', correct: false }
       ]
     };
-  
+
     const leagueQues = {
       question: 'Champions',
       duration: 15,
@@ -262,12 +262,12 @@ describe('Restore Trash', () => {
 
     testQuizToTrash(user.token, quiz2.quizId);
     testRestoreTrash(user.token, quiz2.quizId);
-    
+
     const info = testQuizInfo(user.token, quiz2.quizId).response;
     expect(info).toStrictEqual(
       {
-        quizId: ques.questionId,
-        name: 'Sample Quiz',
+        quizId: ques2.questionId,
+        name: 'Sample Quiz 2',
         timeCreated: expect.any(Number),
         timeLastEdited: expect.any(Number),
         description: 'Sample Description',
