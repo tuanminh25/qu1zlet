@@ -63,6 +63,30 @@ export interface DataStore {
   ids: Ids
 }
 
+export interface returnQuizList {
+  name: string;
+  quizId: number
+}
+
+export interface returnUserDetails {
+  userId: number,
+  name: string,
+  email: string,
+  numSuccessfulLogins: number,
+  numFailedPasswordsSinceLastLogin: number,
+}
+
+export interface returnQuizInfo {
+  quizId: number,
+  name: string,
+  timeCreated: number,
+  timeLastEdited: number,
+  description: string,
+  numQuestions: number,
+  questions: Question[],
+  duration: number,
+}
+
 export function load(): DataStore {
   const data = fs.readFileSync(filePath, 'utf8');
   return JSON.parse(String(data));
@@ -88,7 +112,7 @@ export function save(data: DataStore) {
   * }
   * @returns {undefined} - quizId is not a valid quiz id
 */
-export function checkquizId(quizId: number) {
+export function checkquizId(quizId: number): Quiz {
   const data = load();
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
   return quiz;
@@ -109,7 +133,7 @@ export function checkquizId(quizId: number) {
     * }
     * @returns {undefined} - AuthUserId is not a valid user
   */
-export function checkauthUserId(authUserId: number) {
+export function checkauthUserId(authUserId: number): User {
   const data = load();
   return data.users.find((user) => user.userId === authUserId);
 }
@@ -120,7 +144,7 @@ export function checkauthUserId(authUserId: number) {
   * @param {string} password
   * @returns {boolean}
 */
-export function isPassword(password: string) {
+export function isPassword(password: string): boolean {
   if (password.length < 8) {
     return false;
   } else if (/\d/.test(password) === false || /[a-zA-Z]/.test(password) === false) {
@@ -152,12 +176,16 @@ export function isUserName(name: string): boolean {
  * @param {string} email
  * @returns {}
 */
-export function checkEmail(email: string) {
+export function checkEmail(email: string): User {
   const data = load();
   return data.users.find((user) => user.email === email);
 }
-
-export function isToken(token: string) {
+/**
+ * Given a token, check if it is valid
+ * @param {string} token
+ * @returns {boolean}
+ */
+export function isToken(token: string): Session {
   const data = load();
   return data.sessions.find((session) => session.sessionId === token);
 }
@@ -184,7 +212,7 @@ export function isQuizName(name: string): boolean {
   * @param {string} name
   * @returns {boolean}
 */
-export function isQuizDescription(name: string) {
+export function isQuizDescription(name: string): boolean {
   if (name.length > 100) {
     return false;
   } else {
@@ -201,12 +229,24 @@ export function generateTime(): number {
   return Math.floor(Date.now() / 1000);
 }
 
+/**
+ * Generate a random colour
+ * @param
+ * @returns {string} colour
+ *
+ */
 export function randomColour(): string {
   const randomIndex = Math.floor(Math.random() * Colours.length);
   const colour = Colours[randomIndex];
   return colour;
 }
-
+/**
+ * Check if question exists inside the given quiz
+ *
+ * @param {number} questionId
+ * @param {number} quizId
+ * @returns
+ */
 export function isQuizQuestion(questionId: number, quizId: number) : Question {
   const quiz = checkquizId(quizId);
   const question = quiz.questions.find((q) => q.questionId === questionId);

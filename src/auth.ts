@@ -20,7 +20,7 @@ import { v4 as uuidv4 } from 'uuid';
   * @param {string} nameLast
   * @returns {{token: string}}
 */
-export function adminAuthRegister(email: string, password: string, nameFirst: string, nameLast: string) {
+export function adminAuthRegister(email: string, password: string, nameFirst: string, nameLast: string): { token?: string, error?: string } {
   if (!validator.isEmail(email)) {
     return {
       error: 'Invalid email'
@@ -85,7 +85,7 @@ export function adminAuthRegister(email: string, password: string, nameFirst: st
   * @param {string} password
   * @returns {{token: string}}
 */
-export function adminAuthLogin(email: string, password: string) {
+export function adminAuthLogin(email: string, password: string): { token?: string, error?: string } {
   let userLogin = checkEmail(email);
   if (!userLogin) {
     return {
@@ -128,7 +128,7 @@ export function adminAuthLogin(email: string, password: string) {
  * @param {string} token
  * @return {{}}
  */
-export function adminAuthLogout(token: string) {
+export function adminAuthLogout(token: string): { error?: string } {
   const session = isToken(token);
 
   if (!session) {

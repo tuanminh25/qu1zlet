@@ -6,7 +6,7 @@ import { load, save } from './helper';
   * @param {} - no parameter
   * @returns {} - empty object
 */
-export function clear() {
+export function clear(): Record<string, never> {
   const data = load();
   data.users.length = 0;
   data.quizzes.length = 0;

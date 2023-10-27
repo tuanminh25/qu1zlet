@@ -4,25 +4,26 @@ import {
   save,
   isUserName,
   isPassword,
+  returnUserDetails
 } from './helper';
 import validator from 'validator';
 
 /**
-  * For the given admin user that is logged in, return all of the relevant details
-  *
-  * @param {string} token
-  * @returns { user:
-*   {
-    *   userId: number,
-    *   name : string,
-    *   email : string,
-    *   numSuccessfulLogins: number,
-    *   numFailedPasswordsSinceLastLogin: number
-    *   }
-    * }
-    * @returns {error: string}
-  */
-export function adminUserDetails(token: string) {
+ * For the given admin user that is logged in, return all of the relevant details
+ *
+ * @param {string} token
+ * @returns { user:
+ *   {
+ *   userId: number,
+ *   name : string,
+ *   email : string,
+ *   numSuccessfulLogins: number,
+ *   numFailedPasswordsSinceLastLogin: number
+ *   }
+ * }
+ * @returns {error: string}
+*/
+export function adminUserDetails(token: string): {error?: string, user?: returnUserDetails} {
   const session = isToken(token);
 
   if (!session) {
@@ -52,8 +53,9 @@ export function adminUserDetails(token: string) {
  *
  * @param {string} token
  * @returns {}
+ * @returns {error: string}
  */
-export function updatePassword(token: string, oldPassword: string, newPassword: string) {
+export function updatePassword(token: string, oldPassword: string, newPassword: string): {error?: string} {
   const session = isToken(token);
 
   if (!session) {
@@ -105,7 +107,7 @@ export function updatePassword(token: string, oldPassword: string, newPassword: 
   * @returns {}
   * @returns { error: string }
 */
-export function adminUserUpdate(token: string, email: string, nameFirst: string, nameLast: string) {
+export function adminUserUpdate(token: string, email: string, nameFirst: string, nameLast: string): {error?: string} {
   const session = isToken(token);
   if (!session) {
     return {
