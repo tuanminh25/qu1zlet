@@ -153,3 +153,14 @@ export function testQuestionsList(token: string, quizId: number) {
   const res = request('GET', SERVER_URL + '/v1/admin/quiz/listOfQuestions/' + quizId, { qs: { token: token } });
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testDupQuizQuestion(token: string, quizId: number, questionId: number) {
+  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}/duplicate`, {
+    json: {
+      token: token,
+    }
+  });
+
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}

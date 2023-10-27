@@ -5,6 +5,7 @@ import {
   testClear,
   testMoveQuizQuestion,
   testQuestionsList,
+  testDupQuizQuestion
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -482,5 +483,255 @@ describe('Move A Quiz Question', () => {
     });
   });
 });
+
+
+
+describe.only("Duplicate Quiz Question", () => {
+  let user1: { token: string };
+  let user2: { token: string };
+  let quiz1: { quizId: number };
+  let quiz2: { quizId: number };
+  let errorQuiz: {quizId: 100};
+
+
+  let question0: {questionId: number};
+  let question1: {questionId: number};
+  let question2: {questionId: number};
+  let question3: {questionId: number};
+  let question4: {questionId: number};
+
+
+  const validQuestion0 = {
+    question: 'What is the capital of France?',
+    duration: 4,
+    points: 5,
+    answers: [     { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }]
+  };
+
+
+  const validQuestion1 = {
+    question: 'What is the capital of Spain?',
+    duration: 4,
+    points: 5,
+    answers: [     { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }]
+  };
+
+
+  const validQuestion2 = {
+    question: 'What is the capital of Brazil?',
+    duration: 4,
+    points: 5,
+    answers: [     { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }]
+  };
+
+
+  const validQuestion3 = {
+    question: 'What is the capital of Vietnam?',
+    duration: 4,
+    points: 5,
+    answers: [     { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }]
+  };
+
+
+  const validQuestion4 = {
+    question: 'What is the capital of China?',
+    duration: 4,
+    points: 5,
+    answers: [     { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }]
+  };
+
+
+  beforeEach(() => {
+    testClear();
+    // First person
+    user1 = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
+    user2 = testRegister('jayden.smith@unsw.edu.au', 'password123', 'nameFirst', 'nameLast').response;
+
+
+    quiz1 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+    question0 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion0).response;
+    question1 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion1).response;
+    question2 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion2).response;
+    question3 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion3).response;
+    question4 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion4).response;
+
+
+    // Second person
+    quiz2 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+  })
+
+
+  // Working cases
+  // 200
+  // return new question id of the new dup id
+  test("Succesfully duplicate 1 question", () => {
+    // Duplicate mid
+    const res = testDupQuizQuestion(user1.token, quiz1.quizId, question2.questionId);
+    // expect(res.response).toStrictEqual({newQuestionId: 6})
+    expect(res.status).toStrictEqual(200);
+
+
+    const list = testQuestionsList(user1.token, quiz1.quizId);
+    expect(list.response).toStrictEqual([
+      {
+        question: 'What is the capital of France?',
+        questionId: 1
+      },
+      {
+        question: 'What is the capital of Spain?',
+        questionId: 2
+      },
+      {
+        question: 'What is the capital of Brazil?',
+        questionId: 3
+      },
+      {
+        question: 'What is the capital of Vietnam?',
+        questionId: 4
+      },
+      {
+        question: 'What is the capital of China?',
+        questionId: 5
+      },
+      {
+        question: 'What is the capital of Brazil?',
+        questionId: 6
+      },
+    ])
+  })
+
+
+ // Succesfully move many ques
+ test("Succesfully duplicates many questions", () => {
+  // Dup last
+  const res1 = testDupQuizQuestion(user1.token, quiz1.quizId, question4.questionId);
+  expect(res1.response).toStrictEqual({newQuestionId: 5})
+  expect(res1.status).toStrictEqual(200);
+
+
+  // Dup 3rd
+  const res2 = testDupQuizQuestion(user1.token, quiz1.quizId, question2.questionId);
+  expect(res2.response).toStrictEqual({newQuestionId: 6})
+  expect(res2.status).toStrictEqual(200);
+
+
+  // Dup first
+  const res3 = testDupQuizQuestion(user1.token, quiz1.quizId, question0.questionId);
+  expect(res3.response).toStrictEqual({newQuestionId: 7})
+  expect(res3.status).toStrictEqual(200);
+
+
+  const list = testQuestionsList(user1.token, quiz1.quizId);
+  expect(list.response).toStrictEqual([
+    {
+      question: 'What is the capital of France?',
+      questionId: 1
+    },
+    {
+      question: 'What is the capital of Spain?',
+      questionId: 2
+    },
+    {
+      question: 'What is the capital of Brazil?',
+      questionId: 3
+    },
+    {
+      question: 'What is the capital of Vietnam?',
+      questionId: 4
+    },
+    {
+      question: 'What is the capital of China?',
+      questionId: 5
+    },
+    {
+      question: 'What is the capital of China?',
+      questionId: 6
+    },
+    {
+      question: 'What is the capital of Brazil?',
+      questionId: 7
+    },
+    {
+      question: 'What is the capital of France?',
+      questionId: 8
+    },
+  ])
+})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Error cases
+  // 400:
+  // Question Id does not refer to a valid question within this quiz
+  test("Question Id does not refer to a valid question within this quiz", () => {
+    const res = testDupQuizQuestion(user1.token, quiz1.quizId, question4.questionId + 10);
+    expect(res.response).toStrictEqual({error: "Question Id does not refer to a valid question within this quiz: " + (question4.questionId + 10)})
+    expect(res.status).toStrictEqual(400);
+  })
+
+
+  // 401:
+  // Token is empty or invalid (does not refer to valid logged in user session)
+  // Invalid
+  test("Token is empty or invalid", () => {
+    const res = testDupQuizQuestion(user1.token + 10000, quiz1.quizId, question4.questionId);
+    expect(res.response).toStrictEqual({error: "Token is empty or invalid"})
+    expect(res.status).toStrictEqual(401);
+  })
+
+
+  // Empty
+  test("Token is empty or invalid", () => {
+    const res = testDupQuizQuestion('', quiz1.quizId, question4.questionId);
+    expect(res.response).toStrictEqual({error: "Token is empty or invalid"})
+    expect(res.status).toStrictEqual(401);
+  })
+
+
+  // 403
+  // Valid token is provided, but user is not an owner of this quiz
+  test("Valid token is provided, but user is not an owner of this quiz", () => {
+    const res = testDupQuizQuestion(user2.token, quiz1.quizId, question4.questionId);
+    expect(res.response).toStrictEqual({error: "Valid token is provided, but user is not an owner of this quiz"});
+    expect(res.status).toStrictEqual(403);
+  })
+
+
+  // Valid token is provided, quiz does not exist
+  test("Valid token is provided, quiz does not exist", () => {
+    const res = testDupQuizQuestion(user1.token, 100 , question4.questionId);
+    expect(res.response).toStrictEqual({error: "Valid token is provided, quiz does not exist: " + 100});
+    expect(res.status).toStrictEqual(403);
+  })
+
+
+})
+
 
 testClear();
