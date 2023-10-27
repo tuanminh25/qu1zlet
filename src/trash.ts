@@ -20,24 +20,26 @@ import {
  * }
  */
 export function viewQuizzesInTrash(token: string) {
-	const session = isToken(token);
-
-	if (!session) {
-		return {
-			error: 'Invalid token'
-		};
-	}
-
 	const data = load();
-	const quizzes = data.trash.filter((curr) => curr.quizOwnedby === session.userId);
-	const formatQuizzes = quizzes.map(function(curr) {
-		return {
-			quizId: curr.quizId,
-			name: curr.name
-		}
-	});
+  const session = isToken(token);
 
-	return {
-		formatQuizzes
-	}
+  if (!session) {
+    return { 
+			error: 'Invalid token' 
+		};
+  }
+  
+  const quizzes = [];
+  for (const quiz of data.trash) {
+    if (session.userId === quiz.quizOwnedby) {
+      quizzes.push({
+        name: quiz.name,
+        quizId: quiz.quizId,
+      });
+    }
+  }
+
+  return {
+    quizzes
+  };
 }

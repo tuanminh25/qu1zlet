@@ -13,6 +13,7 @@ import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete } from './question';
+import { viewQuizzesInTrash } from './trash';
 
 // Set up web app
 const app = express();
@@ -174,6 +175,18 @@ app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
 
   res.json(response);
 });
+
+app.get('/v1/admin/quiz/trash', (req: Request, res: Response) => {
+  const token = req.query.token;
+  const response = viewQuizzesInTrash(String(token));
+
+  if (response.error === 'Invalid token') {
+    return res.status(401).json(response);
+  }
+
+  res.json(response);
+});
+
 
 app.delete('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
   const token = req.query.token;

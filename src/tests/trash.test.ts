@@ -2,6 +2,7 @@ import {
   testRegister,
   testCreateQuiz,
   testClear,
+	testQuizToTrash,
   testViewTrash
 } from './testHelper';
 
@@ -33,6 +34,7 @@ describe('View Trash', () => {
 	})
 
   test('Simple View trash', () => {
+		testQuizToTrash(user.token, quiz.quizId);
     const trash = testViewTrash(user.token);
     expect(trash.status).toStrictEqual(200);
     expect(trash.response).toStrictEqual(
@@ -52,29 +54,44 @@ describe('View Trash', () => {
 		const quiz3 = testCreateQuiz(user.token, 'Sample Quiz3', 'Sample Description2').response;
 		const quiz4 = testCreateQuiz(user.token, 'Sample Quiz4', 'Sample Description2').response;
 
+		testQuizToTrash(user.token, quiz2.quizId);
+		testQuizToTrash(user.token, quiz3.quizId);
+		testQuizToTrash(user.token, quiz4.quizId);
+
 		const trash = testViewTrash(user.token);
     expect(trash.status).toStrictEqual(200);
     expect(trash.response).toStrictEqual(
       {
         quizzes: [
           {
-            quizId: quiz.quizId,
-            name: 'Sample Quiz'
-          },
-					{
-            quizId: quiz.quizId,
+            quizId: quiz2.quizId,
             name: 'Sample Quiz2'
           },
 					{
-            quizId: quiz.quizId,
+            quizId: quiz3.quizId,
             name: 'Sample Quiz3'
           },
 					{
-            quizId: quiz.quizId,
-            name: 'Sample Quiz5'
+            quizId: quiz4.quizId,
+            name: 'Sample Quiz4'
           }
         ]
       }
     );
 	});
+
+  test('Empty Trash', () => {
+    const user2 = testRegister('empty@gmail.com', 'password1232', 'Testlol', 'Userxd').response;
+    testQuizToTrash(user.token, quiz.quizId);
+    
+    const trash = testViewTrash(user2.token);
+    expect(trash.status).toStrictEqual(200);
+    expect(trash.response).toStrictEqual(
+      {
+        quizzes: []
+      }
+    );
+  })
 });
+
+testClear();
