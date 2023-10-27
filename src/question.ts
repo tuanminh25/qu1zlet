@@ -233,8 +233,15 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
   save(data);
   return {};
 }
-
-export function adminQuestionDelete(token: string, quizId: number, questionId: number) {
+/**
+ * Delete a particular question from a quiz
+ *
+ * @param {string} token
+ * @param {number} quizId
+ * @param {number} questionId
+ * @returns
+ */
+export function adminQuestionDelete(token: string, quizId: number, questionId: number): { error?: string } {
   const session = isToken(token);
 
   if (!session) {
@@ -269,7 +276,13 @@ export function adminQuestionDelete(token: string, quizId: number, questionId: n
   return {};
 }
 
-// extra test function
+/**
+ *
+ *
+ * @param token
+ * @param quizId
+ * @returns
+ */
 export function listOfQuestions(token: string, quizId: number) {
   // Error 401 checking
   if (!isToken(token)) {
@@ -291,8 +304,15 @@ export function listOfQuestions(token: string, quizId: number) {
 
   return list;
 }
-
-export function moveQuizQuestion(token: string, quizId: number, questionId: number, newPosition: number) {
+/**
+ * Move a question from one particular position in the quiz to another
+ * @param {string} token
+ * @param {number} quizId
+ * @param {number} clearquestionId
+ * @param {number} newPosition
+ * @returns
+ */
+export function moveQuizQuestion(token: string, quizId: number, questionId: number, newPosition: number): { error?: string } {
   const data = load();
 
   // Check errors
@@ -335,8 +355,15 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
   save(data);
   return {};
 }
-
-export function dupQuizQuestion(token: string, quizId: number, questionId: number) {
+/**
+ * A particular question gets duplicated to immediately after where the source question is
+ *
+ * @param token
+ * @param {number} quizId
+ * @param {number} questionId
+ * @returns
+ */
+export function dupQuizQuestion(token: string, quizId: number, questionId: number): { error?: string, newQuestionId?: number } {
   // Check errors
   // Invalid token
   const session = isToken(token);

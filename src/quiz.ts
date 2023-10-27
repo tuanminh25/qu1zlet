@@ -7,7 +7,9 @@ import {
   generateTime,
   Quiz,
   load,
-  save
+  save,
+  returnQuizList,
+  returnQuizInfo
 } from './helper';
 
 /**
@@ -19,7 +21,7 @@ import {
   * @param {string} description
   * @returns {{ quizId: number }}
 */
-export function adminQuizCreate(token: string, name: string, description: string) {
+export function adminQuizCreate(token: string, name: string, description: string): { quizId?: number, error?: string} {
   const session = isToken(token);
   const data = load();
 
@@ -81,7 +83,7 @@ export function adminQuizCreate(token: string, name: string, description: string
   * @param {number} quizId
   * @returns {}
 */
-export function adminQuizRemove(token: string, quizId: number) {
+export function adminQuizRemove(token: string, quizId: number): { error?: string} {
   const data = load();
   const quiz = checkquizId(quizId);
   const session = isToken(token);
@@ -130,7 +132,7 @@ export function adminQuizRemove(token: string, quizId: number) {
   *  }
   * ]}
 */
-export function adminQuizList(token: string) {
+export function adminQuizList(token: string): { error?: string, quizzes?: returnQuizList[]} {
   const data = load();
   const session = isToken(token);
 
@@ -176,7 +178,7 @@ export function adminQuizList(token: string) {
  * @returns {error: string}
  *
  */
-export function adminQuizInfo(token: string, quizId: number) {
+export function adminQuizInfo(token: string, quizId: number): {error: string} | returnQuizInfo {
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
   // Error Check 401
@@ -208,15 +210,14 @@ export function adminQuizInfo(token: string, quizId: number) {
 }
 
 /**
- adminQuizNameUpdate
- Obtaining all relevant information about quiz\
- @param {string} token - unique user identifier
- @param {number} quizId - unique quiz identifier
- @param {string} name - new name of quiz
-
- @returns {} - updates name of quiz in datastore
- @returns {error: string} - invalid parameters entered
-**/
+ * Update the name of the relevant quiz
+ *
+ * @param {string} token - unique user identifier
+ * @param {number} quizId - unique quiz identifier
+ * @param {string} name - new name of quiz
+ * @returns {} - updates name of quiz in datastore
+ * @returns {error: string} - invalid parameters entered
+*/
 export function adminQuizNameUpdate(token: string, quizId : number, name: string): Record<string, never> | { error?: string } {
   const data = load();
   const session = isToken(token);
@@ -257,14 +258,14 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
 }
 
 /**
-adminQuizTransfer transfers the ownership of a specific quiz to another user.
-@param {string} token - unique user identifier
-@param {number} quizId - unique quiz identifier
-@param {string} userEmail - Email the email will be transferred to
-
-@returns {} - updates name of quiz in datastore
-@returns {error: string} - invalid parameters entered
-**/
+ * Transfer ownership of a quiz to a different user based on their email
+ *
+ * @param {string} token
+ * @param {number} quizId
+ * @param {number} userEmail
+ * @returns {}
+ * @returns {error: string} -
+ */
 export function adminQuizTransfer(token: string, quizId: number, userEmail: string): Record<string, never> | { error?: string } {
   const data = load();
   const session = isToken(token);
@@ -324,7 +325,7 @@ export function adminQuizTransfer(token: string, quizId: number, userEmail: stri
  * @returns {}
  *
  */
-export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string) {
+export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string): Record<string, never> | { error?: string } {
   const data = load();
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
   const session = isToken(token);

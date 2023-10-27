@@ -2,12 +2,13 @@ import {
   isToken,
   load,
   save,
+  returnQuizList
 } from './helper';
 
 /**
  * View the quizzes that are currently in the trash for the logged in user
  *
- * @param {string} Token
+ * @param {string} token
  * @returns {
  *  {
  *    quizzes: [
@@ -19,7 +20,7 @@ import {
  *  }
  * }
  */
-export function viewQuizzesInTrash(token: string) {
+export function viewQuizzesInTrash(token: string): {error?: string, quizzes?: returnQuizList[]} {
   const data = load();
   const session = isToken(token);
 
@@ -51,7 +52,7 @@ export function viewQuizzesInTrash(token: string) {
  * @param {number} quizId
  * @returns {}
  */
-export function restoreQuizInTrash(token: string, quizId: number) {
+export function restoreQuizInTrash(token: string, quizId: number): { error?: string } {
   const data = load();
   const session = isToken(token);
 
