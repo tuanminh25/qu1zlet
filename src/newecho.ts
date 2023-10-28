@@ -1,11 +1,11 @@
-// Do not delete this file
-type ErrorMsg = {
-  error: string;
-};
+import HTTPError from 'http-errors';
 
-function echo(value: string): { value: string } | ErrorMsg {
+function echo(value: string): { value: string } {
   if (value === 'echo') {
-    return { error: 'You cannot echo the word echo itself' };
+    // NEW Iteration 3
+    throw HTTPError(400, 'Cannot echo "echo"');
+    // OLD Iteration 2
+    // return { error: 'error' };
   }
   return {
     value,
