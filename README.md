@@ -912,6 +912,8 @@ This will start the server on the port in the src/server.ts file, using `ts-node
 
 If you get an error stating that the address is already in use, you can change the port number in `config.json` to any number from `49152` to `65535`. Is it likely that another student may be using your original port number.
 
+Do **NOT** move the location of either `config.json` or `server.ts`.
+
 ### 🐝 4.3. Implementing and testing features
 
 You should first approach this project by considering its distinct "features". Each feature should add some meaningful functionality to the project, but still be as small as possible. You should aim to size features as the smallest amount of functionality that adds value without making the project more unstable. For each feature you should:
