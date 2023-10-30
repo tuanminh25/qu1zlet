@@ -1,6 +1,6 @@
 // Do not delete this file
 import request from 'sync-request-curl';
-import config from './config.json';
+import config from '../config.json';
 
 const OK = 200;
 const INPUT_ERROR = 400;
