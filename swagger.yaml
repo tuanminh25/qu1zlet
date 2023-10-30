@@ -1510,6 +1510,7 @@ paths:
         # - "By Topic: Quiz Management"
         - "Iteration 3 (Modified)"
       parameters:
+        - $ref: '#/components/header/Token'
         - $ref: '#/components/path/QuizId'
         - $ref: '#/components/body/QuizUpdateDescriptionIter3'
       responses:

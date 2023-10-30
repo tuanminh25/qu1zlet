@@ -1205,7 +1205,7 @@ In this iteration, you are expected to:
 
     * You are required to scope out 2-3 problems to solve for future iterations of Toohak. You aren't required to build/code them, but you are required to go through SDLC steps of requirements analysis, conceptual modelling, and design.
 
-    * Full detail of this can be found in `5.6`.
+    * Full detail of this can be found in `5.5`.
 
 ### 🦆 5.2. Running the server
 
