@@ -2186,6 +2186,10 @@ paths:
           description: OK
           schema:
             $ref: '#/components/return/QuizSessionsList'
+        401:
+          description: Token is empty or invalid (does not refer to valid logged in user session)
+          schema:
+            $ref: '#/components/return/Error'
         403:
           description: Valid token is provided, but user is not an owner of this quiz
           schema:
