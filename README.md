@@ -15,6 +15,12 @@
 * 22/10: `/v1/admin/quiz/trash/empty` has had 400 and 403 error descriptions fixed up; removal of "All sessions for this quiz must be in END state" references.
 * 25/10: Clarity that errors are thrown in order 401, 403, 400. This was in the spec and the swagger had this order in source code, but swagger 
 was not rendering in a way to reflect that.
+* 01/11:
+ * Replaced section 5.9 with section on deployment (and removed the previous version which required to store or upload the image file from the URL locally - now you can just store the URL and serve it again)
+ * Added to section `5` a clarification about interoperability between iteration 2 and iteration 3 routes.
+ * Added missing `401` error to `/v1/admin/quiz/{quizid}/sessions`
+ * Clarified interface design can follow a similar pattern to the swagger docs
+ * Clarified how to get the 10% bonus marks for typescript compliance
 
 ## 🫡 0. Aims:
 
@@ -1165,6 +1171,8 @@ Iteration 3 builds off all of the work you've completed in iteration 1 and 2. If
 * `GET /v2/admin/quiz/{quizid}` has different return type
 * `POST /v2/admin/quiz/{quizid}/question` has a different input type
 
+Iteration 2 routes and Iteration 3 routes do not need to be interoperable. You can assume that for a given usage of your system, once someone is using iteration 3 routes they can be assumed to not be calling any iteration 2 routes. In this way we need iteration 2 routes to still function properly, but in a way that is fine to be isolated from iteration 3 routes.
+
 ### 🦆 5.1. Task
 
 In this iteration, you are expected to:
@@ -1294,7 +1302,7 @@ With your completed use case work, reach out to the 2-3 people you interviewed o
 
 #### [Design] Interface Design
 
-Now that we've established our *problem* (described as requirements), it's time to think about our *solution* in terms of what capabilities would be necessary. You will specify these capabilities as HTTP endpoints, similar to what is described in `6.2`. There is no minimum or maximum of what is needed - it will depend on what problem you're solving.
+Now that we've established our *problem* (described as requirements), it's time to think about our *solution* in terms of what capabilities would be necessary. You will specify these capabilities as HTTP endpoints, similar to what is described in the swagger docs. There is no minimum or maximum of what is needed - it will depend on what problem you're solving.
 
 **You are also encouraged to update your `swagger.yaml` file to include the routes associated with your new work.**
 
@@ -1397,13 +1405,11 @@ A sample flow logging a user in might be as follows (other flows exist too):
 4. Server returns that hash of the session ID as a token to the user in the response body
 ```
 
-### 🦆 5.9. Uploading Images
+### 🦆 5.9. Deployment
 
-Some parts of iteration 3 require you to upload an image. The process to follow is:
- * Taking a URL that the user provides and downloading the image onto the server
- * Storing the downloaded image on your server such that the server now has a local copy and can serve it on a URL such as http://localhost:5001/imgurl/adfnajnerkn23k4234.jpg (a unique url you generate)
+_This section previously spoke about image uploading and is no longer required. For iteration 3 it is fine to store and image URL and then just serve that again to the user._
 
-Note: This is a harder part of the project
+For this iteration some part of the marks (see marking criteria) will come from your group having deployed a version of your code to a public web server. Instructions about how to deploy can be found in `lab09_deploy`.
 
 ### 🦆 5.10. Scoring & Ranking
 
@@ -1515,7 +1521,7 @@ If a player does not answer a question, their rank is 0 for that question.
     <td>5%</td>
     <td><ul>
       <li>Backend works with the supplied frontend</li>
-      <li>Successful implementation of image upload routes</li>
+      <li>Successful deployment of your project to a public web server</li>
     </ul>
   </td>
   </tr>
@@ -1523,8 +1529,8 @@ If a player does not answer a question, their rank is 0 for that question.
     <td>(Bonus Marks) Typescript</td>
     <td>10%</td>
     <td><ul>
-      <li>Up to 10% extra marks can be gained by ensuring your code is Typescript compliant using <code>npm run tsc</code>. This includes no use of the `any` keyword and includes no other check disabling keywords (e.g. "ts-nocheck")</li>
       <li>If you would like to do another task for bonus marks, please post on the forum and we can work on a scope with your group!</li>
+      <li>All 10% extra marks can be gained by ensuring your code is Typescript compliant by passing both <code>npm run tsc</code> as well as passing the linter when the rule <code>{ "@typescript-eslint/no-explicit-any": "error" }</code> is added to the <code>.eslintrc.json</code> file. If you make this change in an attempt to get these bonus marks, please inform your tutor.</li>
     </ul>
   </td>
   </tr>
