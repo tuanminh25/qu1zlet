@@ -59,7 +59,7 @@ components:
       example: 2384
     Action:
       type: string
-      enum: [NEXT_QUESTION, GO_TO_ANSWER, GO_TO_FINAL_RESULTS, END]
+      enum: [NEXT_QUESTION, SKIP_COUNTDOWN, GO_TO_ANSWER, GO_TO_FINAL_RESULTS, END]
     State:
       type: string
       enum: [LOBBY, QUESTION_COUNTDOWN, SKIP_COUNTDOWN, QUESTION_OPEN, QUESTION_CLOSE, ANSWER_SHOW, FINAL_RESULTS, END]

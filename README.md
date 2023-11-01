@@ -1323,7 +1323,7 @@ Sessions can be in one of many states:
  * **FINAL_RESULTS**: This is where the final results are displayed for all players and questions
  * **END**: The game is now over and inactive
 
-There are 4 key actions that an admin can send that moves us between these states:
+There are 5 key actions that an admin can send that moves us between these states:
  * **NEXT_QUESTION**: Move onto the countdown for the next question
  * **SKIP_COUNTDOWN**: This is how to skip the question countdown period immediately.
  * **GO_TO_ANSWER**: Go straight to the next most immediate answers show state
