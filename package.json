@@ -6,7 +6,8 @@
         "lint-fix": "eslint --fix src/**/*.{ts,js}",
         "start": "ts-node -T src/server.ts",
         "ts-node-coverage": "nyc --reporter=text --reporter=lcov ts-node -T src/server.ts",
-        "posttest": "pkill -f 'node_modules/sync-rpc/lib/worker.js' > /dev/null 2>&1 || true"
+        "cleanup-sync-request": "pkill -f node_modules/sync-rpc/lib/worker.js > /dev/null 2>&1",
+        "posttest": "npm run cleanup-sync-request || true"
     },
     "dependencies": {
         "cors": "^2.8.5",
