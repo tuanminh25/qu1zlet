@@ -24,11 +24,11 @@ import HttpError from 'http-errors';
 */
 export function adminAuthRegister(email: string, password: string, nameFirst: string, nameLast: string): { token: string } {
   if (!validator.isEmail(email)) {
-    throw HttpError(400,  'Invalid email');
+    throw HttpError(400, 'Invalid email');
   }
 
   if (checkEmail(email)) {
-    throw HttpError(400,  'Email address is used by another user');
+    throw HttpError(400, 'Email address is used by another user');
   }
 
   if (!isPassword(password)) {

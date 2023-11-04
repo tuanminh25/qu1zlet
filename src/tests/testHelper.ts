@@ -3,6 +3,7 @@ import { port, url } from '../config.json';
 
 const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/';
+const authv2 = '/v2/admin/auth/';
 const userUrl = '/v1/admin/user/';
 
 export function testRegister(
@@ -45,9 +46,9 @@ export function testLogin(email: string, password: string) {
 }
 
 export function testLogout(token: string) {
-  const res = request('POST', SERVER_URL + auth + 'logout',
+  const res = request('POST', SERVER_URL + authv2 + 'logout',
     {
-      json: {
+      headers: {
         token: token
       }
     }

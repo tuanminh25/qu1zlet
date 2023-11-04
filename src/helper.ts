@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
-import  HttpError  from 'http-errors';
+import HttpError from 'http-errors';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -262,7 +262,7 @@ export function passwordHash(plaintext: string) {
 
 /**
  * Gets the sessionId given token
- * 
+ *
  * @param {string} token
  * @return {Session}
  */
