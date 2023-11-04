@@ -4,7 +4,6 @@ import { port, url } from '../config.json';
 const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/';
 const authv2 = '/v2/admin/auth/';
-const userUrl = '/v1/admin/user/';
 const userUrlv2 = '/v2/admin/user/';
 
 export function testRegister(
@@ -116,14 +115,17 @@ export function testUpdatePassword(
   oldPassword: string,
   newPassword: string
 ) {
-  const res = request('PUT', SERVER_URL + userUrl + 'password',
+  const res = request('PUT', SERVER_URL + userUrlv2 + 'password',
     {
+      headers: {
+        token: token
+      },
       json: {
-        token: token,
         oldPassword: oldPassword,
         newPassword: newPassword
       }
-    });
+    }
+  );
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }

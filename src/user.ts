@@ -53,33 +53,21 @@ export function adminUserDetails(token: string): { user: returnUserDetails} {
  * @returns {error: string}
  */
 export function updatePassword(token: string, oldPassword: string, newPassword: string): {error?: string} {
-  const session = isToken(token);
-
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
+  const session = getSession(token);
 
   const data = load();
   const user = data.users.find((user) => user.userId === session.userId);
 
   if (passwordHash(oldPassword) !== user.password) {
-    return {
-      error: 'Incorrect old password'
-    };
+    throw HttpError(400, 'Incorrect old password');
   }
 
   if (newPassword === oldPassword) {
-    return {
-      error: 'Old Password and New Password match exactly'
-    };
+    throw HttpError(400, 'Old Password and New Password match exactly');
   }
 
   if (user.usedPasswords.find((password) => password === passwordHash(newPassword))) {
-    return {
-      error: 'New Password has already been used before by this user'
-    };
+    throw HttpError(400, 'New Password has already been used before by this user');
   }
 
   if (!isPassword(newPassword)) {
