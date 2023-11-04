@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -240,6 +241,7 @@ export function randomColour(): string {
   const colour = Colours[randomIndex];
   return colour;
 }
+
 /**
  * Check if question exists inside the given quiz
  *
@@ -251,4 +253,8 @@ export function isQuizQuestion(questionId: number, quizId: number) : Question {
   const quiz = checkquizId(quizId);
   const question = quiz.questions.find((q) => q.questionId === questionId);
   return question;
+}
+
+export function passwordHash(plaintext: string) {
+  return crypto.createHash('sha256').update(plaintext).digest('hex');
 }

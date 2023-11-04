@@ -8,6 +8,7 @@ import {
   save,
   User,
   Session,
+  passwordHash
 } from './helper';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -59,7 +60,7 @@ export function adminAuthRegister(email: string, password: string, nameFirst: st
     nameFirst: nameFirst,
     nameLast: nameLast,
     email: email,
-    password: password,
+    password: passwordHash(password),
     usedPasswords: [],
     numSuccessfulLogins: 1,
     numFailedPasswordsSinceLastLogin: 0,
@@ -96,7 +97,7 @@ export function adminAuthLogin(email: string, password: string): { token?: strin
   const data = load();
   userLogin = data.users.find((user) => user.userId === userLogin.userId);
 
-  if (userLogin.password !== password) {
+  if (userLogin.password !== passwordHash(password)) {
     userLogin.numFailedPasswordsSinceLastLogin++;
     save(data);
     return {
