@@ -5,6 +5,7 @@ const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/';
 const authv2 = '/v2/admin/auth/';
 const userUrl = '/v1/admin/user/';
+const userUrlv2 = '/v2/admin/user/';
 
 export function testRegister(
   email: string,
@@ -58,9 +59,9 @@ export function testLogout(token: string) {
 }
 
 export function testGetDetails(token: string) {
-  const res = request('GET', SERVER_URL + '/v1/admin/user/details',
+  const res = request('GET', SERVER_URL + userUrlv2 + 'details',
     {
-      qs: {
+      headers: {
         token: token
       }
     }

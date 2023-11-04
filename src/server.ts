@@ -62,13 +62,10 @@ app.post('/v1/admin/auth/login', (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.get('/v1/admin/user/details', (req: Request, res: Response) => {
-  const token = req.query.token;
+app.get('/v2/admin/user/details', (req: Request, res: Response) => {
+  const token = req.headers.token;
   const response = adminUserDetails(String(token));
 
-  if ('error' in response) {
-    return res.status(401).json(response);
-  }
   res.json(response);
 });
 
