@@ -46,9 +46,6 @@ app.post('/v1/admin/auth/register', (req: Request, res: Response) => {
   const { email, password, nameFirst, nameLast } = req.body;
   const response = adminAuthRegister(email, password, nameFirst, nameLast);
 
-  if ('error' in response) {
-    return res.status(400).json(response);
-  }
   res.json(response);
 });
 
@@ -62,9 +59,6 @@ app.post('/v1/admin/auth/login', (req: Request, res: Response) => {
   const { email, password } = req.body;
   const response = adminAuthLogin(email, password);
 
-  if ('error' in response) {
-    return res.status(400).json(response);
-  }
   res.json(response);
 });
 
@@ -80,12 +74,8 @@ app.get('/v1/admin/user/details', (req: Request, res: Response) => {
 
 app.post('/v1/admin/auth/logout', (req: Request, res: Response) => {
   const token = req.body.token;
-
   const response = adminAuthLogout(String(token));
 
-  if ('error' in response) {
-    return res.status(401).json(response);
-  }
   res.json(response);
 });
 
@@ -243,12 +233,13 @@ app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
   const { quizId } = req.params;
 
   const response = adminQuizInfo(String(token), parseInt(quizId));
-
-  if (response.error === 'Invalid Token') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Unauthorised') {
-    return res.status(403).json(response);
-  }
+  if ('error' in response) {
+    if (response.error === 'Invalid Token') {
+      return res.status(401).json(response);
+    } else if (response.error === 'Unauthorised') {
+      return res.status(403).json(response);
+    }
+} 
 
   res.json(response);
 });

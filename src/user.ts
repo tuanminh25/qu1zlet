@@ -8,6 +8,7 @@ import {
   passwordHash
 } from './helper';
 import validator from 'validator';
+import HttpError from 'http-errors';
 
 /**
  * For the given admin user that is logged in, return all of the relevant details
@@ -87,9 +88,7 @@ export function updatePassword(token: string, oldPassword: string, newPassword: 
   }
 
   if (!isPassword(newPassword)) {
-    return {
-      error: 'Invalid new password'
-    };
+    throw HttpError(400, 'Invalid new password');
   }
 
   user.usedPasswords.push(user.password);
