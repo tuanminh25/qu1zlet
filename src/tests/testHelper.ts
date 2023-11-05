@@ -195,7 +195,7 @@ export function testUpdateQuestion(
 
 export function testQuizInfo(token: string, quizId: number) {
   const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
-    qs: {
+    headers: {
       token: token,
     },
   });
