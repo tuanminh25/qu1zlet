@@ -55,6 +55,7 @@ export interface Question {
   questionId: number
   question: string,
   duration: number,
+  thumbnailUrl: string,
   points: number,
   answers: Answer[]
 }
@@ -124,6 +125,7 @@ export interface returnQuizInfo {
   numQuestions: number,
   questions: Question[],
   duration: number,
+  thumbnailUrl: string
 }
 
 export function load(): DataStore {

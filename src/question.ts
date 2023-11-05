@@ -105,6 +105,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     duration: questionBody.duration,
     points: questionBody.points,
     answers: answers,
+    thumbnailUrl: ''
   };
 
   quiz.questions.push(newQuestion);

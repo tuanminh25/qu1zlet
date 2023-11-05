@@ -229,18 +229,10 @@ app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Respo
 });
 
 app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
-  const token = req.query.token;
+  const token = req.headers.token;
   const { quizId } = req.params;
-
   const response = adminQuizInfo(String(token), parseInt(quizId));
-  if ('error' in response) {
-    if (response.error === 'Invalid Token') {
-      return res.status(401).json(response);
-    } else if (response.error === 'Unauthorised') {
-      return res.status(403).json(response);
-    }
-  }
-
+  
   res.json(response);
 });
 
