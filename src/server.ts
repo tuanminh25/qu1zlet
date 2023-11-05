@@ -156,15 +156,10 @@ app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.put('/v1/admin/user/details', (req: Request, res: Response) => {
-  const { token, email, nameFirst, nameLast } = req.body;
-  const response = adminUserUpdate(token, email, nameFirst, nameLast);
-
-  if (response.error === 'Invalid token') {
-    return res.status(401).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
+app.put('/v2/admin/user/details', (req: Request, res: Response) => {
+  const token = req.headers.token;
+  const { email, nameFirst, nameLast } = req.body;
+  const response = adminUserUpdate(String(token), email, nameFirst, nameLast);
 
   res.json(response);
 });
@@ -228,7 +223,7 @@ app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Respo
   }
 });
 
-app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
+app.get('/v2/admin/quiz/:quizId', (req: Request, res: Response) => {
   const token = req.headers.token;
   const { quizId } = req.params;
   const response = adminQuizInfo(String(token), parseInt(quizId));

@@ -1,5 +1,4 @@
 import {
-  isToken,
   load,
   save,
   isUserName,
@@ -91,37 +90,24 @@ export function updatePassword(token: string, oldPassword: string, newPassword: 
   * @returns { error: string }
 */
 export function adminUserUpdate(token: string, email: string, nameFirst: string, nameLast: string): {error?: string} {
-  const session = isToken(token);
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
+  const session = getSession(token);
 
   if (!validator.isEmail(email)) {
-    return {
-      error: 'Invalid email'
-    };
+    throw HttpError(400, 'Invalid email');
   }
 
   if (!isUserName(nameFirst)) {
-    return {
-      error: 'Invalid first name'
-    };
+    throw HttpError(400, 'Invalid first name');
   }
 
   if (!isUserName(nameLast)) {
-    return {
-      error: 'Invalid last name'
-    };
+    throw HttpError(400, 'Invalid last name');
   }
 
   const data = load();
   const usedEmail = data.users.find((user) => user.email === email && user.userId !== session.userId);
   if (usedEmail) {
-    return {
-      error: 'Email is currently used by another user'
-    };
+    throw HttpError(400, 'Email is used by another user');
   }
 
   const user = data.users.find((user) => user.userId === session.userId);
