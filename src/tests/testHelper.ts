@@ -6,6 +6,42 @@ const auth = '/v1/admin/auth/';
 const authv2 = '/v2/admin/auth/';
 const userUrlv2 = '/v2/admin/user/';
 
+export const validQuestion = {
+  question: 'What is the capital of France?',
+  duration: 4,
+  points: 5,
+  answers: [
+    { answer: 'Berlin', correct: false },
+    { answer: 'Madrid', correct: false },
+    { answer: 'Paris', correct: true },
+    { answer: 'Rome', correct: false }
+  ]
+};
+
+export const footballQues = {
+  question: 'England teams',
+  duration: 10,
+  points: 5,
+  answers: [
+    { answer: 'Madrid', correct: false },
+    { answer: 'Barcelona', correct: false },
+    { answer: 'Arsenal', correct: true },
+    { answer: 'Bayern', correct: false }
+  ]
+};
+
+export const leagueQues = {
+  question: 'Champions',
+  duration: 15,
+  points: 5,
+  answers: [
+    { answer: 'jayce', correct: false },
+    { answer: 'tristana', correct: false },
+    { answer: 'lulu', correct: false },
+    { answer: 'leblanc', correct: true }
+  ]
+};
+
 export function testRegister(
   email: string,
   password: string,
@@ -242,6 +278,19 @@ export function testDupQuizQuestion(token: string, quizId: number, questionId: n
   const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}/duplicate`, {
     json: {
       token: token,
+    }
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testGameSessionStart(token: string, quizId: number, autoStartNum: number) {
+  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/session/start`, {
+    headers:{
+      token: token,
+    },
+    json: {
+      autoStartNum: autoStartNum
     }
   });
 
