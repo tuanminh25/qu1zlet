@@ -232,7 +232,7 @@ app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
   const token = req.headers.token;
   const { quizId } = req.params;
   const response = adminQuizInfo(String(token), parseInt(quizId));
-  
+
   res.json(response);
 });
 
