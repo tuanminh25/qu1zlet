@@ -15,6 +15,7 @@ import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
 import { viewQuizzesInTrash, restoreQuizInTrash } from './trash';
+import { gameSessionStart } from './game';
 
 // Set up web app
 const app = express();
@@ -129,6 +130,15 @@ app.post('/v1/admin/quiz/:quizId/restore', (req: Request, res: Response) => {
   }
 
   res.status(200).json(response);
+});
+
+app.post('/v1/admin/quiz/:quizid/session/start', (req: Request, res: Response) => {
+  const quizId = req.params.quizid;
+  const token = req.headers.token;
+  const autoStartNum = req.body.autoStartNum;
+  const response = gameSessionStart(String(token), parseInt(quizId), parseInt(autoStartNum));
+
+  res.json(response);
 });
 
 app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {

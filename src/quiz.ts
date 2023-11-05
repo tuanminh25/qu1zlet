@@ -66,6 +66,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     duration: 0,
     numQuestions: 0,
     questions: [],
+    thumbnailUrl: ''
   };
 
   data.quizzes.push(newQuiz);

@@ -16,12 +16,12 @@ enum Colours {
 }
 
 export enum GameState {
-  LOBBY = 'LOBBY', 
-  QUESTION_COUNTDOWN = 'QUESTION_COUNTDOWN', 
-  QUESTION_OPEN = 'QUESTION_OPEN', 
-  QUESTION_CLOSE = 'QUESTION_CLOSE', 
-  ANSWER_SHOW = 'ANSWER_SHOW', 
-  FINAL_RESULTS = 'FINAL_RESULT', 
+  LOBBY = 'LOBBY',
+  QUESTION_COUNTDOWN = 'QUESTION_COUNTDOWN',
+  QUESTION_OPEN = 'QUESTION_OPEN',
+  QUESTION_CLOSE = 'QUESTION_CLOSE',
+  ANSWER_SHOW = 'ANSWER_SHOW',
+  FINAL_RESULTS = 'FINAL_RESULT',
   END = 'END'
 }
 
@@ -55,7 +55,6 @@ export interface Question {
   questionId: number
   question: string,
   duration: number,
-  thumbnailUrl: string,
   points: number,
   answers: Answer[]
 }
@@ -83,10 +82,12 @@ export interface Ids {
   quizId: number;
   questionId: number;
   answerId: number;
+  gameSessionId: number;
 }
 
 export interface GameSession {
-  state:  GameState;
+  gameSessionId: number,
+  state: GameState;
   atQuestion: number;
   players: string[];
   metadata: Quiz
@@ -270,7 +271,7 @@ export function generateTime(): number {
 /**
  * Generate a random colour
  * @param
- * @returns {string} colour
+ * @returns {Colours}
  *
  */
 export function randomColour(): Colours {
@@ -294,8 +295,8 @@ export function isQuizQuestion(questionId: number, quizId: number) : Question {
 }
 /**
  * Hash password for security
- * 
- * @param plaintext 
+ *
+ * @param {string} plaintext
  */
 export function passwordHash(plaintext: string) {
   return crypto.createHash('sha256').update(plaintext).digest('hex');

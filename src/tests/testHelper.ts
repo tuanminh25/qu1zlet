@@ -286,7 +286,7 @@ export function testDupQuizQuestion(token: string, quizId: number, questionId: n
 
 export function testGameSessionStart(token: string, quizId: number, autoStartNum: number) {
   const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/session/start`, {
-    headers:{
+    headers: {
       token: token,
     },
     json: {
