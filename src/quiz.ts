@@ -89,30 +89,17 @@ export function adminQuizCreate(token: string, name: string, description: string
 export function adminQuizRemove(token: string, quizId: number): { error?: string} {
   const data = load();
   const quiz = checkquizId(quizId);
-  const session = isToken(token);
+  const session = getSession(token);
 
-  if (!session) {
-    return {
-      error: 'Invalid Token'
-    };
+  if (quiz.quizOwnedby !== session.userId) {
+    throw HttpError(403, 'Unauthorised');
   }
 
-  const userExists = checkauthUserId(session.userId);
-  if (!userExists) {
-    return {
-      error: 'Invalid Token'
-    };
-  }
-
-  if (!quiz) {
-    return {
-      error: 'Quiz does not exist'
-    };
-  } else if (quiz.quizOwnedby !== session.userId) {
-    return {
-      error: 'Person does not own the quiz'
-    };
-  }
+  data.gameSessions.forEach(session => {
+    if (session.metadata.quizId === quiz.quizId && session.state !== 'END') {
+      throw HttpError(400, 'Game has not ended');
+    }
+  });
 
   quiz.timeLastEdited = generateTime();
   const filteredArray = data.quizzes.filter(obj => obj.quizId !== quizId);
