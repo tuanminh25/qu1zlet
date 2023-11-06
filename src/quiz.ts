@@ -24,11 +24,10 @@ import HttpError from 'http-errors';
   * @returns {{ quizId: number }}
 */
 export function adminQuizCreate(token: string, name: string, description: string): { quizId?: number, error?: string} {
-  const session = getSession(token);
+  const userId = getSession(token).userId;
   const data = load();
 
   // Error checking 400
-  const userId = isToken(token).userId;
   const quizExists = data.quizzes.find((quiz) => quiz.name === name);
   if (quizExists && quizExists.quizOwnedby === userId) {
     throw HttpError(400, 'Quiz name already exists');
