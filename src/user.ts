@@ -5,7 +5,8 @@ import {
   isUserName,
   isPassword,
   returnUserDetails,
-  passwordHash
+  passwordHash,
+  getSession
 } from './helper';
 import validator from 'validator';
 import HttpError from 'http-errors';
@@ -25,14 +26,8 @@ import HttpError from 'http-errors';
  * }
  * @returns {error: string}
 */
-export function adminUserDetails(token: string): {error?: string, user?: returnUserDetails} {
-  const session = isToken(token);
-
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
+export function adminUserDetails(token: string): { user: returnUserDetails} {
+  const session = getSession(token);
 
   const data = load();
   const user = data.users.find((user) => user.userId === session.userId);
