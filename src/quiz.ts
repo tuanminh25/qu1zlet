@@ -43,7 +43,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     timeCreated: generateTime(),
     timeLastEdited: generateTime(),
     description: description,
-    quizOwnedby: session.userId,
+    quizOwnedby: userId,
     duration: 0,
     numQuestions: 0,
     questions: [],
