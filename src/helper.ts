@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import crypto from 'crypto';
+import HttpError from 'http-errors';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -240,6 +242,7 @@ export function randomColour(): string {
   const colour = Colours[randomIndex];
   return colour;
 }
+
 /**
  * Check if question exists inside the given quiz
  *
@@ -251,4 +254,25 @@ export function isQuizQuestion(questionId: number, quizId: number) : Question {
   const quiz = checkquizId(quizId);
   const question = quiz.questions.find((q) => q.questionId === questionId);
   return question;
+}
+
+export function passwordHash(plaintext: string) {
+  return crypto.createHash('sha256').update(plaintext).digest('hex');
+}
+
+/**
+ * Gets the sessionId given token
+ *
+ * @param {string} token
+ * @return {Session}
+ */
+export function getSession(token: string): Session {
+  const data = load();
+  const session = data.sessions.find((session) => session.sessionId === token);
+
+  if (!session) {
+    throw HttpError(401, 'Invalid token');
+  }
+
+  return session;
 }

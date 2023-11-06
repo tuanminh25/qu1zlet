@@ -3,13 +3,15 @@ import {
   isUserName,
   isPassword,
   checkEmail,
-  isToken,
   load,
   save,
   User,
   Session,
+  passwordHash,
+  getSession
 } from './helper';
 import { v4 as uuidv4 } from 'uuid';
+import HttpError from 'http-errors';
 
 /**
   * Takes in information about a new admin user and registers them in the system
@@ -20,36 +22,27 @@ import { v4 as uuidv4 } from 'uuid';
   * @param {string} nameLast
   * @returns {{token: string}}
 */
-export function adminAuthRegister(email: string, password: string, nameFirst: string, nameLast: string): { token?: string, error?: string } {
+export function adminAuthRegister(email: string, password: string, nameFirst: string, nameLast: string): { token: string } {
   if (!validator.isEmail(email)) {
-    return {
-      error: 'Invalid email'
-    };
+    throw HttpError(400, 'Invalid email');
   }
 
   if (checkEmail(email)) {
-    return {
-      error: 'Email address is used by another user'
-    };
+    throw HttpError(400, 'Email address is used by another user');
   }
 
   if (!isPassword(password)) {
-    return {
-      error: 'Invalid password'
-    };
+    throw HttpError(400, 'Invalid Password');
   }
 
   if (!isUserName(nameFirst)) {
-    return {
-      error: 'Invalid first name'
-    };
+    throw HttpError(400, 'Invalid first name');
   }
 
   if (!isUserName(nameLast)) {
-    return {
-      error: 'Invalid last name'
-    };
+    throw HttpError(400, 'Invalid last name');
   }
+
   const data = load();
   const sessionId = uuidv4();
   const newUserId = ++data.ids.userId;
@@ -59,7 +52,7 @@ export function adminAuthRegister(email: string, password: string, nameFirst: st
     nameFirst: nameFirst,
     nameLast: nameLast,
     email: email,
-    password: password,
+    password: passwordHash(password),
     usedPasswords: [],
     numSuccessfulLogins: 1,
     numFailedPasswordsSinceLastLogin: 0,
@@ -85,23 +78,19 @@ export function adminAuthRegister(email: string, password: string, nameFirst: st
   * @param {string} password
   * @returns {{token: string}}
 */
-export function adminAuthLogin(email: string, password: string): { token?: string, error?: string } {
+export function adminAuthLogin(email: string, password: string): { token: string } {
   let userLogin = checkEmail(email);
   if (!userLogin) {
-    return {
-      error: 'Email address does not exist'
-    };
+    throw HttpError(400, 'Email does not exist');
   }
 
   const data = load();
   userLogin = data.users.find((user) => user.userId === userLogin.userId);
 
-  if (userLogin.password !== password) {
+  if (userLogin.password !== passwordHash(password)) {
     userLogin.numFailedPasswordsSinceLastLogin++;
     save(data);
-    return {
-      error: 'Password is not correct for the given email'
-    };
+    throw HttpError(400, 'Password is not correct for the given email');
   }
 
   const sessionId = uuidv4();
@@ -128,14 +117,8 @@ export function adminAuthLogin(email: string, password: string): { token?: strin
  * @param {string} token
  * @return {{}}
  */
-export function adminAuthLogout(token: string): { error?: string } {
-  const session = isToken(token);
-
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
+export function adminAuthLogout(token: string): Record<string, never> {
+  const session = getSession(token);
 
   const data = load();
   const newSessions = data.sessions.filter((item) => item.sessionId !== session.sessionId);
