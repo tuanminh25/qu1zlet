@@ -134,9 +134,11 @@ export function testCreateQuizQuestion(token: string, quizId: number, questionBo
 }
 
 export function testUpdateUserDetails(token: string, email: string, nameFirst: string, nameLast: string) {
-  const res = request('PUT', SERVER_URL + '/v1/admin/user/details', {
-    json: {
+  const res = request('PUT', SERVER_URL + '/v2/admin/user/details', {
+    headers: {
       token: token,
+    },
+    json: {
       email: email,
       nameFirst: nameFirst,
       nameLast: nameLast
@@ -194,7 +196,7 @@ export function testUpdateQuestion(
 }
 
 export function testQuizInfo(token: string, quizId: number) {
-  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
+  const res = request('GET', `${SERVER_URL}/v2/admin/quiz/${quizId}`, {
     headers: {
       token: token,
     },
