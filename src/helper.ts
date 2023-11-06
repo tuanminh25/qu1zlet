@@ -5,7 +5,33 @@ import HttpError from 'http-errors';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
-const Colours: string[] = ['red', 'blue', 'green', 'yellow', 'purple', 'brown', 'orange'];
+enum Colours {
+  red = 'red',
+  blue = 'blue',
+  green = 'green',
+  yellow = 'yellow',
+  purple = 'purple',
+  brown = 'brown',
+  orange = 'orange'
+}
+
+export enum GameState {
+  LOBBY = 'LOBBY',
+  QUESTION_COUNTDOWN = 'QUESTION_COUNTDOWN',
+  QUESTION_OPEN = 'QUESTION_OPEN',
+  QUESTION_CLOSE = 'QUESTION_CLOSE',
+  ANSWER_SHOW = 'ANSWER_SHOW',
+  FINAL_RESULTS = 'FINAL_RESULT',
+  END = 'END'
+}
+
+export enum GameAction {
+  NEXT_QUESTION = 'NEXT_QUESTION',
+  SKIP_COUNTDOWN = 'SKIP_COUNTDOWN',
+  GO_TO_ANSWER = 'GO_TO_ANSWER',
+  GO_TO_FINAL_RESULTS = 'GO_TO_FINAL_RESULTS',
+  END = 'END'
+}
 
 export interface User {
   userId: number;
@@ -29,6 +55,7 @@ export interface Question {
   questionId: number
   question: string,
   duration: number,
+  thumbnailUrl: string,
   points: number,
   answers: Answer[]
 }
@@ -42,7 +69,8 @@ export interface Quiz {
   quizOwnedby: number;
   duration: number;
   numQuestions: number;
-  questions: Question[]
+  questions: Question[];
+  thumbnailUrl: string
 }
 
 export interface Session {
@@ -55,6 +83,15 @@ export interface Ids {
   quizId: number;
   questionId: number;
   answerId: number;
+  gameSessionId: number;
+}
+
+export interface GameSession {
+  gameSessionId: number,
+  state: GameState;
+  atQuestion: number;
+  players: string[];
+  metadata: Quiz
 }
 
 export interface DataStore {
@@ -62,6 +99,7 @@ export interface DataStore {
   quizzes: Quiz[];
   trash: Quiz[];
   sessions: Session[];
+  gameSessions: GameSession[];
   ids: Ids
 }
 
@@ -87,6 +125,7 @@ export interface returnQuizInfo {
   numQuestions: number,
   questions: Question[],
   duration: number,
+  thumbnailUrl: string
 }
 
 export function load(): DataStore {
@@ -234,12 +273,13 @@ export function generateTime(): number {
 /**
  * Generate a random colour
  * @param
- * @returns {string} colour
+ * @returns {Colours}
  *
  */
-export function randomColour(): string {
-  const randomIndex = Math.floor(Math.random() * Colours.length);
-  const colour = Colours[randomIndex];
+export function randomColour(): Colours {
+  const coloursArray = Object.values(Colours);
+  const randomIndex = Math.floor(Math.random() * coloursArray.length);
+  const colour = coloursArray[randomIndex];
   return colour;
 }
 
@@ -255,7 +295,11 @@ export function isQuizQuestion(questionId: number, quizId: number) : Question {
   const question = quiz.questions.find((q) => q.questionId === questionId);
   return question;
 }
-
+/**
+ * Hash password for security
+ *
+ * @param {string} plaintext
+ */
 export function passwordHash(plaintext: string) {
   return crypto.createHash('sha256').update(plaintext).digest('hex');
 }

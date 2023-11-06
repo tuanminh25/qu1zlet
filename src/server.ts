@@ -15,6 +15,7 @@ import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
 import { viewQuizzesInTrash, restoreQuizInTrash } from './trash';
+import { gameSessionStart } from './game';
 
 // Set up web app
 const app = express();
@@ -131,6 +132,15 @@ app.post('/v1/admin/quiz/:quizId/restore', (req: Request, res: Response) => {
   res.status(200).json(response);
 });
 
+app.post('/v1/admin/quiz/:quizid/session/start', (req: Request, res: Response) => {
+  const quizId = req.params.quizid;
+  const token = req.headers.token;
+  const autoStartNum = req.body.autoStartNum;
+  const response = gameSessionStart(String(token), parseInt(quizId), parseInt(autoStartNum));
+
+  res.json(response);
+});
+
 app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   const { token, questionBody } = req.body;
   const { quizId } = req.params;
@@ -219,17 +229,9 @@ app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Respo
 });
 
 app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
-  const token = req.query.token;
+  const token = req.headers.token;
   const { quizId } = req.params;
-
   const response = adminQuizInfo(String(token), parseInt(quizId));
-  if ('error' in response) {
-    if (response.error === 'Invalid Token') {
-      return res.status(401).json(response);
-    } else if (response.error === 'Unauthorised') {
-      return res.status(403).json(response);
-    }
-  }
 
   res.json(response);
 });

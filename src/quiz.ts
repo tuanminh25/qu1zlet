@@ -9,8 +9,10 @@ import {
   load,
   save,
   returnQuizList,
-  returnQuizInfo
+  returnQuizInfo,
+  getSession
 } from './helper';
+import HttpError from 'http-errors';
 
 /**
   * Given basic details about a new quiz, create one for the logged in user.
@@ -66,6 +68,7 @@ export function adminQuizCreate(token: string, name: string, description: string
     duration: 0,
     numQuestions: 0,
     questions: [],
+    thumbnailUrl: ''
   };
 
   data.quizzes.push(newQuiz);
@@ -178,23 +181,13 @@ export function adminQuizList(token: string): { error?: string, quizzes?: return
  * @returns {error: string}
  *
  */
-export function adminQuizInfo(token: string, quizId: number): {error: string} | returnQuizInfo {
+export function adminQuizInfo(token: string, quizId: number): returnQuizInfo {
   const data = load();
+  const session = getSession(token);
   const quiz = data.quizzes.find(q => q.quizId === quizId);
-  // Error Check 401
-  const session = isToken(token);
 
-  if (!session) {
-    return {
-      error: 'Invalid Token'
-    };
-  }
-
-  // Error Check 403
   if (quiz.quizOwnedby !== session.userId) {
-    return {
-      error: 'Unauthorised'
-    };
+    throw HttpError(403, 'Unauthorised');
   }
 
   return {
@@ -206,6 +199,7 @@ export function adminQuizInfo(token: string, quizId: number): {error: string} | 
     numQuestions: quiz.numQuestions,
     questions: quiz.questions,
     duration: quiz.duration,
+    thumbnailUrl: quiz.thumbnailUrl
   };
 }
 

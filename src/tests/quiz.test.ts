@@ -234,6 +234,7 @@ describe('adminQuizInfo', () => {
         {
           questionId: question.questionId,
           question: 'What is the capital of France?',
+          thumbnailUrl: '',
           duration: 4,
           points: 5,
           answers: [
@@ -265,6 +266,7 @@ describe('adminQuizInfo', () => {
         }
       ],
       duration: 4,
+      thumbnailUrl: ''
     });
     expect(quizinfo.status).toStrictEqual(200);
   });
@@ -307,6 +309,7 @@ describe('adminQuizInfo', () => {
         {
           questionId: question.questionId,
           question: 'What is the capital of France?',
+          thumbnailUrl: '',
           duration: 4,
           points: 5,
           answers: [
@@ -339,6 +342,7 @@ describe('adminQuizInfo', () => {
         {
           questionId: question2.questionId,
           question: 'Who is the Goat',
+          thumbnailUrl: '',
           duration: 10,
           points: 9,
           answers: [
@@ -377,6 +381,7 @@ describe('adminQuizInfo', () => {
         {
           questionId: question3.questionId,
           question: 'XDhenlo',
+          thumbnailUrl: '',
           duration: 10,
           points: 9,
           answers: [
@@ -402,6 +407,7 @@ describe('adminQuizInfo', () => {
         }
       ],
       duration: 24,
+      thumbnailUrl: ''
     });
     expect(quizinfo.status).toStrictEqual(200);
   });
@@ -418,6 +424,7 @@ describe('adminQuizInfo', () => {
       numQuestions: 0,
       questions: [],
       duration: 0,
+      thumbnailUrl: ''
     });
     expect(quizinfo.status).toStrictEqual(200);
   });

@@ -358,6 +358,7 @@ describe('UpdateQuizQuestion', () => {
         {
           questionId: question.questionId,
           question: 'What is the capital of Spain?',
+          thumbnailUrl: '',
           duration: 4,
           points: 5,
           answers: [
@@ -389,6 +390,7 @@ describe('UpdateQuizQuestion', () => {
         }
       ],
       duration: 4,
+      thumbnailUrl: ''
     });
     expect(initial.status).toStrictEqual(200);
 
@@ -408,6 +410,7 @@ describe('UpdateQuizQuestion', () => {
         {
           questionId: question.questionId,
           question: 'England teams',
+          thumbnailUrl: '',
           duration: 10,
           points: 5,
           answers: [
@@ -439,6 +442,7 @@ describe('UpdateQuizQuestion', () => {
         }
       ],
       duration: 10,
+      thumbnailUrl: ''
     });
     expect(fetchedQuiz.status).toStrictEqual(200);
   });
@@ -463,6 +467,7 @@ describe('UpdateQuizQuestion', () => {
         {
           questionId: question.questionId,
           question: 'What is the capital of Spain?',
+          thumbnailUrl: '',
           duration: 4,
           points: 5,
           answers: [
@@ -495,6 +500,7 @@ describe('UpdateQuizQuestion', () => {
         {
           questionId: question2.questionId,
           question: 'Champions',
+          thumbnailUrl: '',
           duration: 15,
           points: 5,
           answers: [
@@ -526,6 +532,7 @@ describe('UpdateQuizQuestion', () => {
         }
       ],
       duration: 19,
+      thumbnailUrl: ''
     });
   });
 });
@@ -614,7 +621,8 @@ describe('Question Delete', () => {
         description: 'Sample Description',
         numQuestions: 0,
         questions: [],
-        duration: 0
+        duration: 0,
+        thumbnailUrl: ''
       }
     );
   });
@@ -640,6 +648,7 @@ describe('Question Delete', () => {
           {
             questionId: ques.questionId,
             question: 'What is the capital of France?',
+            thumbnailUrl: '',
             duration: 6,
             points: 5,
             answers: [
@@ -672,6 +681,7 @@ describe('Question Delete', () => {
           {
             questionId: ques3.questionId,
             question: 'Champions',
+            thumbnailUrl: '',
             duration: 15,
             points: 5,
             answers: [
@@ -702,7 +712,8 @@ describe('Question Delete', () => {
             ]
           }
         ],
-        duration: 21
+        duration: 21,
+        thumbnailUrl: ''
       }
     );
   });

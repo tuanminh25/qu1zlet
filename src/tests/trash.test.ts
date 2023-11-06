@@ -276,6 +276,7 @@ describe('Restore Trash', () => {
           {
             questionId: ques.questionId,
             question: 'England teams',
+            thumbnailUrl: '',
             duration: 10,
             points: 5,
             answers: [
@@ -308,6 +309,7 @@ describe('Restore Trash', () => {
           {
             questionId: ques2.questionId,
             question: 'Champions',
+            thumbnailUrl: '',
             duration: 15,
             points: 5,
             answers: [
@@ -338,7 +340,8 @@ describe('Restore Trash', () => {
             ]
           }
         ],
-        duration: 25
+        duration: 25,
+        thumbnailUrl: ''
       }
     );
   });
