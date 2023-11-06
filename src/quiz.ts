@@ -24,38 +24,18 @@ import HttpError from 'http-errors';
   * @returns {{ quizId: number }}
 */
 export function adminQuizCreate(token: string, name: string, description: string): { quizId?: number, error?: string} {
-  const session = isToken(token);
+  const session = getSession(token);
   const data = load();
 
-  // Error checking 401
-  if (!session) {
-    return {
-      error: 'Invalid Token'
-    };
-  }
-
-  const userId = isToken(token).userId;
-  const userExists = checkauthUserId(userId);
-  if (!userExists) {
-    return {
-      error: 'Invalid Token'
-    };
-  }
-
   // Error checking 400
+  const userId = isToken(token).userId;
   const quizExists = data.quizzes.find((quiz) => quiz.name === name);
   if (quizExists && quizExists.quizOwnedby === userId) {
-    return {
-      error: 'Quiz name already exists'
-    };
+    throw HttpError(400, 'Quiz name already exists');
   } else if (!isQuizName(name)) {
-    return {
-      error: 'Invalid quiz name'
-    };
+    throw HttpError(400, 'Invalid quiz name');
   } else if (!isQuizDescription(description)) {
-    return {
-      error: 'Invalid quiz description'
-    };
+    throw HttpError(400, 'Invalid quiz description');
   }
 
   const newQuiz: Quiz = {
