@@ -108,7 +108,6 @@ export function testGetDetails(token: string) {
 export function testCreateQuiz(token: string, name: string, description: string) {
   const res = request('POST', SERVER_URL + '/v2/admin/quiz', {
     json: {
-      token: token,
       name: name,
       description: description,
     },
