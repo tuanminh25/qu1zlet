@@ -15,7 +15,7 @@ import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
 import { viewQuizzesInTrash, restoreQuizInTrash } from './trash';
-import { gameSessionStart } from './game';
+import { gameSessionStart, updateGameSessionState } from './game';
 
 // Set up web app
 const app = express();
@@ -137,6 +137,16 @@ app.post('/v1/admin/quiz/:quizid/session/start', (req: Request, res: Response) =
   const token = req.headers.token;
   const autoStartNum = req.body.autoStartNum;
   const response = gameSessionStart(String(token), parseInt(quizId), parseInt(autoStartNum));
+
+  res.json(response);
+});
+
+app.put('/v1/admin/quiz/:quizid/session/:sessionid', (req: Request, res: Response) => {
+  const quizId = req.params.quizid;
+  const sessionId = req.params.sessionid;
+  const token = req.headers.token;
+  const action = req.body.action;
+  const response = updateGameSessionState(String(token), parseInt(quizId), parseInt(sessionId), String(action));
 
   res.json(response);
 });
