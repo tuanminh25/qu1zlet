@@ -9,7 +9,8 @@ import {
   testQuizNameUpdate,
   testQuizTransfer,
   testQuizDescriptionUpdate,
-  testGameSessionStart
+  testGameSessionStart,
+  validQuestion
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -127,7 +128,8 @@ describe('SendQuizToTrash', () => {
     expect(sendToTrash.status).toStrictEqual(403);
   });
 
-  test.only('Game hasnt ended', () => {
+  test('Game hasnt ended', () => {
+    testCreateQuizQuestion(user.token, quiz.quizId, validQuestion);
     testGameSessionStart(user.token, quiz.quizId, 1);
     const sendToTrash = testQuizToTrash(user.token, quiz.quizId);
     expect(sendToTrash.status).toStrictEqual(400);
