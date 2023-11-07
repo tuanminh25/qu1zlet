@@ -85,18 +85,12 @@ app.put('/v2/admin/user/password', (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.post('/v1/admin/quiz', (req: Request, res: Response) => {
-  const token = req.body.token;
+app.post('/v2/admin/quiz', (req: Request, res: Response) => {
+  const token = req.headers.token;
   const name = req.body.name;
   const description = req.body.description;
 
   const response = adminQuizCreate(String(token), String(name), String(description));
-
-  if (response.error === 'Invalid Token') {
-    return res.status(401).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
   res.json(response);
 });
 
