@@ -15,7 +15,7 @@ import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
 import { viewQuizzesInTrash, restoreQuizInTrash } from './trash';
-import { gameSessionStart } from './game';
+import { gameSessionStart, updateGameSessionState } from './game';
 
 // Set up web app
 const app = express();
@@ -128,6 +128,16 @@ app.post('/v1/admin/quiz/:quizid/session/start', (req: Request, res: Response) =
   res.json(response);
 });
 
+app.put('/v1/admin/quiz/:quizid/session/:sessionid', (req: Request, res: Response) => {
+  const quizId = req.params.quizid;
+  const sessionId = req.params.sessionid;
+  const token = req.headers.token;
+  const action = req.body.action;
+  const response = updateGameSessionState(String(token), parseInt(quizId), parseInt(sessionId), String(action));
+
+  res.json(response);
+});
+
 app.post('/v2/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   const { token } = req.headers;
   const { questionBody } = req.body;
@@ -156,13 +166,9 @@ app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.get('/v1/admin/quiz/trash', (req: Request, res: Response) => {
-  const token = req.query.token;
+app.get('/v2/admin/quiz/trash', (req: Request, res: Response) => {
+  const token = req.headers.token;
   const response = viewQuizzesInTrash(String(token));
-
-  if (response.error === 'Invalid token') {
-    return res.status(401).json(response);
-  }
 
   res.json(response);
 });
@@ -260,19 +266,12 @@ app.post('/v1/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
   res.status(200).json(response);
 });
 
-app.put('/v1/admin/quiz/:quizId/description', (req: Request, res: Response) => {
-  const { token, description } = req.body;
+app.put('/v2/admin/quiz/:quizId/description', (req: Request, res: Response) => {
+  const token = req.headers.token;
+  const { description } = req.body;
   const { quizId } = req.params;
-  const response = adminQuizDescriptionUpdate(String(token), parseInt(quizId), String(description));
 
-  if (response.error === 'Token is empty or invalid') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Description is more than 100 characters in length') {
-    return res.status(400).json(response);
-  } else if (response.error === 'Quiz ID does not refer to a valid quiz' ||
-    response.error === 'Quiz ID does not refer to a quiz that this user owns') {
-    return res.status(403).json(response);
-  }
+  const response = adminQuizDescriptionUpdate(String(token), parseInt(quizId), String(description));
 
   res.json(response);
 });

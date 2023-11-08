@@ -232,11 +232,13 @@ export function testQuizTransfer(token: string, quizId: number, userEmail: strin
 }
 
 export function testQuizDescriptionUpdate(token: string, quizId: number, description: string) {
-  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/description`, {
-    json: {
+  const res = request('PUT', `${SERVER_URL}/v2/admin/quiz/${quizId}/description`, {
+    headers: {
       token: token,
+    },
+    json: {
       description: description
-    }
+    },
   });
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
@@ -253,7 +255,7 @@ export function testQuestionDelete(token: string, quizId: number, questionId: nu
 }
 
 export const testViewTrash = (token: string) => {
-  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/trash`, { qs: { token: token } });
+  const res = request('GET', `${SERVER_URL}/v2/admin/quiz/trash`, { headers: { token: token } });
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 };
@@ -297,6 +299,19 @@ export function testGameSessionStart(token: string, quizId: number, autoStartNum
     },
     json: {
       autoStartNum: autoStartNum
+    }
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testGameSessionUpdate(token: string, quizId: number, gameSessionId: number, action: string) {
+  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/session/${gameSessionId}`, {
+    headers: {
+      token: token,
+    },
+    json: {
+      action: action
     }
   });
 
