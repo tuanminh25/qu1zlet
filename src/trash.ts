@@ -2,7 +2,8 @@ import {
   isToken,
   load,
   save,
-  returnQuizList
+  returnQuizList,
+  getSession
 } from './helper';
 
 /**
@@ -22,13 +23,7 @@ import {
  */
 export function viewQuizzesInTrash(token: string): {error?: string, quizzes?: returnQuizList[]} {
   const data = load();
-  const session = isToken(token);
-
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
+  const session = getSession(token);
 
   const quizzes = [];
   for (const quiz of data.trash) {
