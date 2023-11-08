@@ -125,9 +125,11 @@ export const testQuizList = (token: string) => {
 };
 
 export function testCreateQuizQuestion(token: string, quizId: number, questionBody: object) {
-  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/question`, {
-    json: {
+  const res = request('POST', `${SERVER_URL}/v2/admin/quiz/${quizId}/question`, {
+    headers: {
       token: token,
+    },
+    json: {
       questionBody: questionBody
     },
   });

@@ -128,18 +128,12 @@ app.post('/v1/admin/quiz/:quizid/session/start', (req: Request, res: Response) =
   res.json(response);
 });
 
-app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
-  const { token, questionBody } = req.body;
+app.post('/v2/admin/quiz/:quizId/question', (req: Request, res: Response) => {
+  const { token } = req.headers;
+  const { questionBody } = req.body;
   const { quizId } = req.params;
-  const response = adminQuestionCreate(token, parseInt(quizId), questionBody);
+  const response = adminQuestionCreate(String(token), parseInt(quizId), questionBody);
 
-  if (response.error === 'Invalid token') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Unauthorised') {
-    return res.status(403).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
   res.json(response);
 });
 
