@@ -23,7 +23,7 @@ import HttpError from 'http-errors';
   * @param {string} description
   * @returns {{ quizId: number }}
 */
-export function adminQuizCreate(token: string, name: string, description: string): { quizId?: number, error?: string} {
+export function adminQuizCreate(token: string, name: string, description: string): { quizId: number } {
   const userId = getSession(token).userId;
   const data = load();
 
@@ -67,7 +67,7 @@ export function adminQuizCreate(token: string, name: string, description: string
   * @param {number} quizId
   * @returns {}
 */
-export function adminQuizRemove(token: string, quizId: number): { error?: string} {
+export function adminQuizRemove(token: string, quizId: number): Record<string, never> {
   const data = load();
   const quiz = checkquizId(quizId);
   const session = getSession(token);
@@ -148,9 +148,8 @@ export function adminQuizList(token: string): { error?: string, quizzes?: return
  *
  */
 export function adminQuizInfo(token: string, quizId: number): returnQuizInfo {
-  const data = load();
   const session = getSession(token);
-  const quiz = data.quizzes.find(q => q.quizId === quizId);
+  const quiz = checkquizId(quizId);
 
   if (quiz.quizOwnedby !== session.userId) {
     throw HttpError(403, 'Unauthorised');
@@ -285,7 +284,7 @@ export function adminQuizTransfer(token: string, quizId: number, userEmail: stri
  * @returns {}
  *
  */
-export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string): Record<string, never> | { error?: string } {
+export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string): Record<string, never> {
   const data = load();
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
 
