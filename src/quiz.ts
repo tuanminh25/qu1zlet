@@ -75,8 +75,8 @@ export function adminQuizRemove(token: string, quizId: number): { error?: string
   if (quiz.quizOwnedby !== session.userId) {
     throw HttpError(403, 'Unauthorised');
   }
-  
-  if (quiz.activeSessions.length > 0 ) {
+
+  if (quiz.activeSessions.length > 0) {
     throw HttpError(400, 'Game has not ended');
   }
 

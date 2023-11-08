@@ -29,9 +29,9 @@ export function adminQuizInfoIt2(token: string, quizId: number): {error: string}
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
 
-//   if (!quiz) {
-//     throw HttpError(403, 'Invalid quizId');
-//   }
+  //   if (!quiz) {
+  //     throw HttpError(403, 'Invalid quizId');
+  //   }
   const session = getSession(token);
 
   // Error Check 403
@@ -41,13 +41,13 @@ export function adminQuizInfoIt2(token: string, quizId: number): {error: string}
 
   const oldQuestionArray: Question[] = [];
   for (const ques of quiz.questions) {
-	oldQuestionArray.push({
-		questionId: ques.questionId,
-		question: ques.question,
-		duration:ques.duration,
-		points: ques.points,
-		answers: ques.answers
-	});
+    oldQuestionArray.push({
+      questionId: ques.questionId,
+      question: ques.question,
+      duration: ques.duration,
+      points: ques.points,
+      answers: ques.answers
+    });
   }
   return {
     quizId: quiz.quizId,
