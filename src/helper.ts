@@ -70,7 +70,9 @@ export interface Quiz {
   duration: number;
   numQuestions: number;
   questions: Question[];
-  thumbnailUrl: string
+  thumbnailUrl: string;
+  activeSessions: number[];
+  inactiveSessions: number[]
 }
 
 export interface Session {

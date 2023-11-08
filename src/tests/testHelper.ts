@@ -300,3 +300,16 @@ export function testGameSessionStart(token: string, quizId: number, autoStartNum
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testGameSessionUpdate(token: string, quizId: number, gameSessionId: number, action: string) {
+  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/session/${gameSessionId}`, {
+    headers: {
+      token: token,
+    },
+    json: {
+      action: action
+    }
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
