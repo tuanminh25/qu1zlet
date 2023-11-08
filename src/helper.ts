@@ -93,7 +93,10 @@ export interface GameSession {
   state: GameState;
   atQuestion: number;
   players: string[];
-  metadata: Quiz
+  metadata: Quiz;
+  questionCountDown: ReturnType<typeof setTimeout>;
+  questionDurationTimer: ReturnType<typeof setTimeout>;
+  autoStartNum: number
 }
 
 export interface DataStore {

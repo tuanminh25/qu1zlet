@@ -3,15 +3,36 @@ import {
   GameSession,
   GameState,
   GameAction,
+  checkquizId,
   load,
   save
 } from './helper';
 import HttpError from 'http-errors';
 
+function countDownTimer(sessionId: number): ReturnType<typeof setTimeout> {
+  return setTimeout(() => {
+    const data = load();
+    const gameSession = data.gameSessions.find((g) => g.gameSessionId === sessionId);
+    gameSession.state = GameState.QUESTION_OPEN;
+    gameSession.questionCountDown = null;
+    save(data);
+  }, 3000);
+}
+
+function durationTimer(sessionId: number, duration: number): ReturnType<typeof setTimeout> {
+  return setTimeout(() => {
+    const data = load();
+    const gameSession = data.gameSessions.find((g) => g.gameSessionId === sessionId);
+    gameSession.state = GameState.QUESTION_CLOSE;
+    gameSession.questionDurationTimer = null;
+    save(data);
+  }, duration * 1000);
+}
+
 export function gameSessionStart(token: string, quizId: number, autoStartNum: number): {sessionId: number} {
   const data = load();
   const session = getSession(token);
-  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+  const quiz = checkquizId(quizId);
 
   if (session.userId !== quiz.quizOwnedby) {
     throw HttpError(403, 'Unauthorised');
@@ -34,7 +55,10 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
     state: GameState.LOBBY,
     atQuestion: 0,
     players: [],
-    metadata: quiz
+    metadata: quiz,
+    questionCountDown: null,
+    questionDurationTimer: null,
+    autoStartNum: autoStartNum
   };
   quiz.activeSessions.push(newGameSession.gameSessionId);
   data.gameSessions.push(newGameSession);
@@ -45,10 +69,14 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
   };
 }
 
-export function updateGameSessionState(token: string, quizId: number, gameSessionId: number, action: string) {
+export function updateGameSessionState(token: string, quizId: number, gameSessionId: number, action: string): Record<string, never> {
   const data = load();
   const session = getSession(token);
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+
+  if (!quiz) {
+    throw HttpError(403, 'Quiz does not exist');
+  }
 
   if (session.userId !== quiz.quizOwnedby) {
     throw HttpError(403, 'Unauthorised');
@@ -65,6 +93,12 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
 
   const gameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
   if (action === GameAction.END) {
+    if (gameSession.questionCountDown !== null) {
+      clearTimeout(gameSession.questionCountDown);
+    } else if (gameSession.questionDurationTimer !== null) {
+      clearTimeout(gameSession.questionDurationTimer);
+    }
+
     gameSession.state = GameState.END;
     quiz.inactiveSessions.push(gameSession.gameSessionId);
     quiz.activeSessions = quiz.activeSessions.filter((g) => g !== gameSession.gameSessionId);
@@ -79,6 +113,11 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     } else {
       gameSession.state = GameState.QUESTION_COUNTDOWN;
       save(data);
+      gameSession.questionCountDown = countDownTimer(gameSessionId);
+
+      const currQues = gameSession.metadata.questions[gameSession.atQuestion];
+      gameSession.atQuestion++;
+      gameSession.questionDurationTimer = durationTimer(gameSessionId, currQues.duration);
 
       return {};
     }
@@ -88,6 +127,8 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     if (action !== GameAction.SKIP_COUNTDOWN) {
       throw HttpError(400, 'Action enum cannot be applied in the current state');
     } else {
+      clearTimeout(gameSession.questionCountDown);
+      gameSession.questionCountDown = null;
       gameSession.state = GameState.QUESTION_OPEN;
       save(data);
 
@@ -100,6 +141,8 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       throw HttpError(400, 'Action enum cannot be applied in the current state');
     } else {
       gameSession.state = GameState.ANSWER_SHOW;
+      clearTimeout(gameSession.questionDurationTimer);
+      gameSession.questionDurationTimer = null;
       save(data);
 
       return {};
@@ -110,6 +153,11 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     if (action === GameAction.NEXT_QUESTION) {
       gameSession.state = GameState.QUESTION_COUNTDOWN;
       save(data);
+      gameSession.questionCountDown = countDownTimer(gameSessionId);
+
+      const currQues = gameSession.metadata.questions[gameSession.atQuestion];
+      gameSession.atQuestion++;
+      gameSession.questionDurationTimer = durationTimer(gameSessionId, currQues.duration);
 
       return {};
     } else if (action === GameAction.GO_TO_FINAL_RESULTS) {
@@ -136,6 +184,11 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     } else if (action === GameAction.NEXT_QUESTION) {
       gameSession.state = GameState.QUESTION_COUNTDOWN;
       save(data);
+      gameSession.questionCountDown = countDownTimer(gameSessionId);
+
+      const currQues = gameSession.metadata.questions[gameSession.atQuestion];
+      gameSession.atQuestion++;
+      gameSession.questionDurationTimer = durationTimer(gameSessionId, currQues.duration);
 
       return {};
     } else {
