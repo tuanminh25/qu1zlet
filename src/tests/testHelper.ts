@@ -230,11 +230,13 @@ export function testQuizTransfer(token: string, quizId: number, userEmail: strin
 }
 
 export function testQuizDescriptionUpdate(token: string, quizId: number, description: string) {
-  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/description`, {
-    json: {
+  const res = request('PUT', `${SERVER_URL}/v2/admin/quiz/${quizId}/description`, {
+    headers: {
       token: token,
+    },
+    json: {
       description: description
-    }
+    },
   });
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };

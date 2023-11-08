@@ -288,25 +288,21 @@ export function adminQuizTransfer(token: string, quizId: number, userEmail: stri
 export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string): Record<string, never> | { error?: string } {
   const data = load();
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
-  const session = isToken(token);
 
-  // Returning errors
-  if (session === undefined) {
-    return { error: 'Token is empty or invalid' };
-  }
+  const session = getSession(token);
 
   if (quiz === undefined) {
-    return { error: 'Quiz ID does not refer to a valid quiz' };
+    throw HttpError(403, 'Unauthorised');
   }
 
   // Quiz ID does not refer to a quiz that this user owns
   if (quiz.quizOwnedby !== session.userId) {
-    return { error: 'Quiz ID does not refer to a quiz that this user owns' };
+    throw HttpError(403, 'Unauthorised');
   }
 
   // Over length description
   if (description.length > 100) {
-    return { error: 'Description is more than 100 characters in length' };
+    throw HttpError(400, 'Invalid quiz description');
   }
 
   // Working case
