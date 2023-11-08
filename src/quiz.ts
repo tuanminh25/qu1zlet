@@ -75,12 +75,10 @@ export function adminQuizRemove(token: string, quizId: number): { error?: string
   if (quiz.quizOwnedby !== session.userId) {
     throw HttpError(403, 'Unauthorised');
   }
-
-  data.gameSessions.forEach(session => {
-    if (session.metadata.quizId === quiz.quizId && session.state !== 'END') {
-      throw HttpError(400, 'Game has not ended');
-    }
-  });
+  
+  if (quiz.activeSessions.length > 0 ) {
+    throw HttpError(400, 'Game has not ended');
+  }
 
   quiz.timeLastEdited = generateTime();
   const filteredArray = data.quizzes.filter(obj => obj.quizId !== quizId);

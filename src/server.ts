@@ -209,6 +209,17 @@ app.get('/v1/admin/quiz/trash', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
+  const token = req.query.token;
+  const response = adminQuizList(String(token));
+
+  if (response.error === 'Token is empty or invalid') {
+    return res.status(401).json(response);
+  }
+
+  res.json(response);
+});
+
 app.get('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
   const token = req.query.token;
   const { quizId } = req.params;
@@ -262,17 +273,6 @@ app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   } else if ('error' in response) {
     return res.status(400).json(response);
   }
-  res.json(response);
-});
-
-app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
-  const token = req.query.token;
-  const response = adminQuizList(String(token));
-
-  if (response.error === 'Token is empty or invalid') {
-    return res.status(401).json(response);
-  }
-
   res.json(response);
 });
 
