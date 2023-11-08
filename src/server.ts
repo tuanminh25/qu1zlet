@@ -162,13 +162,9 @@ app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.get('/v1/admin/quiz/trash', (req: Request, res: Response) => {
-  const token = req.query.token;
+app.get('/v2/admin/quiz/trash', (req: Request, res: Response) => {
+  const token = req.headers.token;
   const response = viewQuizzesInTrash(String(token));
-
-  if (response.error === 'Invalid token') {
-    return res.status(401).json(response);
-  }
 
   res.json(response);
 });
