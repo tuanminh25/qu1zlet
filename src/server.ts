@@ -95,17 +95,10 @@ app.post('/v2/admin/quiz', (req: Request, res: Response) => {
 });
 
 app.delete('/v1/admin/quiz/:quizId', (req: Request, res: Response) => {
-  const token = req.query.token;
+  const token = req.headers.token;
   const { quizId } = req.params;
 
   const response = adminQuizRemove(String(token), parseInt(quizId));
-
-  if (response.error === 'Invalid Token') {
-    return res.status(401).json(response);
-  } else if ('error' in response) {
-    return res.status(403).json(response);
-  }
-
   res.status(200).json(response);
 });
 

@@ -8,7 +8,9 @@ import {
   testQuizInfo,
   testQuizNameUpdate,
   testQuizTransfer,
-  testQuizDescriptionUpdate
+  testQuizDescriptionUpdate,
+  testGameSessionStart,
+  validQuestion
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -98,15 +100,10 @@ describe('SendQuizToTrash', () => {
   });
 
   test('Send Quiz to Trash - Successful', () => {
-    // const initialTimeLastEdited = quiz.timeLastEdited;
     expect(quiz.quizId).toBe(1);
     const sendToTrash = testQuizToTrash(user.token, quiz.quizId);
     expect(sendToTrash.response).toStrictEqual({});
     expect(sendToTrash.status).toStrictEqual(200);
-
-    // Check if timeLastEdited is updated
-    // const updatedQuiz = getQuizInfo(quiz.quizId); REPLACE
-    // expect(updatedQuiz.timeLastEdited).not.toStrictEqual(initialTimeLastEdited);
   });
 
   test('Non-Existent User', () => {
@@ -126,10 +123,16 @@ describe('SendQuizToTrash', () => {
   });
 
   test('Unauthorized', () => {
-    // Create a new user and use their token to attempt to send the quiz to trash
     const unauthorizedUser = testRegister('unauthorized@example.com', 'password123', 'Unauthorized', 'User').response;
     const sendToTrash = testQuizToTrash(unauthorizedUser.token, quiz.quizId);
     expect(sendToTrash.status).toStrictEqual(403);
+  });
+
+  test('Game hasnt ended', () => {
+    testCreateQuizQuestion(user.token, quiz.quizId, validQuestion);
+    testGameSessionStart(user.token, quiz.quizId, 1);
+    const sendToTrash = testQuizToTrash(user.token, quiz.quizId);
+    expect(sendToTrash.status).toStrictEqual(400);
   });
 });
 

@@ -172,7 +172,7 @@ export function testUpdatePassword(
 
 export function testQuizToTrash(token: string, quizId: number) {
   const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
-    qs: {
+    headers: {
       token: token,
     },
   });
