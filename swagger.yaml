@@ -62,7 +62,7 @@ components:
       enum: [NEXT_QUESTION, SKIP_COUNTDOWN, GO_TO_ANSWER, GO_TO_FINAL_RESULTS, END]
     State:
       type: string
-      enum: [LOBBY, QUESTION_COUNTDOWN, SKIP_COUNTDOWN, QUESTION_OPEN, QUESTION_CLOSE, ANSWER_SHOW, FINAL_RESULTS, END]
+      enum: [LOBBY, QUESTION_COUNTDOWN, QUESTION_OPEN, QUESTION_CLOSE, ANSWER_SHOW, FINAL_RESULTS, END]
     Url:
       type: string
       example: http://google.com/some/image/path.jpg
