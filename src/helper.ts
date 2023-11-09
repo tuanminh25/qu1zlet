@@ -94,8 +94,6 @@ export interface GameSession {
   atQuestion: number;
   players: string[];
   metadata: Quiz;
-  questionCountDown: ReturnType<typeof setTimeout>;
-  questionDurationTimer: ReturnType<typeof setTimeout>;
   autoStartNum: number
 }
 
