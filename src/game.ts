@@ -4,7 +4,10 @@ import {
   GameState,
   GameAction,
   load,
-  save
+  save,
+  checkquizId,
+  ReturnGameSession,
+  ReturnQuizInfo
 } from './helper';
 import HttpError from 'http-errors';
 
@@ -110,7 +113,14 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
   }
 
   const gameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
-  const currQues = gameSession.metadata.questions[gameSession.atQuestion];
+  let atQuestionInt;
+  if (gameSession.atQuestion === 0) {
+    atQuestionInt = 0;
+  } else {
+    atQuestionInt = gameSession.atQuestion - 1;
+  }
+
+  const currQues = gameSession.metadata.questions[atQuestionInt];
   const timerIds = gameSessionTimeoutIds.find((g) => g.sessionId === gameSessionId);
 
   if (action === GameAction.END) {
@@ -123,6 +133,7 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     }
 
     gameSession.state = GameState.END;
+    gameSession.atQuestion = 0;
     quiz.inactiveSessions.push(gameSession.gameSessionId);
     quiz.activeSessions = quiz.activeSessions.filter((g) => g === gameSession.gameSessionId);
     save(data);
@@ -139,6 +150,8 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       timerIds.questionCountDown = countDownTimer(gameSessionId);
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
 
+      gameSession.atQuestion++;
+      save(data);
       return {};
     }
   }
@@ -184,6 +197,7 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       return {};
     } else if (action === GameAction.GO_TO_FINAL_RESULTS) {
       gameSession.state = GameState.FINAL_RESULTS;
+      gameSession.atQuestion = 0;
       save(data);
 
       return {};
@@ -200,6 +214,7 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       return {};
     } else if (action === GameAction.GO_TO_FINAL_RESULTS) {
       gameSession.state = GameState.FINAL_RESULTS;
+      gameSession.atQuestion = 0;
       save(data);
 
       return {};
@@ -223,4 +238,38 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
   }
 
   return {};
+}
+
+export function getGameStatus(token: string, quizId: number, gameSessionId: number): ReturnGameSession {
+  const data = load();
+  const session = getSession(token);
+  const quiz = checkquizId(quizId);
+
+  if (quiz.quizId !== session.userId) {
+    throw HttpError(403, 'Unauthorised');
+  }
+
+  if (!quiz.activeSessions.includes(gameSessionId)) {
+    throw HttpError(400, 'Session Id does not refer to a valid session within this quiz');
+  }
+
+  const gameSession: GameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
+  const metadata: ReturnQuizInfo = {
+    quizId: gameSession.metadata.quizId,
+    name: gameSession.metadata.name,
+    timeCreated: gameSession.metadata.timeCreated,
+    timeLastEdited: gameSession.metadata.timeLastEdited,
+    description: gameSession.metadata.description,
+    numQuestions: gameSession.metadata.numQuestions,
+    questions: gameSession.metadata.questions,
+    duration: gameSession.metadata.duration,
+    thumbnailUrl: gameSession.metadata.thumbnailUrl
+  };
+
+  return {
+    state: gameSession.state,
+    atQuestion: gameSession.atQuestion,
+    players: gameSession.players,
+    metadata: metadata
+  };
 }

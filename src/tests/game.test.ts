@@ -368,7 +368,7 @@ describe('Update Game Session', () => {
   });
 });
 
-describe.only('Get game status', () => {
+describe('Get game status', () => {
   let user: { token: string; };
   let quiz: { quizId: number; };
   let ques: { questionId: number};

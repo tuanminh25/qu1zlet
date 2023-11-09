@@ -713,3 +713,5 @@ describe('QuizDescriptionUpdate', () => {
     expect(updateResponse.status).toStrictEqual(403);
   });
 });
+
+testClear();
