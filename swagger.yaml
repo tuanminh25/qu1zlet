@@ -2428,7 +2428,9 @@ paths:
   /v1/player/{playerid}/question/{questionposition}:
     get:
       summary: Current question information for a player
-      description: Get the information about a question that the guest player is on
+      description: |
+        Get the information about a question that the guest player is on. 
+        Note: questionposition starts at 1
       tags:
         # - "By Topic: Playing a session"
         - "Iteration 3 (New)"
@@ -2453,7 +2455,7 @@ paths:
     put:
       summary: Player submission of answers(s)
       description: |
-        Allow the current player to submit answer(s) to the currently active question
+        Allow the current player to submit answer(s) to the currently active question. questionposition starts at 1
         Note: An answer can be re-submitted once first selection is made, as long as game is in the right state
       tags:
         # - "By Topic: Playing a session"
@@ -2482,7 +2484,9 @@ paths:
   /v1/player/{playerid}/question/{questionposition}/results:
     get:
       summary: Results for a question
-      description: Get the results for a particular question of the session a player is playing in
+      description: | 
+        Get the results for a particular question of the session a player is playing in
+        Note: questionposition starts at 1
       tags:
         # - "By Topic: Playing a session"
         - "Iteration 3 (New)"
