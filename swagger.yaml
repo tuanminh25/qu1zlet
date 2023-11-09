@@ -2225,7 +2225,7 @@ paths:
           description: |
             If any of the following are true:
             - autoStartNum is a number greater than 50
-            - A maximum of 10 sessions that are not in END state currently exist
+            - A maximum of 10 sessions that are not in END state currently exist for this quiz
             - The quiz does not have any questions in it
           schema:
             $ref: '#/components/return/Error'
