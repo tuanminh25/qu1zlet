@@ -1195,7 +1195,7 @@ In this iteration, you are expected to:
     
     * You must comply with instructions laid out in `5.3`
 
-    * Ensure that you correctly manage sessions (tokens) and passwords in terms of authentication and authorisation, as per requirements laid out in section 6.9.
+    * Ensure that you correctly manage sessions (tokens) and passwords in terms of authentication and authorisation, as per requirements laid out in section `5.8`.
 
 3. Continue demonstrating effective project management and git usage.
 
