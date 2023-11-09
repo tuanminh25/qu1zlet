@@ -22,9 +22,9 @@ was not rendering in a way to reflect that.
  * Clarified interface design can follow a similar pattern to the swagger docs
  * Clarified how to get the 10% bonus marks for typescript compliance
 * 09/11: 
-  * Clarified that question position starts at 1
-  * Clarified the maximum sessions not in END state is for a particular quiz (only clarified for the benefit of setting a standard, but that will not be tested this term); 
-  * Removed "SKIP_COUNTDOWN" from State enum
+ * Clarified that question position starts at 1
+ * Clarified the maximum sessions not in END state is for a particular quiz (only clarified for the benefit of setting a standard, but that will not be tested this term); 
+ * Removed "SKIP_COUNTDOWN" from State enum
 
 ## 🫡 0. Aims:
 
