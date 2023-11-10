@@ -414,7 +414,6 @@ app.post('/v1/admin/quiz/:quizId/question/:questionId/duplicate', (req: Request,
 app.delete('/v1/admin/quiz/trash/empty', (req: Request, res: Response) => {
   const token = req.query.token;
   let quizIds = req.query.quizIds;
-  // console.log(quizIds);
 
   quizIds = String(quizIds);
 
@@ -422,7 +421,6 @@ app.delete('/v1/admin/quiz/trash/empty', (req: Request, res: Response) => {
     return parseInt(item.trim(), 10);
   });
 
-  console.log(numberArray);
 
   const response = emptyTrash(String(token), numberArray);
 
