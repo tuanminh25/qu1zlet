@@ -243,3 +243,8 @@ export function testDupQuizQuestion(token: string, quizId: number, questionId: n
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testEmptyTheTrash(token: string, quizIds: Array<number>) {
+  const res = request('DELETE', SERVER_URL + '/v1/admin/quiz/trash/empty', { qs: { token: token, quizIds: quizIds } });
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
