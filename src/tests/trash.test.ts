@@ -348,7 +348,7 @@ describe('Restore Trash', () => {
   });
 });
 
-describe.only('Empty the trash', () => {
+describe('Empty the trash', () => {
   let user: { token: string };
   let quiz: { quizId: number };
   beforeEach(() => {
@@ -362,7 +362,7 @@ describe.only('Empty the trash', () => {
 
 
   // Working cases
-  test.only('Many quizies in the trash', () => {
+  test('Many quizies in the trash', () => {
     // Create many quizies
     const quiz2 = testCreateQuiz(user.token, 'Another quiz', 'Yes sir').response;
     const quiz3 = testCreateQuiz(user.token, 'Yes moree quiz', 'Yahooo').response;
@@ -412,7 +412,7 @@ describe.only('Empty the trash', () => {
 
 
   // Error cases:
-  test('QuizId is not in the trash', () => {
+  test.only('QuizId is not in the trash', () => {
     const quiz2 = testCreateQuiz(user.token, 'Another quiz', 'Yes sir').response;
     const remove = [quiz2.quizId]
     const updateResponse = emptyTheTrash(user.token, remove);
@@ -424,7 +424,7 @@ describe.only('Empty the trash', () => {
 
 
   // Token is empty or invalid (does not refer to valid logged in user session)
-  test('Token is empty or invalid', () => {
+  test.only('Token is empty or invalid', () => {
     const remove = [quiz.quizId]
     const updateResponse = emptyTheTrash(user.token + 1, remove);
     expect(updateResponse.response).toStrictEqual(ERROR);
@@ -435,7 +435,7 @@ describe.only('Empty the trash', () => {
 
 
   // Valid token is provided, but one or more of the Quiz IDs refers to a quiz that this current user does not own
-  test('Quiz ID does not refer to a quiz that this user owns, belongs to somebody else', () => {
+  test.only('Quiz ID does not refer to a quiz that this user owns, belongs to somebody else', () => {
     const user2 = testRegister('somebody123@unsw.edu.au', 'password2', 'nameFirs', 'nameLas').response;
     const quiz2 = testCreateQuiz(user2.token, 'Quiz by user 2', 'User 2 quiz').response;
     expect(testQuizToTrash(user2.token, quiz2.quizId).status).toStrictEqual(200);
@@ -446,7 +446,13 @@ describe.only('Empty the trash', () => {
     expect(updateResponse.status).toStrictEqual(403);
   });
 
-
+  // Quiz ID does not exist
+  test.only('Quiz ID does not exist', () => {
+    const remove = [100]
+    const updateResponse = emptyTheTrash(user.token, remove);
+    expect(updateResponse.response).toStrictEqual(ERROR);
+    expect(updateResponse.status).toStrictEqual(403);
+  });
 
 
 })

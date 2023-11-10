@@ -14,7 +14,7 @@ import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
-import { viewQuizzesInTrash, restoreQuizInTrash } from './trash';
+import { viewQuizzesInTrash, restoreQuizInTrash, emptyTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState } from './game';
 import { adminQuizInfoIt2 } from './old_it2_functions/quizIt2';
 
@@ -410,6 +410,37 @@ app.post('/v1/admin/quiz/:quizId/question/:questionId/duplicate', (req: Request,
 
   res.json(response);
 });
+
+app.delete("/v1/admin/quiz/trash/empty", (req: Request, res: Response) => {
+  const token = req.query.token;
+  let quizIds = req.query.quizIds;
+  // console.log(quizIds);
+
+
+  quizIds = String(quizIds);
+ 
+  let numberArray = quizIds.split(',').map(function(item) {
+    return parseInt(item.trim(), 10);
+});
+
+
+  console.log(numberArray);
+
+
+  const response = emptyTrash(String(token), numberArray);
+
+
+  if (response.error === 'Token is empty or invalid') {
+    return res.status(401).json(response);
+  }  else if (response.error === 'Valid token is provided, but user is not an owner of this quiz') {
+    return res.status(403).json(response);
+  } else if ('error' in response) {
+    return res.status(400).json(response);
+  }
+  res.json(response);
+
+
+})
 
 // ====================================================================
 //  ================= WORK IS DONE ABOVE THIS LINE ===================

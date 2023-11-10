@@ -2,7 +2,7 @@ import {
   isToken,
   load,
   save,
-  returnQuizList,
+  ReturnQuizList,
   getSession
 } from './helper';
 
@@ -21,7 +21,7 @@ import {
  *  }
  * }
  */
-export function viewQuizzesInTrash(token: string): {error?: string, quizzes?: returnQuizList[]} {
+export function viewQuizzesInTrash(token: string): {error?: string, quizzes?: ReturnQuizList[]} {
   const data = load();
   const session = getSession(token);
 
@@ -84,5 +84,46 @@ export function restoreQuizInTrash(token: string, quizId: number): { error?: str
   data.quizzes.sort((a, b) => a.quizId - b.quizId);
   save(data);
 
+  return {};
+}
+
+export function emptyTrash(token: string, removeQuizIds: Array<Number>) {
+  const data = load();
+  
+  // Check errors
+  // Invalid token
+  // 401
+  const session = isToken(token);
+  if (!session) {
+    return { error: 'Token is empty or invalid' };
+  }
+
+
+  const removeList =  data.trash.filter(quiz => removeQuizIds.includes(quiz.quizId));
+
+
+  // User is not owner of the quiz
+  // 403
+  for (let removeQuiz of removeList) {
+    if (removeQuiz.quizOwnedby !== session.userId) {
+      return { error: 'Valid token is provided, but user is not an owner of this quiz'};
+    }
+  }
+
+
+  // One or more of the Quiz IDs is not currently in the trash
+  // 400
+  for (let removeId of removeQuizIds) {
+    let quiz = data.trash.find((quiz) => quiz.quizId === removeId);
+    if (!quiz) {
+      return { error: 'One or more of the Quiz IDs is not currently in the trash'};
+    }
+  }
+
+
+  // data.trash = data.trash.filter(quiz => !removeQuizIds.includes(quiz.quizId));
+
+
+  save(data);
   return {};
 }
