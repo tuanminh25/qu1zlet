@@ -187,11 +187,6 @@ app.post('/v1/admin/quiz', (req: Request, res: Response) => {
 
   const response = adminQuizCreate(String(token), String(name), String(description));
 
-  if (response.error === 'Invalid Token') {
-    return res.status(401).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
   res.json(response);
 });
 

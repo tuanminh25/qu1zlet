@@ -93,7 +93,8 @@ export interface GameSession {
   state: GameState;
   atQuestion: number;
   players: string[];
-  metadata: Quiz
+  metadata: Quiz;
+  autoStartNum: number
 }
 
 export interface DataStore {
@@ -158,6 +159,9 @@ export function save(data: DataStore) {
 export function checkquizId(quizId: number): Quiz {
   const data = load();
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+  if (!quiz) {
+    throw HttpError(403, 'Quiz does not exist');
+  }
   return quiz;
 }
 

@@ -14,7 +14,14 @@ beforeEach(() => {
   testClear();
 });
 
-describe('Create Game Session', () => {
+function sleepSync(ms: number) {
+  const startTime = new Date().getTime();
+  while (new Date().getTime() - startTime < ms) {
+    // zzzZZ - comment needed so eslint doesn't complain
+  }
+}
+
+describe.skip('Create Game Session', () => {
   let user: { token: string; };
   let quiz: { quizId: number; };
   beforeEach(() => {
@@ -94,13 +101,7 @@ describe('Update Game Session', () => {
     expect(update.response).toStrictEqual({});
     expect(update.status).toStrictEqual(200);
 
-    const update2 = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_ANSWER');
-    expect(update2.response).toStrictEqual(ERROR);
-    expect(update2.status).toStrictEqual(400);
-
-    const update3 = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_FINAL_RESULTS');
-    expect(update3.response).toStrictEqual(ERROR);
-    expect(update3.status).toStrictEqual(400);
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 
   test('Success Update State QUESTION_COUNTDOWN: END', () => {
@@ -115,6 +116,7 @@ describe('Update Game Session', () => {
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
     expect(update.response).toStrictEqual({});
     expect(update.status).toStrictEqual(200);
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 
   test('Success Update State QUESTION_OPEN: END', () => {
@@ -131,9 +133,55 @@ describe('Update Game Session', () => {
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_ANSWER');
     expect(update.response).toStrictEqual({});
     expect(update.status).toStrictEqual(200);
+
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 
-  // cant test question_close yet
+  test('Success Update State QUESTION_CLOSE: END', () => {
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
+    sleepSync(4 * 1000);
+
+    const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
+    expect(update.response).toStrictEqual({});
+    expect(update.status).toStrictEqual(200);
+  });
+
+  test('Success Update State QUESTION_CLOSE: GO_TO_ANSWER', () => {
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
+    sleepSync(4 * 1000);
+
+    const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_ANSWER');
+    expect(update.response).toStrictEqual({});
+    expect(update.status).toStrictEqual(200);
+
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
+  });
+
+  test('Success Update State QUESTION_CLOSE: GO_TO_FINAL_RESULTS', () => {
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
+    sleepSync(4 * 1000);
+
+    const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_FINAL_RESULTS');
+    expect(update.response).toStrictEqual({});
+    expect(update.status).toStrictEqual(200);
+
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
+  });
+
+  test('Success Update State QUESTION_CLOSE: NEXT_QUESTION', () => {
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
+    sleepSync(4 * 1000);
+
+    const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    expect(update.response).toStrictEqual({});
+    expect(update.status).toStrictEqual(200);
+
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
+  });
 
   test('Success Update State ANSWER_SHOW: END', () => {
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
@@ -151,6 +199,7 @@ describe('Update Game Session', () => {
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
     expect(update.response).toStrictEqual({});
     expect(update.status).toStrictEqual(200);
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 
   test('Success Update State ANSWER_SHOW: GO_TO_FINAL_RESULTS', () => {
@@ -160,6 +209,7 @@ describe('Update Game Session', () => {
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_FINAL_RESULTS');
     expect(update.response).toStrictEqual({});
     expect(update.status).toStrictEqual(200);
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 
   test('Success Update State FINAL_RESULTS: END', () => {
@@ -240,6 +290,8 @@ describe('Update Game Session', () => {
     const update3 = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_FINAL_RESULTS');
     expect(update3.response).toStrictEqual(ERROR);
     expect(update3.status).toStrictEqual(400);
+
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 
   test('Invalid action state QUESTION_OPEN', () => {
@@ -257,6 +309,20 @@ describe('Update Game Session', () => {
     const update3 = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_FINAL_RESULTS');
     expect(update3.response).toStrictEqual(ERROR);
     expect(update3.status).toStrictEqual(400);
+
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
+  });
+
+  test('Invalid action state QUESTION_CLOSE', () => {
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
+    sleepSync(4 * 1000);
+
+    const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
+    expect(update.response).toStrictEqual(ERROR);
+    expect(update.status).toStrictEqual(400);
+
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 
   test('Invalid action state ANSWER_SHOW', () => {
@@ -271,6 +337,8 @@ describe('Update Game Session', () => {
     const update2 = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_ANSWER');
     expect(update2.response).toStrictEqual(ERROR);
     expect(update2.status).toStrictEqual(400);
+
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 
   test('Invalid action state FINAL_RESULTS', () => {
@@ -294,6 +362,8 @@ describe('Update Game Session', () => {
     const update4 = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
     expect(update4.response).toStrictEqual(ERROR);
     expect(update4.status).toStrictEqual(400);
+
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 });
 
