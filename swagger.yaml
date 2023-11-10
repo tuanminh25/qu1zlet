@@ -2253,7 +2253,7 @@ paths:
           schema:
             $ref: '#/components/return/Error'
         403:
-          description: Valid token is provided, but user is not authorised to modify this session
+          description: Valid token is provided, but user is not an owner of this quiz
           schema:
             $ref: '#/components/return/Error'
         400:
@@ -2286,7 +2286,7 @@ paths:
           schema:
             $ref: '#/components/return/Error'
         403:
-          description: Valid token is provided, but user is not authorised to view this session
+          description: Valid token is provided, but user is not an owner of this quiz
           schema:
             $ref: '#/components/return/Error'
         400:
@@ -2319,7 +2319,7 @@ paths:
           schema:
             $ref: '#/components/return/Error'
         403:
-          description: Valid token is provided, but user is not authorised to view this session
+          description: Valid token is provided, but user is not an owner of this quiz
           schema:
             $ref: '#/components/return/Error'
         400:
@@ -2352,7 +2352,7 @@ paths:
           schema:
             $ref: '#/components/return/Error'
         403:
-          description: Valid token is provided, but user is not authorised to view this session
+          description: Valid token is provided, but user is not an owner of this quiz
           schema:
             $ref: '#/components/return/Error'
         400:

@@ -25,6 +25,8 @@ was not rendering in a way to reflect that.
  * Clarified that question position starts at 1
  * Clarified the maximum sessions not in END state is for a particular quiz (only clarified for the benefit of setting a standard, but that will not be tested this term); 
  * Removed "SKIP_COUNTDOWN" from State enum
+* 10/11: Changed `403` error description for sessions from `Valid token is provided, but user is not authorised to view this session` to `Valid token is provided, but user is not an owner of this quiz`
+
 
 ## 🫡 0. Aims:
 
