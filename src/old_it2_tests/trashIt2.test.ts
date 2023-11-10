@@ -366,7 +366,7 @@ describe('Empty the trash v1', () => {
     expect(inTrash).toStrictEqual([]);
   });
 
-  test.only('Many quizies in the trash', () => {
+  test('Many quizies in the trash', () => {
     // Create many quizies
     const quiz2 = testCreateQuiz(user.token, 'Another quiz', 'Yes sir').response;
     const quiz3 = testCreateQuiz(user.token, 'Yes moree quiz', 'Yahooo').response;
@@ -403,7 +403,7 @@ describe('Empty the trash v1', () => {
 
     // Send some of them to the trash
     expect(testQuizToTrash(user.token, quiz4.quizId).status).toStrictEqual(200);
-    expect(testQuizToTrash(user.token, quiz6.quizId)).toStrictEqual(200);
+    expect(testQuizToTrash(user.token, quiz6.quizId).status).toStrictEqual(200);
 
     // Show quizs in the trash
     let inTrash = testViewTrash(user.token).response.quizzes;
