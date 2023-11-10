@@ -315,3 +315,13 @@ export function testGameSessionUpdate(token: string, quizId: number, gameSession
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testGetGameStatus(token: string, quizId: number, gameSessionId: number) {
+  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}/session/${gameSessionId}`, {
+    headers: {
+      token: token,
+    },
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}

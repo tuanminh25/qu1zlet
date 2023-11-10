@@ -3,7 +3,7 @@ import {
   save,
   isUserName,
   isPassword,
-  returnUserDetails,
+  ReturnUserDetails,
   passwordHash,
   getSession
 } from './helper';
@@ -25,7 +25,7 @@ import HttpError from 'http-errors';
  * }
  * @returns {error: string}
 */
-export function adminUserDetails(token: string): { user: returnUserDetails} {
+export function adminUserDetails(token: string): { user: ReturnUserDetails} {
   const session = getSession(token);
 
   const data = load();

@@ -8,8 +8,8 @@ import {
   Quiz,
   load,
   save,
-  returnQuizList,
-  returnQuizInfo,
+  ReturnQuizList,
+  ReturnQuizInfo,
   getSession
 } from './helper';
 import HttpError from 'http-errors';
@@ -101,7 +101,7 @@ export function adminQuizRemove(token: string, quizId: number): Record<string, n
   *  }
   * ]}
 */
-export function adminQuizList(token: string): { error?: string, quizzes?: returnQuizList[]} {
+export function adminQuizList(token: string): { error?: string, quizzes?: ReturnQuizList[]} {
   const data = load();
   const session = isToken(token);
 
@@ -147,7 +147,7 @@ export function adminQuizList(token: string): { error?: string, quizzes?: return
  * @returns {error: string}
  *
  */
-export function adminQuizInfo(token: string, quizId: number): returnQuizInfo {
+export function adminQuizInfo(token: string, quizId: number): ReturnQuizInfo {
   const session = getSession(token);
   const quiz = checkquizId(quizId);
 

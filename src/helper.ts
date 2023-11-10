@@ -21,7 +21,7 @@ export enum GameState {
   QUESTION_OPEN = 'QUESTION_OPEN',
   QUESTION_CLOSE = 'QUESTION_CLOSE',
   ANSWER_SHOW = 'ANSWER_SHOW',
-  FINAL_RESULTS = 'FINAL_RESULT',
+  FINAL_RESULTS = 'FINAL_RESULTS',
   END = 'END'
 }
 
@@ -106,12 +106,12 @@ export interface DataStore {
   ids: Ids
 }
 
-export interface returnQuizList {
+export interface ReturnQuizList {
   name: string;
   quizId: number
 }
 
-export interface returnUserDetails {
+export interface ReturnUserDetails {
   userId: number,
   name: string,
   email: string,
@@ -119,7 +119,7 @@ export interface returnUserDetails {
   numFailedPasswordsSinceLastLogin: number,
 }
 
-export interface returnQuizInfo {
+export interface ReturnQuizInfo {
   quizId: number,
   name: string,
   timeCreated: number,
@@ -129,6 +129,13 @@ export interface returnQuizInfo {
   questions: Question[],
   duration: number,
   thumbnailUrl: string
+}
+
+export interface ReturnGameSession {
+  state: GameState,
+  atQuestion: number;
+  players: string[];
+  metadata: ReturnQuizInfo;
 }
 
 export function load(): DataStore {
