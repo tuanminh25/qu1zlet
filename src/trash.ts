@@ -3,7 +3,9 @@ import {
   load,
   save,
   ReturnQuizList,
-  getSession
+  getSession,
+  isQuizInTrash,
+  isQuizInCurrentQuizzies
 } from './helper';
 
 /**
@@ -87,9 +89,9 @@ export function restoreQuizInTrash(token: string, quizId: number): { error?: str
   return {};
 }
 
-export function emptyTrash(token: string, removeQuizIds: Array<Number>) {
+export function emptyTrash(token: string, removeQuizIds: Array<number>) {
   const data = load();
-  
+
   // Check errors
   // Invalid token
   // 401
@@ -98,31 +100,36 @@ export function emptyTrash(token: string, removeQuizIds: Array<Number>) {
     return { error: 'Token is empty or invalid' };
   }
 
+  // Invalid Quiz Id
+  // 403
+  for (const quizToRemove of removeQuizIds) {
+    if (!isQuizInCurrentQuizzies(quizToRemove) && !isQuizInTrash(quizToRemove)) {
+      return { error: 'Invalid Quiz ID' };
+    }
+  }
 
-  const removeList =  data.trash.filter(quiz => removeQuizIds.includes(quiz.quizId));
-
+  // Find the list of quiz from the given quiz ids
+  const removeQuizList = data.trash.filter(quiz => removeQuizIds.includes(quiz.quizId));
 
   // User is not owner of the quiz
   // 403
-  for (let removeQuiz of removeList) {
+  for (const removeQuiz of removeQuizList) {
     if (removeQuiz.quizOwnedby !== session.userId) {
-      return { error: 'Valid token is provided, but user is not an owner of this quiz'};
+      return { error: 'Valid token is provided, but user is not an owner of this quiz' };
     }
   }
-
 
   // One or more of the Quiz IDs is not currently in the trash
   // 400
-  for (let removeId of removeQuizIds) {
-    let quiz = data.trash.find((quiz) => quiz.quizId === removeId);
-    if (!quiz) {
-      return { error: 'One or more of the Quiz IDs is not currently in the trash'};
+  for (const quizToRemove of removeQuizIds) {
+    if (!isQuizInTrash(quizToRemove)) {
+      return { error: 'One or more of the Quiz IDs is not currently in the trash' };
     }
   }
 
-
-  // data.trash = data.trash.filter(quiz => !removeQuizIds.includes(quiz.quizId));
-
+  for (const quiz of removeQuizList) {
+    data.trash = data.trash.filter(q => q !== quiz);
+  }
 
   save(data);
   return {};
