@@ -1870,8 +1870,8 @@ paths:
             - Any answer strings are duplicates of one another (within the same question)
             - There are no correct answers
             - The thumbnailUrl is an empty string
-            - The thumbnailUrl does not return to a valid file
-            - The thumbnailUrl, when fetched, is not a JPG or PNg file type
+            - The thumbnailUrl does not end with one of the following filetypes (case insensitive): jpg, jpeg, png
+            - The thumbnailUrl does not begin with 'http://' or 'https://'
           schema:
             $ref: '#/components/return/Error'
       security:
@@ -1986,8 +1986,8 @@ paths:
             - Any answer strings are duplicates of one another (within the same question)
             - There are no correct answers
             - The thumbnailUrl is an empty string
-            - The thumbnailUrl does not return to a valid file
-            - The thumbnailUrl, when fetched, is not a JPG or PNg file type
+            - The thumbnailUrl does not end with one of the following filetypes (case insensitive): jpg, jpeg, png
+            - The thumbnailUrl does not begin with 'http://' or 'https://'
           schema:
             $ref: '#/components/return/Error'
       security:
