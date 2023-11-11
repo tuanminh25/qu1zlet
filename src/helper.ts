@@ -4,7 +4,6 @@ import crypto from 'crypto';
 import HttpError from 'http-errors';
 import validator from 'validator';
 import fetch from 'node-fetch';
-import imageType from 'image-type';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -346,11 +345,14 @@ export function isValidUrl(url: string) {
 
 // Helper function to check if image is JPG or PNG
 export async function isImageJpgOrPng(url: string): Promise<void> {
-  const response = await fetch(url);
-  const buffer = await response.buffer();
-  const type = await imageType(buffer); // Make sure you await here.
+  const response = await fetch(url, { method: 'HEAD' });
 
-  if (!type || (type.ext !== 'jpg' && type.ext !== 'png')) {
-    throw HttpError(400, 'URL does not point to a JPG or PNG image');
+  if (!response.ok) {
+    throw HttpError('Network response was not ok');
+  }
+
+  const contentType = response.headers.get('content-type');
+  if (contentType !== 'image/jpeg' && contentType !== 'image/png') {
+    throw HttpError('Not an image');
   }
 }

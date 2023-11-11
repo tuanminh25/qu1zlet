@@ -30,7 +30,7 @@ import HttpError from 'http-errors';
 * }} questionBody
 * @returns {{ questionId?: number, error?: string }}
 */
-export function adminQuestionCreate(token: string, quizId: number, questionBody: Question):{ questionId?: number, error?: string } {
+export async function adminQuestionCreate(token: string, quizId: number, questionBody: Question):Promise<{ questionId?: number; error?: string; }> {
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
 
@@ -72,7 +72,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
   }
 
   isValidUrl(questionBody.thumbnailUrl);
-  isImageJpgOrPng(questionBody.thumbnailUrl);
+  await isImageJpgOrPng(questionBody.thumbnailUrl);
 
   const answers: Answer[] = [];
   for (const item of questionBody.answers) {
@@ -341,6 +341,7 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
   save(data);
   return {};
 }
+
 /**
  * A particular question gets duplicated to immediately after where the source question is
  *
@@ -349,7 +350,7 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
  * @param {number} questionId
  * @returns
  */
-export function dupQuizQuestion(token: string, quizId: number, questionId: number): { error?: string, newQuestionId?: number } {
+export async function dupQuizQuestion(token: string, quizId: number, questionId: number): Promise<{ error?: string; newQuestionId?: number; }> {
   // Check errors
   // Invalid token
   const session = isToken(token);
@@ -382,5 +383,5 @@ export function dupQuizQuestion(token: string, quizId: number, questionId: numbe
   // Update quiz
   quiz.timeLastEdited = generateTime();
 
-  return { newQuestionId: dup.questionId };
+  return { newQuestionId: (await dup).questionId };
 }
