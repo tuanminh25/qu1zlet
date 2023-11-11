@@ -2,6 +2,9 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import HttpError from 'http-errors';
+import validator from 'validator';
+import fetch from 'node-fetch';
+import imageType from 'image-type';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -332,4 +335,22 @@ export function getSession(token: string): Session {
   }
 
   return session;
+}
+
+// Helper function to validate URL
+export function isValidUrl(url: string) {
+  if (!validator.isURL(url)) {
+    throw HttpError(400, 'Invalid URL');
+  }
+}
+
+// Helper function to check if image is JPG or PNG
+export async function isImageJpgOrPng(url: string): Promise<void> {
+  const response = await fetch(url);
+  const buffer = await response.buffer();
+  const type = await imageType(buffer); // Make sure you await here.
+
+  if (!type || (type.ext !== 'jpg' && type.ext !== 'png')) {
+    throw HttpError(400, 'URL does not point to a JPG or PNG image');
+  }
 }

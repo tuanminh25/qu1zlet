@@ -9,7 +9,9 @@ import {
   randomColour,
   checkquizId,
   isQuizQuestion,
-  getSession
+  getSession,
+  isValidUrl,
+  isImageJpgOrPng
 } from './helper';
 
 import HttpError from 'http-errors';
@@ -69,6 +71,9 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     throw HttpError(400, 'No Correct question');
   }
 
+  isValidUrl(questionBody.thumbnailUrl);
+  isImageJpgOrPng(questionBody.thumbnailUrl);
+
   const answers: Answer[] = [];
   for (const item of questionBody.answers) {
     answers.push({
@@ -85,7 +90,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     duration: questionBody.duration,
     points: questionBody.points,
     answers: answers,
-    thumbnailUrl: ''
+    thumbnailUrl: questionBody.thumbnailUrl
   };
 
   quiz.questions.push(newQuestion);
