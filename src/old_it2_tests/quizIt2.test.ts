@@ -8,15 +8,13 @@ import {
   testQuizInfo,
   testQuizNameUpdate,
   testQuizTransfer,
-  testQuizDescriptionUpdate,
-  testGameSessionStart,
-  validQuestion
+  testQuizDescriptionUpdate
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
 
 // Tests:
-describe('adminQuizCreate', () => {
+describe('adminQuizCreate v1', () => {
   let user: { token: string; };
 
   beforeEach(() => {
@@ -89,7 +87,7 @@ describe('adminQuizCreate', () => {
   });
 });
 
-describe('SendQuizToTrash', () => {
+describe('SendQuizToTrash v1', () => {
   let user: { token: string; };
   let quiz: { quizId: number; };
 
@@ -100,10 +98,15 @@ describe('SendQuizToTrash', () => {
   });
 
   test('Send Quiz to Trash - Successful', () => {
+    // const initialTimeLastEdited = quiz.timeLastEdited;
     expect(quiz.quizId).toBe(1);
     const sendToTrash = testQuizToTrash(user.token, quiz.quizId);
     expect(sendToTrash.response).toStrictEqual({});
     expect(sendToTrash.status).toStrictEqual(200);
+
+    // Check if timeLastEdited is updated
+    // const updatedQuiz = getQuizInfo(quiz.quizId); REPLACE
+    // expect(updatedQuiz.timeLastEdited).not.toStrictEqual(initialTimeLastEdited);
   });
 
   test('Non-Existent User', () => {
@@ -123,20 +126,14 @@ describe('SendQuizToTrash', () => {
   });
 
   test('Unauthorized', () => {
+    // Create a new user and use their token to attempt to send the quiz to trash
     const unauthorizedUser = testRegister('unauthorized@example.com', 'password123', 'Unauthorized', 'User').response;
     const sendToTrash = testQuizToTrash(unauthorizedUser.token, quiz.quizId);
     expect(sendToTrash.status).toStrictEqual(403);
   });
-
-  test('Game hasnt ended', () => {
-    testCreateQuizQuestion(user.token, quiz.quizId, validQuestion);
-    testGameSessionStart(user.token, quiz.quizId, 1);
-    const sendToTrash = testQuizToTrash(user.token, quiz.quizId);
-    expect(sendToTrash.status).toStrictEqual(400);
-  });
 });
 
-describe('adminQuizList', () => {
+describe('adminQuizList v1', () => {
   let user : {token: string};
   let quiz : {quizId: number};
 
@@ -202,7 +199,7 @@ describe('adminQuizList', () => {
   });
 });
 
-describe('adminQuizInfo', () => {
+describe('adminQuizInfo v1', () => {
   let user: { token: string };
   let quiz: { quizId: number };
   const validQuestion = {
@@ -237,7 +234,6 @@ describe('adminQuizInfo', () => {
         {
           questionId: question.questionId,
           question: 'What is the capital of France?',
-          thumbnailUrl: '',
           duration: 4,
           points: 5,
           answers: [
@@ -269,7 +265,6 @@ describe('adminQuizInfo', () => {
         }
       ],
       duration: 4,
-      thumbnailUrl: ''
     });
     expect(quizinfo.status).toStrictEqual(200);
   });
@@ -312,7 +307,6 @@ describe('adminQuizInfo', () => {
         {
           questionId: question.questionId,
           question: 'What is the capital of France?',
-          thumbnailUrl: '',
           duration: 4,
           points: 5,
           answers: [
@@ -345,7 +339,6 @@ describe('adminQuizInfo', () => {
         {
           questionId: question2.questionId,
           question: 'Who is the Goat',
-          thumbnailUrl: '',
           duration: 10,
           points: 9,
           answers: [
@@ -384,7 +377,6 @@ describe('adminQuizInfo', () => {
         {
           questionId: question3.questionId,
           question: 'XDhenlo',
-          thumbnailUrl: '',
           duration: 10,
           points: 9,
           answers: [
@@ -410,7 +402,6 @@ describe('adminQuizInfo', () => {
         }
       ],
       duration: 24,
-      thumbnailUrl: ''
     });
     expect(quizinfo.status).toStrictEqual(200);
   });
@@ -427,7 +418,6 @@ describe('adminQuizInfo', () => {
       numQuestions: 0,
       questions: [],
       duration: 0,
-      thumbnailUrl: ''
     });
     expect(quizinfo.status).toStrictEqual(200);
   });
@@ -451,7 +441,7 @@ describe('adminQuizInfo', () => {
   });
 });
 
-describe('QuizNameUpdate', () => {
+describe('QuizNameUpdate v1', () => {
   let user: { token: string };
   let quiz: { quizId: number };
 
@@ -557,7 +547,7 @@ describe('QuizNameUpdate', () => {
   });
 });
 
-describe('/v1/admin/quiz/:quizid/transfer', () => {
+describe('/v1/admin/quiz/:quizid/transfer v1', () => {
   const userfrom = {
     email: 'testuser@example.com',
     password: 'Password123',
@@ -639,7 +629,7 @@ describe('/v1/admin/quiz/:quizid/transfer', () => {
   });
 });
 
-describe('QuizDescriptionUpdate', () => {
+describe('QuizDescriptionUpdate v1', () => {
   let user : {token: string};
   let quiz : {quizId: number};
   beforeEach(() => {
@@ -713,5 +703,3 @@ describe('QuizDescriptionUpdate', () => {
     expect(updateResponse.status).toStrictEqual(403);
   });
 });
-
-testClear();

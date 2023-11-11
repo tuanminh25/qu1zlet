@@ -3,44 +3,7 @@ import { port, url } from '../config.json';
 
 const SERVER_URL = `${url}:${port}`;
 const auth = '/v1/admin/auth/';
-const authv2 = '/v2/admin/auth/';
-const userUrlv2 = '/v2/admin/user/';
-
-export const validQuestion = {
-  question: 'What is the capital of France?',
-  duration: 4,
-  points: 5,
-  answers: [
-    { answer: 'Berlin', correct: false },
-    { answer: 'Madrid', correct: false },
-    { answer: 'Paris', correct: true },
-    { answer: 'Rome', correct: false }
-  ]
-};
-
-export const footballQues = {
-  question: 'England teams',
-  duration: 10,
-  points: 5,
-  answers: [
-    { answer: 'Madrid', correct: false },
-    { answer: 'Barcelona', correct: false },
-    { answer: 'Arsenal', correct: true },
-    { answer: 'Bayern', correct: false }
-  ]
-};
-
-export const leagueQues = {
-  question: 'Champions',
-  duration: 15,
-  points: 5,
-  answers: [
-    { answer: 'jayce', correct: false },
-    { answer: 'tristana', correct: false },
-    { answer: 'lulu', correct: false },
-    { answer: 'leblanc', correct: true }
-  ]
-};
+const userUrl = '/v1/admin/user/';
 
 export function testRegister(
   email: string,
@@ -82,9 +45,9 @@ export function testLogin(email: string, password: string) {
 }
 
 export function testLogout(token: string) {
-  const res = request('POST', SERVER_URL + authv2 + 'logout',
+  const res = request('POST', SERVER_URL + auth + 'logout',
     {
-      headers: {
+      json: {
         token: token
       }
     }
@@ -94,9 +57,9 @@ export function testLogout(token: string) {
 }
 
 export function testGetDetails(token: string) {
-  const res = request('GET', SERVER_URL + userUrlv2 + 'details',
+  const res = request('GET', SERVER_URL + '/v1/admin/user/details',
     {
-      headers: {
+      qs: {
         token: token
       }
     }
@@ -106,13 +69,11 @@ export function testGetDetails(token: string) {
 }
 
 export function testCreateQuiz(token: string, name: string, description: string) {
-  const res = request('POST', SERVER_URL + '/v2/admin/quiz', {
+  const res = request('POST', SERVER_URL + '/v1/admin/quiz', {
     json: {
+      token: token,
       name: name,
       description: description,
-    },
-    headers: {
-      token: token,
     },
   });
 
@@ -125,11 +86,9 @@ export const testQuizList = (token: string) => {
 };
 
 export function testCreateQuizQuestion(token: string, quizId: number, questionBody: object) {
-  const res = request('POST', `${SERVER_URL}/v2/admin/quiz/${quizId}/question`, {
-    headers: {
-      token: token,
-    },
+  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/question`, {
     json: {
+      token: token,
       questionBody: questionBody
     },
   });
@@ -138,11 +97,9 @@ export function testCreateQuizQuestion(token: string, quizId: number, questionBo
 }
 
 export function testUpdateUserDetails(token: string, email: string, nameFirst: string, nameLast: string) {
-  const res = request('PUT', SERVER_URL + '/v2/admin/user/details', {
-    headers: {
-      token: token,
-    },
+  const res = request('PUT', SERVER_URL + '/v1/admin/user/details', {
     json: {
+      token: token,
       email: email,
       nameFirst: nameFirst,
       nameLast: nameLast
@@ -157,24 +114,21 @@ export function testUpdatePassword(
   oldPassword: string,
   newPassword: string
 ) {
-  const res = request('PUT', SERVER_URL + userUrlv2 + 'password',
+  const res = request('PUT', SERVER_URL + userUrl + 'password',
     {
-      headers: {
-        token: token
-      },
       json: {
+        token: token,
         oldPassword: oldPassword,
         newPassword: newPassword
       }
-    }
-  );
+    });
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
 export function testQuizToTrash(token: string, quizId: number) {
-  const res = request('DELETE', `${SERVER_URL}/v2/admin/quiz/${quizId}`, {
-    headers: {
+  const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
+    qs: {
       token: token,
     },
   });
@@ -200,8 +154,8 @@ export function testUpdateQuestion(
 }
 
 export function testQuizInfo(token: string, quizId: number) {
-  const res = request('GET', `${SERVER_URL}/v2/admin/quiz/${quizId}`, {
-    headers: {
+  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}`, {
+    qs: {
       token: token,
     },
   });
@@ -232,13 +186,11 @@ export function testQuizTransfer(token: string, quizId: number, userEmail: strin
 }
 
 export function testQuizDescriptionUpdate(token: string, quizId: number, description: string) {
-  const res = request('PUT', `${SERVER_URL}/v2/admin/quiz/${quizId}/description`, {
-    headers: {
-      token: token,
-    },
+  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/description`, {
     json: {
+      token: token,
       description: description
-    },
+    }
   });
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
@@ -255,7 +207,7 @@ export function testQuestionDelete(token: string, quizId: number, questionId: nu
 }
 
 export const testViewTrash = (token: string) => {
-  const res = request('GET', `${SERVER_URL}/v2/admin/quiz/trash`, { headers: { token: token } });
+  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/trash`, { qs: { token: token } });
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 };
@@ -287,42 +239,6 @@ export function testDupQuizQuestion(token: string, quizId: number, questionId: n
     json: {
       token: token,
     }
-  });
-
-  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
-}
-
-export function testGameSessionStart(token: string, quizId: number, autoStartNum: number) {
-  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/session/start`, {
-    headers: {
-      token: token,
-    },
-    json: {
-      autoStartNum: autoStartNum
-    }
-  });
-
-  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
-}
-
-export function testGameSessionUpdate(token: string, quizId: number, gameSessionId: number, action: string) {
-  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/session/${gameSessionId}`, {
-    headers: {
-      token: token,
-    },
-    json: {
-      action: action
-    }
-  });
-
-  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
-}
-
-export function testGetGameStatus(token: string, quizId: number, gameSessionId: number) {
-  const res = request('GET', `${SERVER_URL}/v1/admin/quiz/${quizId}/session/${gameSessionId}`, {
-    headers: {
-      token: token,
-    },
   });
 
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
