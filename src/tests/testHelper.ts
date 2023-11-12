@@ -373,3 +373,8 @@ export function testRandomName(name : string) {
 
   return true;
 }
+
+export function testPlayerStatus(playerId: number) {
+  const res = request('GET', SERVER_URL + playerV1 + playerId);
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
