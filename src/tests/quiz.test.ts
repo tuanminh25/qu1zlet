@@ -665,7 +665,7 @@ describe('adminQuizList v2', () => {
   test('Successful case: one item in the list', () => {
     // 2nd person
     const registerUser2 = testRegister('jayden2.smith@unsw.edu.au', 'password2', 'nameFirst', 'nameLast');
-    let user2 = registerUser2.response;
+    const user2 = registerUser2.response;
     // 1 item in list 1
     expect(testQuizList(user.token).response).toStrictEqual({ quizzes: [{ quizId: quiz.quizId, name: 'Quiz by Hayden' }] });
     expect(testQuizList(user.token).status).toStrictEqual(200);
