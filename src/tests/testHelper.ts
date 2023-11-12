@@ -349,8 +349,8 @@ export function testRandomName(name : string) {
     return false;
   }
 
-  let existedCharacter: Array<string> = [];
-  let existedNumber: Array<Number> = [];
+  const existedCharacter: Array<string> = [];
+  const existedNumber: Array<number> = [];
 
   for (let i = 0; i < name.length; i++) {
     // From index 0 to 5

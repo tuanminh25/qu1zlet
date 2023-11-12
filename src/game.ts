@@ -9,7 +9,6 @@ import {
   ReturnGameSession,
   ReturnQuizInfo,
   sortPlayerNames,
-  findGameSession,
   findPlayerFromGameId,
   generateRandomName,
   Player
@@ -286,17 +285,17 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   // 400
   // Name of user entered is not unique
   if (findPlayerFromGameId(sessionId, name)) {
-    throw HttpError(400, "Name of user entered is not unique");
-  };
+    throw HttpError(400, 'Name of user entered is not unique');
+  }
 
   // Session is not in LOBBY state
   const gameSession = data.gameSessions.find(g => g.gameSessionId === sessionId);
-  if (gameSession.state !== "LOBBY") {
-    throw HttpError(400, "Session is not in LOBBY state");
+  if (gameSession.state !== 'LOBBY') {
+    throw HttpError(400, 'Session is not in LOBBY state');
   }
 
   // Check name, generate new one if neccessary
-  if (name === "") {
+  if (name === '') {
     name = generateRandomName();
     while (findPlayerFromGameId(sessionId, name)) {
       name = generateRandomName();
@@ -308,12 +307,12 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
     sessionId: sessionId,
     name: name,
     playerId: data.ids.playerId
-  }
+  };
 
   // Save data
   data.players.push(player);
   gameSession.players.push(player);
   data.ids.playerId++;
   save(data);
-  return {playerId: player.playerId};
+  return { playerId: player.playerId };
 }

@@ -491,85 +491,78 @@ describe('Get game status', () => {
 describe('Player join', () => {
   let admin: { token: string; };
   let quiz: { quizId: number; };
-  let ques: { questionId: number};
   let gameSession: { sessionId: number};
   beforeEach(() => {
     admin = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
     quiz = testCreateQuiz(admin.token, 'Sample Quiz', 'Sample Description').response;
-    ques = testCreateQuizQuestion(admin.token, quiz.quizId, validQuestion).response;
+    expect(testCreateQuizQuestion(admin.token, quiz.quizId, validQuestion).status).toStrictEqual(200);
     gameSession = testGameSessionStart(admin.token, quiz.quizId, 10).response;
   });
 
   // Error cases:
   // Code 400
   // Name of user entered is not unique (compared to other users who have already joined)
-  test("Name of user entered is not unique", () => {
-    expect(testPlayerJoin(gameSession.sessionId, "Luca").status).toStrictEqual(200);
-    expect(testPlayerJoin(gameSession.sessionId, "Luca").status).toStrictEqual(400);
-    expect(testPlayerJoin(gameSession.sessionId, "Luca").response).toStrictEqual(ERROR);
-// testClear();
-
-  })
+  test('Name of user entered is not unique', () => {
+    expect(testPlayerJoin(gameSession.sessionId, 'Luca').status).toStrictEqual(200);
+    expect(testPlayerJoin(gameSession.sessionId, 'Luca').status).toStrictEqual(400);
+    expect(testPlayerJoin(gameSession.sessionId, 'Luca').response).toStrictEqual(ERROR);
+  });
 
   // Session is not in LOBBY state
-  test("Session is not in LOBBY state", () => {
+  test('Session is not in LOBBY state', () => {
     expect(testGameSessionUpdate(admin.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION').status).toStrictEqual(200);
-    expect(testPlayerJoin(gameSession.sessionId, "Luca").status).toStrictEqual(400);
-    expect(testPlayerJoin(gameSession.sessionId, "Luca").response).toStrictEqual(ERROR);
-
-  })
+    expect(testPlayerJoin(gameSession.sessionId, 'Luca').status).toStrictEqual(400);
+    expect(testPlayerJoin(gameSession.sessionId, 'Luca').response).toStrictEqual(ERROR);
+  });
 
   // Working cases:
   // Code 200
   // Join 1 player
-  test("Join 1 player", () => {
-    let addPlayer = testPlayerJoin(gameSession.sessionId, "Luca");
+  test('Join 1 player', () => {
+    const addPlayer = testPlayerJoin(gameSession.sessionId, 'Luca');
     expect(addPlayer.status).toStrictEqual(200);
-    expect(addPlayer.response).toStrictEqual({playerId: expect.any(Number)})
-    expect(testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players).toStrictEqual(["Luca"])
-  })
+    expect(addPlayer.response).toStrictEqual({ playerId: expect.any(Number) });
+    expect(testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players).toStrictEqual(['Luca']);
+  });
 
   // Empty string name : randomly generated that conforms to the structure "[5 letters][3 numbers]"
-  test("Empty string name", () => {
-    let addPlayer = testPlayerJoin(gameSession.sessionId, "");
+  test('Empty string name', () => {
+    const addPlayer = testPlayerJoin(gameSession.sessionId, '');
     expect(addPlayer.status).toStrictEqual(200);
-    expect(addPlayer.response).toStrictEqual({playerId: expect.any(Number)})
-    let playerName = testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players[0];
+    expect(addPlayer.response).toStrictEqual({ playerId: expect.any(Number) });
+    const playerName = testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players[0];
     expect(testRandomName(playerName)).toStrictEqual(true);
-  })
+  });
 
-
-  // Join many people 
+  // Join many people
   // Empty string name : randomly generated that conforms to the structure "[5 letters][3 numbers]"
-  test("Many empty string name", () => {
+  test('Many empty string name', () => {
     // Add first empty string name player
-    let addPlayer = testPlayerJoin(gameSession.sessionId, "");
+    const addPlayer = testPlayerJoin(gameSession.sessionId, '');
     expect(addPlayer.status).toStrictEqual(200);
-    expect(addPlayer.response).toStrictEqual({playerId: expect.any(Number)})
-    
+    expect(addPlayer.response).toStrictEqual({ playerId: expect.any(Number) });
+
     // Add second empty string name player
-    let addPlayer2 = testPlayerJoin(gameSession.sessionId, "");
+    const addPlayer2 = testPlayerJoin(gameSession.sessionId, '');
     expect(addPlayer2.status).toStrictEqual(200);
-    expect(addPlayer2.response).toStrictEqual({playerId: expect.any(Number)})
+    expect(addPlayer2.response).toStrictEqual({ playerId: expect.any(Number) });
 
     // Get the first player name
-    let playerName = testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players[0];
+    const playerName = testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players[0];
     expect(testRandomName(playerName)).toStrictEqual(true);
 
     // Get the second player name
-    let playerName2 = testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players[1];
+    const playerName2 = testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players[1];
     expect(testRandomName(playerName2)).toStrictEqual(true);
 
     // Expect them to be different name
     expect(playerName === playerName2).toStrictEqual(false);
 
     // Adding player 3 name: "Luca"
-    let addPlayer3 = testPlayerJoin(gameSession.sessionId, "Luca");
+    const addPlayer3 = testPlayerJoin(gameSession.sessionId, 'Luca');
     expect(addPlayer3.status).toStrictEqual(200);
-    expect(addPlayer3.response).toStrictEqual({playerId: expect.any(Number)})
-  })
-
-
-})
+    expect(addPlayer3.response).toStrictEqual({ playerId: expect.any(Number) });
+  });
+});
 
 testClear();

@@ -393,7 +393,7 @@ export function sortPlayerNames(playerArray: Player[]): string[] {
   * Return that game session if exist
   * @param {number} gameSessionId
   * @returns { GameSession }
-  * 
+  *
 */
 export function findGameSession(gameSessionId: number) {
   const data = load();
@@ -405,62 +405,60 @@ export function findGameSession(gameSessionId: number) {
   * Return that player if exist
   * @param {string} playerName
   * @param {number} playerId
-  * 
+  *
   * @returns { Player }
   * This version check from dataStore.gameSession
   * Find the correct session then
   * Check for player in that session
-  * 
+  *
 */
 export function findPlayerFromGameId(gameSessionId: number, playerName?: string, playerId?: number) {
   const gameSession = findGameSession(gameSessionId);
   if (gameSession === undefined) {
-    throw HttpError("Wrong gameSessionId: ");
+    throw HttpError('Wrong gameSessionId: ');
   }
 
   if (playerName !== undefined) {
-    return gameSession.players.find(player => player.name === playerName)
+    return gameSession.players.find(player => player.name === playerName);
   }
 
   if (playerId !== undefined) {
-    return gameSession.players.find(player => player.playerId === playerId)
+    return gameSession.players.find(player => player.playerId === playerId);
   }
 
-  throw HttpError("Either player name or player id is wrong !");
+  throw HttpError('Either player name or player id is wrong !');
 }
-
 
 /**
   * Given a game player name or id and a gameSessionId
-  * 
+  *
   * Return that player if exist
   * @param {string} playerName
   * @param {number} playerId
-  * 
+  *
   * @returns { Player }
   * This version check from dataStore.players
 */
 export function findPlayerFromGameId2(gameSessionId: number, playerName?: string, playerId?: number) {
   if (playerName === undefined && playerId === undefined) {
-    throw HttpError("Either player name or player id is wrong !");
+    throw HttpError('Either player name or player id is wrong !');
   }
 
   const data = load();
   for (const player of data.players) {
-    if(player.name === playerName && player.sessionId === gameSessionId) {
+    if (player.name === playerName && player.sessionId === gameSessionId) {
       return player;
     }
   }
   return undefined;
 }
 
-
 /**
  * generate a name which satisfies
  * the structure "[5 letters][3 numbers]" (e.g. valid123, ifjru483, ofijr938)
  *  where there are no repetitions of numbers or characters within the same name
   * @returns { string }
-  * 
+  *
 */
 export function generateRandomName() {
   // Define characters and numbers
@@ -478,5 +476,5 @@ export function generateRandomName() {
   const randomNumbers = shuffledNum.sort(() => Math.random() - 0.5).slice(0, 3).join('');
 
   // Concatenate characters and numbers to form the final string
-  return  randomChars + randomNumbers;
+  return randomChars + randomNumbers;
 }
