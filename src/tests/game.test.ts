@@ -503,17 +503,17 @@ describe('Player join', () => {
   // Error cases:
   // Code 400
   // Name of user entered is not unique (compared to other users who have already joined)
-  test.only("Name of user entered is not unique", () => {
-    // expect(testPlayerJoin(gameSession.sessionId, "Luca").status).toStrictEqual(200);
-    // expect(testPlayerJoin(gameSession.sessionId, "Luca").status).toStrictEqual(400);
-    // expect(testPlayerJoin(gameSession.sessionId, "Luca").response).toStrictEqual(ERROR);
-testClear();
+  test("Name of user entered is not unique", () => {
+    expect(testPlayerJoin(gameSession.sessionId, "Luca").status).toStrictEqual(200);
+    expect(testPlayerJoin(gameSession.sessionId, "Luca").status).toStrictEqual(400);
+    expect(testPlayerJoin(gameSession.sessionId, "Luca").response).toStrictEqual(ERROR);
+// testClear();
 
   })
 
   // Session is not in LOBBY state
-  test("Name of user entered is not unique", () => {
-    expect(testGameSessionUpdate(admin.token, quiz.quizId, gameSession.sessionId, 'QUESTION_COUNTDOWN')).toStrictEqual(200);
+  test("Session is not in LOBBY state", () => {
+    expect(testGameSessionUpdate(admin.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION').status).toStrictEqual(200);
     expect(testPlayerJoin(gameSession.sessionId, "Luca").status).toStrictEqual(400);
     expect(testPlayerJoin(gameSession.sessionId, "Luca").response).toStrictEqual(ERROR);
 
@@ -524,7 +524,7 @@ testClear();
   // Join 1 player
   test("Join 1 player", () => {
     let addPlayer = testPlayerJoin(gameSession.sessionId, "Luca");
-    expect(addPlayer).toStrictEqual(200);
+    expect(addPlayer.status).toStrictEqual(200);
     expect(addPlayer.response).toStrictEqual({playerId: expect.any(Number)})
     expect(testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players).toStrictEqual(["Luca"])
   })
@@ -532,7 +532,7 @@ testClear();
   // Empty string name : randomly generated that conforms to the structure "[5 letters][3 numbers]"
   test("Empty string name", () => {
     let addPlayer = testPlayerJoin(gameSession.sessionId, "");
-    expect(addPlayer).toStrictEqual(200);
+    expect(addPlayer.status).toStrictEqual(200);
     expect(addPlayer.response).toStrictEqual({playerId: expect.any(Number)})
     let playerName = testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players[0];
     expect(testRandomName(playerName)).toStrictEqual(true);
@@ -565,7 +565,7 @@ testClear();
 
     // Adding player 3 name: "Luca"
     let addPlayer3 = testPlayerJoin(gameSession.sessionId, "Luca");
-    expect(addPlayer3).toStrictEqual(200);
+    expect(addPlayer3.status).toStrictEqual(200);
     expect(addPlayer3.response).toStrictEqual({playerId: expect.any(Number)})
   })
 

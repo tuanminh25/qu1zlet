@@ -280,6 +280,8 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
 }
 
 export function joinPlayer(sessionId: number, name: string): {playerId: number} {
+  const data = load();
+
   // Error cases
   // 400
   // Name of user entered is not unique
@@ -288,7 +290,7 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   };
 
   // Session is not in LOBBY state
-  const gameSession = findGameSession(sessionId);
+  const gameSession = data.gameSessions.find(g => g.gameSessionId === sessionId);
   if (gameSession.state !== "LOBBY") {
     throw HttpError(400, "Session is not in LOBBY state");
   }
@@ -301,20 +303,17 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
     }
   }
 
-  const data = load();
-  
+  // Initialize new player
   const player: Player = {
     sessionId: sessionId,
     name: name,
     playerId: data.ids.playerId
   }
-  console.log(player)
 
+  // Save data
   data.players.push(player);
   gameSession.players.push(player);
-
   data.ids.playerId++;
-
   save(data);
   return {playerId: player.playerId};
 }

@@ -407,6 +407,9 @@ export function findGameSession(gameSessionId: number) {
   * @param {number} playerId
   * 
   * @returns { Player }
+  * This version check from dataStore.gameSession
+  * Find the correct session then
+  * Check for player in that session
   * 
 */
 export function findPlayerFromGameId(gameSessionId: number, playerName?: string, playerId?: number) {
@@ -425,6 +428,32 @@ export function findPlayerFromGameId(gameSessionId: number, playerName?: string,
 
   throw HttpError("Either player name or player id is wrong !");
 }
+
+
+/**
+  * Given a game player name or id and a gameSessionId
+  * 
+  * Return that player if exist
+  * @param {string} playerName
+  * @param {number} playerId
+  * 
+  * @returns { Player }
+  * This version check from dataStore.players
+*/
+export function findPlayerFromGameId2(gameSessionId: number, playerName?: string, playerId?: number) {
+  if (playerName === undefined && playerId === undefined) {
+    throw HttpError("Either player name or player id is wrong !");
+  }
+
+  const data = load();
+  for (const player of data.players) {
+    if(player.name === playerName && player.sessionId === gameSessionId) {
+      return player;
+    }
+  }
+  return undefined;
+}
+
 
 /**
  * generate a name which satisfies

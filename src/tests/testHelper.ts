@@ -356,18 +356,20 @@ export function testRandomName(name : string) {
     // From index 0 to 5
     if (i < 5) {
       // Check for existed and is not a number
-      if (!existedCharacter.includes(name[i]) && !isNaN(parseInt(name[i]))) {
+      if (!existedCharacter.includes(name[i]) && isNaN(parseInt(name[i]))) {
         existedCharacter.push(name[i]);
       } else {
         return false;
       }
     } else { // For index 5 to 7
       // Check for existed and is a number
-      if (!existedNumber.includes(parseInt(name[i])) && isNaN(parseInt(name[i]))) {
+      if (!existedNumber.includes(parseInt(name[i])) && !isNaN(parseInt(name[i]))) {
         existedNumber.push(parseInt(name[i]));
       } else {
         return false;
       }
     }
   }
+
+  return true;
 }
