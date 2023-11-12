@@ -233,11 +233,6 @@ app.get('/v1/admin/quiz/trash', (req: Request, res: Response) => {
 app.get('/v1/admin/quiz/list', (req: Request, res: Response) => {
   const token = req.query.token;
   const response = adminQuizList(String(token));
-
-  if (response.error === 'Token is empty or invalid') {
-    return res.status(401).json(response);
-  }
-
   res.json(response);
 });
 
