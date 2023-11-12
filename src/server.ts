@@ -110,6 +110,12 @@ app.put('/v2/admin/user/details', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.get('/v2/admin/quiz/list', (req: Request, res: Response) => {
+  const token = req.headers.token;
+  const response = adminQuizList(String(token));
+  res.json(response);
+});
+
 app.get('/v2/admin/quiz/:quizId', (req: Request, res: Response) => {
   const token = req.headers.token;
   const { quizId } = req.params;
@@ -186,6 +192,7 @@ app.delete('/v2/admin/quiz/trash/empty', (req: Request, res: Response) => {
   }
   res.json(response);
 });
+
 // ====================================================================
 // it2 routes below
 // ====================================================================
