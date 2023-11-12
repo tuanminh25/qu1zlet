@@ -375,13 +375,13 @@ export function isQuizInCurrentQuizzies(quizId: number): Quiz {
 
 /**
   * Given a list of player objects
-  * Return Player name sorted in alphabetical order 
+  * Return Player name sorted in alphabetical order
   * @param {Player[]} playerArray
   * @returns { string[] }
 */
 export function sortPlayerNames(playerArray: Player[]): string[] {
-  let nameList : string[] = [];
-  for (let player of playerArray) {
+  const nameList : string[] = [];
+  for (const player of playerArray) {
     nameList.push(player.name);
   }
   return nameList.sort();

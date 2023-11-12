@@ -266,7 +266,7 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
     duration: gameSession.metadata.duration,
     thumbnailUrl: gameSession.metadata.thumbnailUrl
   };
-  
+
   return {
     state: gameSession.state,
     atQuestion: gameSession.atQuestion,
