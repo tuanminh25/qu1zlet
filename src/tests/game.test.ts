@@ -607,7 +607,7 @@ describe("Status of guest player in session", () => {
   })
 
   // 2 players same session 
-  test.only("2 players same session", () => {
+  test("2 players same session", () => {
     // First player
     let addPlayer = testPlayerJoin(gameSession.sessionId, "Luca");
     expect(addPlayer.status).toStrictEqual(200);
@@ -640,14 +640,16 @@ describe("Status of guest player in session", () => {
   })
 
   // 2 player different session
-  test("2 players same session", () => {
+  test.only("2 players different session", () => {
     // First player
     let addPlayer = testPlayerJoin(gameSession.sessionId, "Luca");
     expect(addPlayer.status).toStrictEqual(200);
     const playerId1 = addPlayer.response.playerId;
     expect(testPlayerStatus(playerId1).status).toStrictEqual(200);
+    expect(testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION').status).toStrictEqual(200);
+
     expect(testPlayerStatus(playerId1).response).toStrictEqual({
-      state: "LOBBY",
+      state: "QUESTION_COUNTDOWN",
       numQuestions: expect.any(Number),
       atQuestion: expect.any(Number),
     });
@@ -668,6 +670,9 @@ describe("Status of guest player in session", () => {
     const status2 = testPlayerStatus(playerId2).response;
     const status1 = testPlayerStatus(playerId1).response;
     expect(status1 !== status2).toStrictEqual(true);
+
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
+
   })
 })
 

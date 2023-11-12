@@ -153,6 +153,7 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       throw HttpError(400, 'Action enum cannot be applied in the current state');
     } else {
       gameSession.state = GameState.QUESTION_COUNTDOWN;
+      updatePlayerState(gameSession);
       save(data);
       timerIds.questionCountDown = countDownTimer(gameSessionId);
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
@@ -199,6 +200,8 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
   if (gameSession.state === GameState.ANSWER_SHOW) {
     if (action === GameAction.NEXT_QUESTION) {
       gameSession.state = GameState.QUESTION_COUNTDOWN;
+      updatePlayerState(gameSession);
+
       save(data);
       timerIds.questionCountDown = countDownTimer(gameSessionId);
 
