@@ -412,7 +412,7 @@ export function findGameSession(gameSessionId: number) {
 export function findPlayerFromGameId(gameSessionId: number, playerName?: string, playerId?: number) {
   const gameSession = findGameSession(gameSessionId);
   if (gameSession === undefined) {
-    throw HttpError("Wrong gameSessionId");
+    throw HttpError("Wrong gameSessionId: ");
   }
 
   if (playerName !== undefined) {

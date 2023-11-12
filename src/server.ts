@@ -182,7 +182,7 @@ app.delete('/v2/admin/quiz/trash/empty', (req: Request, res: Response) => {
 });
 
 app.post('/v1/player/join', (req: Request, res: Response) => {
-  const sessionId = req.body.sessionid;
+  const sessionId = req.body.sessionId;
   const name = req.body.name;
   const response = joinPlayer(sessionId, name);
   res.json(response);

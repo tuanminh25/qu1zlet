@@ -302,16 +302,19 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   }
 
   const data = load();
-  data.ids.playerId++;
   
   const player: Player = {
     sessionId: sessionId,
     name: name,
     playerId: data.ids.playerId
   }
+  console.log(player)
 
   data.players.push(player);
   gameSession.players.push(player);
+
+  data.ids.playerId++;
+
   save(data);
   return {playerId: player.playerId};
 }
