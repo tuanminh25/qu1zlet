@@ -489,17 +489,23 @@ export function generateRandomName() {
   return randomChars + randomNumbers;
 }
 
-
 /**
  * Update player state along with game state
   * @param {number} playerId
   *
 */
-export function updatePlayerState(gameSession: GameSession) {
-  for (let player of gameSession.players) {
+export function updatePlayerState(gameSession: GameSession, data: DataStore) {
+  for (const player of gameSession.players) {
     player.state = gameSession.state;
     player.numQuestions = gameSession.metadata.numQuestions;
     player.atQuestion = gameSession.atQuestion;
   }
 
+  for (const player of data.players) {
+    if (player.sessionId === gameSession.gameSessionId) {
+      player.state = gameSession.state;
+      player.numQuestions = gameSession.metadata.numQuestions;
+      player.atQuestion = gameSession.atQuestion;
+    }
+  }
 }
