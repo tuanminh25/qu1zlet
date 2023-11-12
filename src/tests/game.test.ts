@@ -594,7 +594,7 @@ describe("Status of guest player in session", () => {
   // Working cases:
   // 200
   // One player
-  test.only("1 Player ID exists", () => {
+  test("1 Player ID exists", () => {
     const addPlayer = testPlayerJoin(gameSession.sessionId, "Luca");
     expect(addPlayer.status).toStrictEqual(200);
     const playerId1 = addPlayer.response.playerId;
@@ -607,7 +607,7 @@ describe("Status of guest player in session", () => {
   })
 
   // 2 players same session 
-  test("2 players same session", () => {
+  test.only("2 players same session", () => {
     // First player
     let addPlayer = testPlayerJoin(gameSession.sessionId, "Luca");
     expect(addPlayer.status).toStrictEqual(200);
@@ -620,7 +620,7 @@ describe("Status of guest player in session", () => {
     });
 
     // Second player
-    addPlayer = testPlayerJoin(gameSession.sessionId, "Luca");
+    addPlayer = testPlayerJoin(gameSession.sessionId, "Lucas");
     expect(addPlayer.status).toStrictEqual(200);
     const playerId2 = addPlayer.response.playerId;
     expect(testPlayerStatus(playerId2).status).toStrictEqual(200);
@@ -633,7 +633,10 @@ describe("Status of guest player in session", () => {
 
     const status2 = testPlayerStatus(playerId2).response;
     const status1 = testPlayerStatus(playerId1).response;
-    expect(status1 === status2).toStrictEqual(true);
+    expect(status1.state === status2.state).toStrictEqual(true);
+    expect(status1.numQuestions === status2.numQuestions).toStrictEqual(true);
+    expect(status1.atQuestion === status2.atQuestion).toStrictEqual(true);
+
   })
 
   // 2 player different session
