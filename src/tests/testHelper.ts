@@ -270,7 +270,7 @@ export function testRestoreTrash(token: string, quizId: number) {
 }
 
 export function testEmptyTheTrash(token: string, quizIds: Array<number>) {
-  const res = request('DELETE', SERVER_URL + adminQuizUrlV2 +'trash/empty', { headers: {token: token}, qs: { quizIds: quizIds } });
+  const res = request('DELETE', SERVER_URL + adminQuizUrlV2 + 'trash/empty', { headers: { token: token }, qs: { quizIds: quizIds } });
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
