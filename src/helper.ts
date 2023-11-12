@@ -32,6 +32,11 @@ export enum GameAction {
   GO_TO_FINAL_RESULTS = 'GO_TO_FINAL_RESULTS',
   END = 'END'
 }
+export interface Player {
+  sessionId: number;
+  name: string;
+  playerId: number;
+}
 
 export interface User {
   userId: number;
@@ -86,13 +91,14 @@ export interface Ids {
   questionId: number;
   answerId: number;
   gameSessionId: number;
+  playerId: number;
 }
 
 export interface GameSession {
   gameSessionId: number,
   state: GameState;
   atQuestion: number;
-  players: string[];
+  players: Player[];
   metadata: Quiz;
   autoStartNum: number
 }
@@ -103,7 +109,8 @@ export interface DataStore {
   trash: Quiz[];
   sessions: Session[];
   gameSessions: GameSession[];
-  ids: Ids
+  ids: Ids;
+  players: Player[];
 }
 
 export interface ReturnQuizList {
@@ -364,4 +371,18 @@ export function isQuizInCurrentQuizzies(quizId: number): Quiz {
   const data = load();
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
   return quiz;
+}
+
+/**
+  * Given a list of player objects
+  * Return Player name sorted in alphabetical order
+  * @param {Player[]} playerArray
+  * @returns { string[] }
+*/
+export function sortPlayerNames(playerArray: Player[]): string[] {
+  const nameList : string[] = [];
+  for (const player of playerArray) {
+    nameList.push(player.name);
+  }
+  return nameList.sort();
 }

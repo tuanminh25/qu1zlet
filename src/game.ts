@@ -7,7 +7,8 @@ import {
   save,
   checkquizId,
   ReturnGameSession,
-  ReturnQuizInfo
+  ReturnQuizInfo,
+  sortPlayerNames
 } from './helper';
 import HttpError from 'http-errors';
 
@@ -269,7 +270,7 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
   return {
     state: gameSession.state,
     atQuestion: gameSession.atQuestion,
-    players: gameSession.players,
+    players: sortPlayerNames(gameSession.players),
     metadata: metadata
   };
 }
