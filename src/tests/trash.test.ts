@@ -349,7 +349,7 @@ describe('Restore Trash', () => {
 });
 
 
-describe('Empty the trash v2', () => {
+describe.only('Empty the trash v2', () => {
   let user: { token: string };
   let quiz: { quizId: number };
   beforeEach(() => {
