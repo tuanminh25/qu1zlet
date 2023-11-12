@@ -8,6 +8,7 @@ import {
   testQuizList,
   testCreateQuizQuestion,
   testQuizInfo,
+  testEmptyTheTrash
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -347,7 +348,7 @@ describe('Restore Trash', () => {
   });
 });
 
-describe.only('Empty the trash v2', () => {
+describe('Empty the trash v2', () => {
   let user: { token: string };
   let quiz: { quizId: number };
   beforeEach(() => {

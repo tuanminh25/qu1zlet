@@ -167,23 +167,11 @@ app.get('/v1/admin/quiz/:quizid/session/:sessionid', (req: Request, res: Respons
 app.delete('/v2/admin/quiz/trash/empty', (req: Request, res: Response) => {
   const token = req.headers.token;
   let quizIds = req.query.quizIds;
-
   quizIds = String(quizIds);
-
   const numberArray = quizIds.split(',').map(function(item) {
     return parseInt(item.trim(), 10);
   });
-
   const response = emptyTrash(String(token), numberArray);
-
-  if (response.error === 'Token is empty or invalid') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Valid token is provided, but user is not an owner of this quiz' ||
-  response.error === 'Invalid Quiz ID') {
-    return res.status(403).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
   res.json(response);
 });
 // ====================================================================
@@ -436,23 +424,11 @@ app.post('/v1/admin/quiz/:quizId/question/:questionId/duplicate', (req: Request,
 app.delete('/v1/admin/quiz/trash/empty', (req: Request, res: Response) => {
   const token = req.query.token;
   let quizIds = req.query.quizIds;
-
   quizIds = String(quizIds);
-
   const numberArray = quizIds.split(',').map(function(item) {
     return parseInt(item.trim(), 10);
   });
-
   const response = emptyTrash(String(token), numberArray);
-
-  if (response.error === 'Token is empty or invalid') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Valid token is provided, but user is not an owner of this quiz' ||
-  response.error === 'Invalid Quiz ID') {
-    return res.status(403).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
   res.json(response);
 });
 
