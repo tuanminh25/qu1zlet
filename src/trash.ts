@@ -7,6 +7,7 @@ import {
   isQuizInTrash,
   isQuizInCurrentQuizzies
 } from './helper';
+import HttpError from 'http-errors';
 
 /**
  * View the quizzes that are currently in the trash for the logged in user
@@ -97,14 +98,14 @@ export function emptyTrash(token: string, removeQuizIds: Array<number>) {
   // 401
   const session = isToken(token);
   if (!session) {
-    return { error: 'Token is empty or invalid' };
+    throw HttpError(401, 'Token is empty or invalid');
   }
 
   // Invalid Quiz Id
   // 403
   for (const quizToRemove of removeQuizIds) {
     if (!isQuizInCurrentQuizzies(quizToRemove) && !isQuizInTrash(quizToRemove)) {
-      return { error: 'Invalid Quiz ID' };
+      throw HttpError(403, 'Invalid Quiz ID');
     }
   }
 
@@ -115,7 +116,7 @@ export function emptyTrash(token: string, removeQuizIds: Array<number>) {
   // 403
   for (const removeQuiz of removeQuizList) {
     if (removeQuiz.quizOwnedby !== session.userId) {
-      return { error: 'Valid token is provided, but user is not an owner of this quiz' };
+      throw HttpError(403, 'Valid token is provided, but user is not an owner of this quiz');
     }
   }
 
@@ -123,7 +124,7 @@ export function emptyTrash(token: string, removeQuizIds: Array<number>) {
   // 400
   for (const quizToRemove of removeQuizIds) {
     if (!isQuizInTrash(quizToRemove)) {
-      return { error: 'One or more of the Quiz IDs is not currently in the trash' };
+      throw HttpError(400, 'One or more of the Quiz IDs is not currently in the trash');
     }
   }
 
