@@ -15,7 +15,7 @@ export function clear(): Record<string, never> {
   data.trash.length = 0;
   data.gameSessions.length = 0;
   data.players.length = 0;
-  
+
   // id tracker
   data.ids.userId = 0;
   data.ids.quizId = 0;
