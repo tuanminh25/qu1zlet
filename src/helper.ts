@@ -32,11 +32,21 @@ export enum GameAction {
   GO_TO_FINAL_RESULTS = 'GO_TO_FINAL_RESULTS',
   END = 'END'
 }
+
+export interface PlayerStatus {
+  state: GameState,
+  numQuestions: number,
+  atQuestion: number
+}
+
 export interface Player {
   // Game session id this player belong to
-  sessionId: number;
-  name: string;
-  playerId: number;
+  sessionId: number,
+  name: string,
+  playerId: number,
+  state: GameState,
+  numQuestions: number,
+  atQuestion: number
 }
 
 export interface User {
@@ -477,4 +487,19 @@ export function generateRandomName() {
 
   // Concatenate characters and numbers to form the final string
   return randomChars + randomNumbers;
+}
+
+
+/**
+ * Update player state along with game state
+  * @param {number} playerId
+  *
+*/
+export function updatePlayerState(gameSession: GameSession) {
+  for (let player of gameSession.players) {
+    player.state = gameSession.state;
+    player.numQuestions = gameSession.metadata.numQuestions;
+    player.atQuestion = gameSession.atQuestion;
+  }
+
 }

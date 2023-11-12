@@ -584,7 +584,7 @@ describe("Status of guest player in session", () => {
   // Error cases:
   // 400 
   // If player ID does not exist
-  test.only("Player ID does not exist", () => {
+  test("Player ID does not exist", () => {
     const addPlayer = testPlayerJoin(gameSession.sessionId, "Luca");
     expect(addPlayer.status).toStrictEqual(200);
     const playerId1 = addPlayer.response.playerId;
@@ -594,14 +594,14 @@ describe("Status of guest player in session", () => {
   // Working cases:
   // 200
   // One player
-  test("1 Player ID exists", () => {
+  test.only("1 Player ID exists", () => {
     const addPlayer = testPlayerJoin(gameSession.sessionId, "Luca");
     expect(addPlayer.status).toStrictEqual(200);
     const playerId1 = addPlayer.response.playerId;
     expect(testPlayerStatus(playerId1).status).toStrictEqual(200);
     expect(testPlayerStatus(playerId1).response).toStrictEqual({
       state: "LOBBY",
-      numQuestion: expect.any(Number),
+      numQuestions: expect.any(Number),
       atQuestion: expect.any(Number),
     });
   })
@@ -615,7 +615,7 @@ describe("Status of guest player in session", () => {
     expect(testPlayerStatus(playerId1).status).toStrictEqual(200);
     expect(testPlayerStatus(playerId1).response).toStrictEqual({
       state: "LOBBY",
-      numQuestion: expect.any(Number),
+      numQuestions: expect.any(Number),
       atQuestion: expect.any(Number),
     });
 
@@ -626,7 +626,7 @@ describe("Status of guest player in session", () => {
     expect(testPlayerStatus(playerId2).status).toStrictEqual(200);
     expect(testPlayerStatus(playerId2).response).toStrictEqual({
       state: "LOBBY",
-      numQuestion: expect.any(Number),
+      numQuestions: expect.any(Number),
       atQuestion: expect.any(Number),
     });
     expect(playerId1 !== playerId2).toStrictEqual(true);
@@ -645,7 +645,7 @@ describe("Status of guest player in session", () => {
     expect(testPlayerStatus(playerId1).status).toStrictEqual(200);
     expect(testPlayerStatus(playerId1).response).toStrictEqual({
       state: "LOBBY",
-      numQuestion: expect.any(Number),
+      numQuestions: expect.any(Number),
       atQuestion: expect.any(Number),
     });
 
@@ -657,7 +657,7 @@ describe("Status of guest player in session", () => {
     expect(testPlayerStatus(playerId2).status).toStrictEqual(200);
     expect(testPlayerStatus(playerId2).response).toStrictEqual({
       state: "LOBBY",
-      numQuestion: expect.any(Number),
+      numQuestions: expect.any(Number),
       atQuestion: expect.any(Number),
     });
     expect(playerId1 !== playerId2).toStrictEqual(true);
