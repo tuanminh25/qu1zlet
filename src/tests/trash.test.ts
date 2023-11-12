@@ -7,7 +7,7 @@ import {
   testRestoreTrash,
   testQuizList,
   testCreateQuizQuestion,
-  testQuizInfo
+  testQuizInfo,
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };

@@ -2,8 +2,10 @@ import {
   isToken,
   load,
   save,
-  returnQuizList,
-  getSession
+  ReturnQuizList,
+  getSession,
+  isQuizInTrash,
+  isQuizInCurrentQuizzies
 } from './helper';
 
 /**
@@ -21,7 +23,7 @@ import {
  *  }
  * }
  */
-export function viewQuizzesInTrash(token: string): {error?: string, quizzes?: returnQuizList[]} {
+export function viewQuizzesInTrash(token: string): {error?: string, quizzes?: ReturnQuizList[]} {
   const data = load();
   const session = getSession(token);
 
@@ -84,5 +86,51 @@ export function restoreQuizInTrash(token: string, quizId: number): { error?: str
   data.quizzes.sort((a, b) => a.quizId - b.quizId);
   save(data);
 
+  return {};
+}
+
+export function emptyTrash(token: string, removeQuizIds: Array<number>) {
+  const data = load();
+
+  // Check errors
+  // Invalid token
+  // 401
+  const session = isToken(token);
+  if (!session) {
+    return { error: 'Token is empty or invalid' };
+  }
+
+  // Invalid Quiz Id
+  // 403
+  for (const quizToRemove of removeQuizIds) {
+    if (!isQuizInCurrentQuizzies(quizToRemove) && !isQuizInTrash(quizToRemove)) {
+      return { error: 'Invalid Quiz ID' };
+    }
+  }
+
+  // Find the list of quiz from the given quiz ids
+  const removeQuizList = data.trash.filter(quiz => removeQuizIds.includes(quiz.quizId));
+
+  // User is not owner of the quiz
+  // 403
+  for (const removeQuiz of removeQuizList) {
+    if (removeQuiz.quizOwnedby !== session.userId) {
+      return { error: 'Valid token is provided, but user is not an owner of this quiz' };
+    }
+  }
+
+  // One or more of the Quiz IDs is not currently in the trash
+  // 400
+  for (const quizToRemove of removeQuizIds) {
+    if (!isQuizInTrash(quizToRemove)) {
+      return { error: 'One or more of the Quiz IDs is not currently in the trash' };
+    }
+  }
+
+  for (const quiz of removeQuizList) {
+    data.trash = data.trash.filter(q => q !== quiz);
+  }
+
+  save(data);
   return {};
 }

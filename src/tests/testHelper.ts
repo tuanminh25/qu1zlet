@@ -268,6 +268,11 @@ export function testRestoreTrash(token: string, quizId: number) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
+export function testEmptyTheTrash(token: string, quizIds: Array<number>) {
+  const res = request('DELETE', SERVER_URL + '/v1/admin/quiz/trash/empty', { qs: { token: token, quizIds: quizIds } });
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
 export function testMoveQuizQuestion(token: string, quizId: number, questionId: number, newPosition: number) {
   const res = request('PUT', SERVER_URL + '/v1/admin/quiz/' + quizId + '/question/' + questionId + '/move',
     {

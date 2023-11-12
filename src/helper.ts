@@ -333,3 +333,35 @@ export function getSession(token: string): Session {
 
   return session;
 }
+
+/**
+ * Check whether given quiz id is in trash or not
+ *
+ * @param {number} quizId
+ * @return {Quiz}
+ */
+export function isQuizInTrash(quizId: number): Quiz {
+  const data = load();
+  return data.trash.find(quiz => quiz.quizId === quizId);
+}
+
+/**
+  * Given a quiz id, returns the quiz and its
+  *
+  * @param {string} quizId
+  * @returns { quiz:
+*   {
+  *     quizId,
+  *     name,
+  *     timeCreated,
+  *     timeLastEdited,
+  *     description,
+  *   }
+  * }
+  * @returns {undefined} - quizId is not a valid quiz id
+*/
+export function isQuizInCurrentQuizzies(quizId: number): Quiz {
+  const data = load();
+  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+  return quiz;
+}
