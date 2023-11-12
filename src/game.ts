@@ -316,3 +316,14 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   save(data);
   return { playerId: player.playerId };
 }
+
+export function playerStatus (playerId: number) {
+  const data = load();
+
+  // Error cases:
+  const player = data.players.find(player => player.playerId === playerId)
+  if (player === undefined) {
+    throw HttpError(400, "player ID does not exist");
+  }
+  
+}

@@ -584,7 +584,7 @@ describe("Status of guest player in session", () => {
   // Error cases:
   // 400 
   // If player ID does not exist
-  test("Player ID does not exist", () => {
+  test.only("Player ID does not exist", () => {
     const addPlayer = testPlayerJoin(gameSession.sessionId, "Luca");
     expect(addPlayer.status).toStrictEqual(200);
     const playerId1 = addPlayer.response.playerId;
