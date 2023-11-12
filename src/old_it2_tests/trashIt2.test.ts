@@ -345,7 +345,6 @@ describe('Restore Trash v1', () => {
   });
 });
 
-
 describe('Empty the trash v1', () => {
   let user: { token: string };
   let quiz: { quizId: number };

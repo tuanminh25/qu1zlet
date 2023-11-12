@@ -421,7 +421,6 @@ app.delete('/v1/admin/quiz/trash/empty', (req: Request, res: Response) => {
     return parseInt(item.trim(), 10);
   });
 
-
   const response = emptyTrash(String(token), numberArray);
 
   if (response.error === 'Token is empty or invalid') {
