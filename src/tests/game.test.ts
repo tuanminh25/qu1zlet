@@ -573,6 +573,7 @@ describe('Status of guest player in session', () => {
   let quiz: { quizId: number; };
   let gameSession: { sessionId: number};
   beforeEach(() => {
+    testClear();
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
     quiz = testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description').response;
     expect(testCreateQuizQuestion(user.token, quiz.quizId, validQuestion).status).toStrictEqual(200);
