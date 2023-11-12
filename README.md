@@ -21,6 +21,8 @@ was not rendering in a way to reflect that.
  * Added missing `401` error to `/v1/admin/quiz/{quizid}/sessions`
  * Clarified interface design can follow a similar pattern to the swagger docs
  * Clarified how to get the 10% bonus marks for typescript compliance
+* 12/11:
+ * For `POST /v2/admin/quiz/{quizid}/question` and `POST /v2/admin/quiz/{quizid}/question/{questionid}` we have removed the requirements to ensure that the file is valid by downloading it and checking its actual file type. Instead we've just replaced it with a string check of the file URL itself (with no need to fetch/request/download it). If you haven't implemented the original one, do not implement it. If you have already implemented it, you can talk to your tutor about putting it in as bonus marks.
 
 ## 🫡 0. Aims:
 
