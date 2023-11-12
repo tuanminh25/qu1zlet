@@ -33,6 +33,7 @@ export enum GameAction {
   END = 'END'
 }
 export interface Player {
+  // Game session id this player belong to
   sessionId: number;
   name: string;
   playerId: number;
@@ -385,4 +386,68 @@ export function sortPlayerNames(playerArray: Player[]): string[] {
     nameList.push(player.name);
   }
   return nameList.sort();
+}
+
+/**
+  * Given a game session id
+  * Return that game session if exist
+  * @param {number} gameSessionId
+  * @returns { GameSession }
+  * 
+*/
+export function findGameSession(gameSessionId: number) {
+  const data = load();
+  return data.gameSessions.find(gameSession => gameSession.gameSessionId === gameSessionId);
+}
+
+/**
+  * Given a game player name or id and a gameSessionId
+  * Return that player if exist
+  * @param {string} playerName
+  * @param {number} playerId
+  * 
+  * @returns { Player }
+  * 
+*/
+export function findPlayerFromGameId(gameSessionId: number, playerName?: string, playerId?: number) {
+  const gameSession = findGameSession(gameSessionId);
+  if (gameSession === undefined) {
+    throw HttpError("Wrong gameSessionId");
+  }
+
+  if (playerName !== undefined) {
+    return gameSession.players.find(player => player.name === playerName)
+  }
+
+  if (playerId !== undefined) {
+    return gameSession.players.find(player => player.playerId === playerId)
+  }
+
+  throw HttpError("Either player name or player id is wrong !");
+}
+
+/**
+ * generate a name which satisfies
+ * the structure "[5 letters][3 numbers]" (e.g. valid123, ifjru483, ofijr938)
+ *  where there are no repetitions of numbers or characters within the same name
+  * @returns { string }
+  * 
+*/
+export function generateRandomName() {
+  // Define characters and numbers
+  const characters = 'abcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+
+  // Convert the string to an array and shuffle it
+  const shuffledChar = characters.split('').sort(() => Math.random() - 0.5);
+  const shuffledNum = numbers.split('').sort(() => Math.random() - 0.5);
+
+  // Select the first 5 characters for the string
+  const randomChars = shuffledChar.slice(0, 5).join('');
+
+  // Select the last 3 numbers for the string
+  const randomNumbers = shuffledNum.sort(() => Math.random() - 0.5).slice(0, 3).join('');
+
+  // Concatenate characters and numbers to form the final string
+  return  randomChars + randomNumbers;
 }

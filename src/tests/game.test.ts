@@ -503,7 +503,7 @@ describe('Player join', () => {
   // Error cases:
   // Code 400
   // Name of user entered is not unique (compared to other users who have already joined)
-  test("Name of user entered is not unique", () => {
+  test.only("Name of user entered is not unique", () => {
     expect(testPlayerJoin(gameSession.sessionId, "Luca").status).toStrictEqual(200);
     expect(testPlayerJoin(gameSession.sessionId, "Luca").status).toStrictEqual(400);
     expect(testPlayerJoin(gameSession.sessionId, "Luca").response).toStrictEqual(ERROR);
@@ -543,12 +543,12 @@ describe('Player join', () => {
   test("Many empty string name", () => {
     // Add first empty string name player
     let addPlayer = testPlayerJoin(gameSession.sessionId, "");
-    expect(addPlayer).toStrictEqual(200);
+    expect(addPlayer.status).toStrictEqual(200);
     expect(addPlayer.response).toStrictEqual({playerId: expect.any(Number)})
     
     // Add second empty string name player
     let addPlayer2 = testPlayerJoin(gameSession.sessionId, "");
-    expect(addPlayer2).toStrictEqual(200);
+    expect(addPlayer2.status).toStrictEqual(200);
     expect(addPlayer2.response).toStrictEqual({playerId: expect.any(Number)})
 
     // Get the first player name

@@ -8,7 +8,11 @@ import {
   checkquizId,
   ReturnGameSession,
   ReturnQuizInfo,
-  sortPlayerNames
+  sortPlayerNames,
+  findGameSession,
+  findPlayerFromGameId,
+  generateRandomName,
+  Player
 } from './helper';
 import HttpError from 'http-errors';
 
@@ -273,4 +277,41 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
     players: sortPlayerNames(gameSession.players),
     metadata: metadata
   };
+}
+
+export function joinPlayer(sessionId: number, name: string): {playerId: number} {
+  // Error cases
+  // 400
+  // Name of user entered is not unique
+  if (findPlayerFromGameId(sessionId, name)) {
+    throw HttpError(400, "Name of user entered is not unique");
+  };
+
+  // Session is not in LOBBY state
+  const gameSession = findGameSession(sessionId);
+  if (gameSession.state !== "LOBBY") {
+    throw HttpError(400, "Session is not in LOBBY state");
+  }
+
+  // Check name, generate new one if neccessary
+  if (name === "") {
+    name = generateRandomName();
+    while (findPlayerFromGameId(sessionId, name)) {
+      name = generateRandomName();
+    }
+  }
+
+  const data = load();
+  data.ids.playerId++;
+  
+  const player: Player = {
+    sessionId: sessionId,
+    name: name,
+    playerId: data.ids.playerId
+  }
+
+  data.players.push(player);
+  gameSession.players.push(player);
+  save(data);
+  return {playerId: player.playerId};
 }
