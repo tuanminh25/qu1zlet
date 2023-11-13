@@ -15,7 +15,7 @@ import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
 import { viewQuizzesInTrash, restoreQuizInTrash, emptyTrash } from './trash';
-import { gameSessionStart, getGameStatus, updateGameSessionState } from './game';
+import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer } from './game';
 import { adminQuizInfoIt2 } from './old_it2_functions/quizIt2';
 
 // Set up web app
@@ -181,6 +181,12 @@ app.delete('/v2/admin/quiz/trash/empty', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.post('/v1/player/join', (req: Request, res: Response) => {
+  const sessionId = req.body.sessionId;
+  const name = req.body.name;
+  const response = joinPlayer(sessionId, name);
+  res.json(response);
+});
 // ====================================================================
 // it2 routes below
 // ====================================================================
