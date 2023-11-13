@@ -7,7 +7,7 @@ import {
   save,
   Answer,
   randomColour,
-} from './helper';
+} from './helperIt2';
 
 /**
   * Given details about a new question, add it to the specified quiz for the logged in user,
