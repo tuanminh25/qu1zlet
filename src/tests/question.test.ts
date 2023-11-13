@@ -10,7 +10,8 @@ import {
   testDupQuizQuestion,
   testCurrentPlayerInfo,
   testPlayerJoin,
-  testGameSessionStart
+  testGameSessionStart,
+  testGameSessionUpdate
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -1275,11 +1276,33 @@ describe("Current question information for a player", () => {
   });
 
   // Error cases:
-  test.only("player ID does not exist", () => {
+  test("player ID does not exist", () => {
     let player1info = testCurrentPlayerInfo(player1.playerId + 100, 1);
     expect(player1info.status).toStrictEqual(400);
     expect(player1info.response).toStrictEqual(ERROR);
+  })
+
+  test("question position is not valid for the session this player is in", () => {
+    let player1info = testCurrentPlayerInfo(player1.playerId, 6);
+    expect(player1info.status).toStrictEqual(400);
+    expect(player1info.response).toStrictEqual(ERROR);
+
+    player1info = testCurrentPlayerInfo(player1.playerId, -10);
+    expect(player1info.status).toStrictEqual(400);
+    expect(player1info.response).toStrictEqual(ERROR);
+  })
+
+  test.only("Session is not currently on this question", () => {
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "SKIP_COUNTDOWN").status).toStrictEqual(200);
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "GO_TO_ANSWER").status).toStrictEqual(200);
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);
     
+    // working on
+
+    let player1info = testCurrentPlayerInfo(player1.playerId, 1);
+    expect(player1info.status).toStrictEqual(400);
+    expect(player1info.response).toStrictEqual(ERROR);
   })
 })
 

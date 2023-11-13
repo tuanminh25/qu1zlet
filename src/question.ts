@@ -415,4 +415,23 @@ export function currentPlayerQuestionInfor(playerId: number, questionposition: n
   if (!findPlayerFromId(playerId)) {
     throw HttpError(400 , "player ID does not exist");
   }
+
+  let gameSession = undefined;
+  let findPlayer = undefined;
+  for (let game of data.gameSessions) {
+    for (let player of game.players) {
+      if (player.playerId === playerId) {
+        gameSession = game;
+        findPlayer = player;
+      }
+    }
+  }
+
+  questionposition = questionposition - 1;
+  if (questionposition >= gameSession.metadata.questions.length 
+    || questionposition < 0) {
+    throw HttpError(400 , "question position is not valid for the session this player is in");
+  }
+
+  
 }
