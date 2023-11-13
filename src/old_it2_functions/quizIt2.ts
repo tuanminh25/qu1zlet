@@ -74,7 +74,7 @@ export function adminQuizInfoIt2(token: string, quizId: number): {error: string}
  * @returns {} - updates name of quiz in datastore
  * @returns {error: string} - invalid parameters entered
 */
-export function adminQuizNameUpdate(token: string, quizId : number, name: string): Record<string, never> | { error?: string } {
+export function adminQuizNameUpdateIt2(token: string, quizId : number, name: string): Record<string, never> | { error?: string } {
   const data = load();
   const session = isToken(token);
   const quiz = data.quizzes.find(q => q.quizId === quizId);

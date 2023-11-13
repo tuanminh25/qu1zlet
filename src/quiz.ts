@@ -10,7 +10,8 @@ import {
   save,
   ReturnQuizList,
   ReturnQuizInfo,
-  getSession
+  getSession,
+  checkQuizName
 } from './helper';
 import HttpError from 'http-errors';
 
@@ -179,34 +180,24 @@ export function adminQuizInfo(token: string, quizId: number): ReturnQuizInfo {
 */
 export function adminQuizNameUpdate(token: string, quizId : number, name: string): Record<string, never> | { error?: string } {
   const data = load();
-  const session = isToken(token);
+  const session = getSession(token);
   const quiz = data.quizzes.find(q => q.quizId === quizId);
 
   // error 401
-  if (!session) {
-    return {
-      error: 'Invalid Token'
-    };
+  if (!quiz) {
+    throw HttpError(403, 'Unauthorised');
   }
 
-  // error 403
+  // Quiz ID does not refer to a quiz that this user owns
   if (quiz.quizOwnedby !== session.userId) {
-    return {
-      error: 'Unauthorised'
-    };
+    throw HttpError(403, 'Unauthorised');
   }
 
-  // error 400
-  if (isQuizName(name) === false) {
-    return {
-      error: 'Invalid Quiz Name'
-    };
-  }
   if (data.quizzes.some((quiz) => quiz.name === name)) {
-    return {
-      error: 'Quiz name already exists'
-    };
+    throw HttpError(400, 'Quiz name already exists');
   }
+
+  checkQuizName(name);
 
   // Working case
   quiz.name = name;

@@ -280,6 +280,22 @@ export function isQuizName(name: string): boolean {
 }
 
 /**
+  * Checks whether the string follows the requirements for a name.
+  *
+  * @param {string} name
+  * @returns {boolean}
+*/
+export function checkQuizName(name: string): string {
+  if (name.length < 3 || name.length > 30) {
+    throw HttpError(400, 'Invalid name length');
+  } else if (/^[\w\s]+$/.test(name) === false) {
+    throw HttpError(400, 'Name should be alphanumeric');
+  }
+
+  return name;
+}
+
+/**
   * Checks whether the string follows the requirements for a description.
   *
   * @param {string} name
