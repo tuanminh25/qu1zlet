@@ -23,7 +23,8 @@ describe('CreateQuizQuestion', () => {
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
       { answer: 'Rome', correct: false }
-    ]
+    ],
+    thumbnailUrl: 'http://example.com/image.jpg' 
   };
 
   beforeEach(() => {
@@ -210,4 +211,19 @@ describe('CreateQuizQuestion', () => {
     expect(question.response).toStrictEqual(ERROR);
     expect(question.status).toBe(403);
   });
+
+  const invalidThumbnailUrls = [
+    { description: 'empty URL', url: '' },
+    { description: 'invalid filetype', url: 'http://example.com/image.gif' },
+    { description: 'invalid protocol', url: 'ftp://example.com/image.jpg' }
+  ];
+
+  test.each(invalidThumbnailUrls)('fails with $description', ({ url }) => {
+    const invalidQuestion = { ...validQuestion, thumbnailUrl: url };
+    const question = testCreateQuizQuestion(user.token, quiz.quizId, invalidQuestion);
+    expect(question.response).toStrictEqual(ERROR);
+    expect(question.status).toBe(400);
+  });
 });
+
+testClear();
