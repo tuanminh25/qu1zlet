@@ -162,6 +162,66 @@ app.put('/v1/admin/quiz/:quizid/session/:sessionid', (req: Request, res: Respons
   res.json(response);
 });
 
+app.post('/v2/admin/quiz/:quizId/question', (req: Request, res: Response) => {
+  const { token } = req.headers;
+  const { questionBody } = req.body;
+  const { quizId } = req.params;
+  const response = adminQuestionCreate(String(token), parseInt(quizId), questionBody);
+
+  res.json(response);
+});
+
+app.get('/v1/admin/quiz/:quizid/session/:sessionid', (req: Request, res: Response) => {
+  const quizId = req.params.quizid;
+  const sessionId = req.params.sessionid;
+  const token = req.headers.token;
+  const response = getGameStatus(String(token), parseInt(quizId), parseInt(sessionId));
+
+  res.json(response);
+});
+
+// ====================================================================
+// it2 routes below
+// ====================================================================
+
+app.post('/v1/admin/auth/logout', (req: Request, res: Response) => {
+  const token = req.body.token;
+  const response = adminAuthLogout(String(token));
+
+  res.json(response);
+});
+
+app.get('/v1/admin/user/details', (req: Request, res: Response) => {
+  const token = req.query.token;
+  const response = adminUserDetails(String(token));
+
+  res.json(response);
+});
+
+app.put('/v1/admin/user/password', (req: Request, res: Response) => {
+  const { token, oldPassword, newPassword } = req.body;
+  const response = updatePassword(token, oldPassword, newPassword);
+
+  res.json(response);
+});
+
+app.post('/v1/admin/quiz', (req: Request, res: Response) => {
+  const token = req.body.token;
+  const name = req.body.name;
+  const description = req.body.description;
+
+  const response = adminQuizCreate(String(token), String(name), String(description));
+
+  res.json(response);
+});
+
+app.put('/v1/admin/user/details', (req: Request, res: Response) => {
+  const { token, email, nameFirst, nameLast } = req.body;
+  const response = adminUserUpdate(token, email, nameFirst, nameLast);
+
+  res.json(response);
+});
+
 app.get('/v1/admin/quiz/:quizid/session/:sessionid', (req: Request, res: Response) => {
   const quizId = req.params.quizid;
   const sessionId = req.params.sessionid;

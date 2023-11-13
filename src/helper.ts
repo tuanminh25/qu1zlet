@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import HttpError from 'http-errors';
+import validator from 'validator';
+import fetch from 'node-fetch';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -410,5 +412,26 @@ export function checkUrlImage(url: string) {
   const isValidExtension = validExtensions.some(extension => url.toLowerCase().endsWith(extension));
   if (!isValidExtension) {
     throw HttpError(400, 'The thumbnailUrl does not end with one of the following filetypes (case insensitive): jpg, jpeg, png');
+  }
+}
+
+// Helper function to validate URL
+export function isValidUrl(url: string) {
+  if (!validator.isURL(url)) {
+    throw HttpError(400, 'Invalid URL');
+  }
+}
+
+// Helper function to check if image is JPG or PNG
+export async function isImageJpgOrPng(url: string): Promise<void> {
+  const response = await fetch(url, { method: 'HEAD' });
+
+  if (!response.ok) {
+    throw HttpError('Network response was not ok');
+  }
+
+  const contentType = response.headers.get('content-type');
+  if (contentType !== 'image/jpeg' && contentType !== 'image/png') {
+    throw HttpError('Not an image');
   }
 }

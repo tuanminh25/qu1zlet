@@ -10,8 +10,13 @@ import {
   checkquizId,
   isQuizQuestion,
   checkUrlImage,
-  getSession
+  getSession,
+  getSession,
+  isValidUrl,
+  isImageJpgOrPng
 } from './helper';
+import HttpError from 'http-errors';
+
 import HttpError from 'http-errors';
 
 /**
@@ -35,12 +40,11 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
   const userId = getSession(token).userId;
 
   // Error 401 checking
-  if (!userId) {
-    throw HttpError(401, 'Invalid token');
-  }
+  const userId = getSession(token).userId;
 
   // Error 403 checking
   if (quiz.quizOwnedby !== userId) {
+    throw HttpError(403, 'Unauthorised');
     throw HttpError(403, 'Unauthorised');
   }
 
@@ -48,16 +52,13 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
   checkUrlImage(questionBody.thumbnailUrl);
 
   if (questionBody.question.length < 5 || questionBody.question.length > 50) {
-    throw HttpError(400, 'Question string is less than 5 characters in length or greater than 50 characters in length');
-  }
-  if (questionBody.answers.length < 2 || questionBody.answers.length > 6) {
-    throw HttpError(400, 'The question has more than 6 answers or less than 2 answers');
-  }
-  if (questionBody.duration <= 0) {
-    throw HttpError(400, 'The question duration is not a positive number');
-  }
-  if (questionBody.points < 1 || questionBody.points > 10) {
-    throw HttpError(400, 'The points awarded for the question are less than 1 or greater than 10');
+    throw HttpError(400, 'Invalid question string');
+  } else if (questionBody.answers.length < 2 || questionBody.answers.length > 6) {
+    throw HttpError(400, 'Invalid question amount');
+  } else if (questionBody.duration <= 0) {
+    throw HttpError(400, 'Invalid question duration');
+  } else if (questionBody.points < 1 || questionBody.points > 10) {
+    throw HttpError(400, 'Invalid question points');
   }
 
   const totalDuration = quiz.duration + questionBody.duration;
@@ -67,17 +68,19 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
 
   for (const answer of questionBody.answers) {
     if (answer.answer.length < 1 || answer.answer.length > 30) {
-      throw HttpError(400, 'The length of an answer is shorter than 1 character long, or longer than 30 characters long');
+      throw HttpError(400, 'Invalid answer length');
     }
   }
 
   const uniqueAnswers = new Set(questionBody.answers.map(ans => ans.answer));
   if (uniqueAnswers.size !== questionBody.answers.length) {
-    throw HttpError(400, 'Any answer strings are duplicates of one another (within the same question)');
+    throw HttpError(400, 'Duplicate question');
+  } else if (!questionBody.answers.some(ans => ans.correct)) {
+    throw HttpError(400, 'No Correct question');
   }
-  if (!questionBody.answers.some(ans => ans.correct)) {
-    throw HttpError(400, 'There are no correct answers');
-  }
+
+  isValidUrl(questionBody.thumbnailUrl);
+  await isImageJpgOrPng(questionBody.thumbnailUrl);
 
   const answers: Answer[] = [];
   for (const item of questionBody.answers) {
@@ -95,6 +98,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     duration: questionBody.duration,
     points: questionBody.points,
     answers: answers,
+    thumbnailUrl: questionBody.thumbnailUrl
     thumbnailUrl: questionBody.thumbnailUrl
   };
 
@@ -346,6 +350,7 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
   save(data);
   return {};
 }
+
 /**
  * A particular question gets duplicated to immediately after where the source question is
  *
@@ -354,7 +359,7 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
  * @param {number} questionId
  * @returns
  */
-export function dupQuizQuestion(token: string, quizId: number, questionId: number): { error?: string, newQuestionId?: number } {
+export async function dupQuizQuestion(token: string, quizId: number, questionId: number): Promise<{ error?: string; newQuestionId?: number; }> {
   // Check errors
   // Invalid token
   const session = isToken(token);
@@ -387,5 +392,5 @@ export function dupQuizQuestion(token: string, quizId: number, questionId: numbe
   // Update quiz
   quiz.timeLastEdited = generateTime();
 
-  return { newQuestionId: dup.questionId };
+  return { newQuestionId: (await dup).questionId };
 }
