@@ -17,7 +17,9 @@ export const validQuestion = {
     { answer: 'Madrid', correct: false },
     { answer: 'Paris', correct: true },
     { answer: 'Rome', correct: false }
-  ]
+  ],
+  thumbnailUrl: 'http://example.com/image.jpg'
+
 };
 
 export const footballQues = {
@@ -29,7 +31,8 @@ export const footballQues = {
     { answer: 'Barcelona', correct: false },
     { answer: 'Arsenal', correct: true },
     { answer: 'Bayern', correct: false }
-  ]
+  ],
+  thumbnailUrl: 'http://example.com/image.jpg'
 };
 
 export const leagueQues = {
@@ -41,7 +44,8 @@ export const leagueQues = {
     { answer: 'tristana', correct: false },
     { answer: 'lulu', correct: false },
     { answer: 'leblanc', correct: true }
-  ]
+  ],
+  thumbnailUrl: 'http://example.com/image.jpg'
 };
 
 export function testRegister(
@@ -127,9 +131,11 @@ export const testQuizList = (token: string) => {
 };
 
 export function testCreateQuizQuestion(token: string, quizId: number, questionBody: object) {
-  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/question`, {
-    json: {
+  const res = request('POST', `${SERVER_URL}/v2/admin/quiz/${quizId}/question`, {
+    headers: {
       token: token,
+    },
+    json: {
       questionBody: questionBody
     },
   });
