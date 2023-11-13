@@ -377,8 +377,6 @@ export function dupQuizQuestion(token: string, quizId: number, questionId: numbe
 
   // Create new instance
   const dup = adminQuestionCreate(token, quizId, question);
-  console.log(dup);
-  console.log(quiz.questions);
 
   // Update quiz
   quiz.timeLastEdited = generateTime();

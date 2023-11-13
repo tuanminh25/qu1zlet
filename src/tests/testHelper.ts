@@ -6,6 +6,7 @@ const auth = '/v1/admin/auth/';
 const authv2 = '/v2/admin/auth/';
 const userUrlv2 = '/v2/admin/user/';
 const adminQuizUrlV2 = '/v2/admin/quiz/';
+const playerV1 = '/v1/player/';
 
 export const validQuestion = {
   question: 'What is the capital of France?',
@@ -335,5 +336,51 @@ export function testGetGameStatus(token: string, quizId: number, gameSessionId: 
     },
   });
 
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testPlayerJoin(sessionId: number, name: string) {
+  const res = request('POST', SERVER_URL + playerV1 + 'join', {
+    json: {
+      sessionId: sessionId,
+      name: name
+    },
+  });
+
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testRandomName(name : string) {
+  if (name.length !== 8) {
+    return false;
+  }
+
+  const existedCharacter: Array<string> = [];
+  const existedNumber: Array<number> = [];
+
+  for (let i = 0; i < name.length; i++) {
+    // From index 0 to 5
+    if (i < 5) {
+      // Check for existed and is not a number
+      if (!existedCharacter.includes(name[i]) && isNaN(parseInt(name[i]))) {
+        existedCharacter.push(name[i]);
+      } else {
+        return false;
+      }
+    } else { // For index 5 to 7
+      // Check for existed and is a number
+      if (!existedNumber.includes(parseInt(name[i])) && !isNaN(parseInt(name[i]))) {
+        existedNumber.push(parseInt(name[i]));
+      } else {
+        return false;
+      }
+    }
+  }
+
+  return true;
+}
+
+export function testPlayerStatus(playerId: number) {
+  const res = request('GET', SERVER_URL + playerV1 + playerId);
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }

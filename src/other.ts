@@ -22,6 +22,7 @@ export function clear(): Record<string, never> {
   data.ids.questionId = 0;
   data.ids.answerId = 0;
   data.ids.gameSessionId = 0;
+  data.ids.playerId = 0;
   save(data);
 
   return {};

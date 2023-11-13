@@ -15,7 +15,7 @@ import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion } from './question';
 import { viewQuizzesInTrash, restoreQuizInTrash, emptyTrash } from './trash';
-import { gameSessionStart, getGameStatus, updateGameSessionState } from './game';
+import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
 import { adminQuizInfoIt2 } from './old_it2_functions/quizIt2';
 import { adminQuestionCreateIt2, dupQuizQuestionIt2 } from './old_it2_functions/questionIt2';
 
@@ -242,6 +242,18 @@ app.delete('/v2/admin/quiz/trash/empty', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.post('/v1/player/join', (req: Request, res: Response) => {
+  const sessionId = req.body.sessionId;
+  const name = req.body.name;
+  const response = joinPlayer(sessionId, name);
+  res.json(response);
+});
+
+app.get('/v1/player/:playerId', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const response = playerStatus(parseInt(playerId));
+  res.json(response);
+});
 // ====================================================================
 // it2 routes below
 // ====================================================================
