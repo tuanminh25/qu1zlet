@@ -13,7 +13,7 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
-import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
+import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion } from './question';
 import { viewQuizzesInTrash, restoreQuizInTrash, emptyTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState } from './game';
 import { adminQuizInfoIt2 } from './old_it2_functions/quizIt2';
