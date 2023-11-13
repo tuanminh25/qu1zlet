@@ -160,7 +160,7 @@ describe('UpdateQuizQuestion', () => {
         {
           questionId: question.questionId,
           question: 'What is the capital of Spain?',
-          thumbnailUrl: '',
+          thumbnailUrl: 'http://example.com/image.jpg',
           duration: 4,
           points: 5,
           answers: [
@@ -518,7 +518,7 @@ describe('Question Delete', () => {
           }
         ],
         duration: 21,
-        thumbnailUrl: 'http://example.com/image.jpg'
+        thumbnailUrl: ''
       }
     );
   });
@@ -543,6 +543,7 @@ describe('Move A Quiz Question', () => {
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
       { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   const validQuestion1 = {
@@ -552,7 +553,8 @@ describe('Move A Quiz Question', () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   const validQuestion2 = {
@@ -562,7 +564,8 @@ describe('Move A Quiz Question', () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   const validQuestion3 = {
@@ -572,7 +575,8 @@ describe('Move A Quiz Question', () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   const validQuestion4 = {
@@ -582,7 +586,8 @@ describe('Move A Quiz Question', () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   // Working cases
@@ -787,7 +792,8 @@ describe('Duplicate Quiz Question', () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   const validQuestion1 = {
@@ -797,7 +803,8 @@ describe('Duplicate Quiz Question', () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   const validQuestion2 = {
@@ -807,7 +814,8 @@ describe('Duplicate Quiz Question', () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   const validQuestion3 = {
@@ -817,7 +825,8 @@ describe('Duplicate Quiz Question', () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   const validQuestion4 = {
@@ -827,7 +836,8 @@ describe('Duplicate Quiz Question', () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   beforeEach(() => {
