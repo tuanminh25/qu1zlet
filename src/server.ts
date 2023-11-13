@@ -17,7 +17,7 @@ import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQu
 import { viewQuizzesInTrash, restoreQuizInTrash, emptyTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState } from './game';
 import { adminQuizInfoIt2 } from './old_it2_functions/quizIt2';
-import { adminQuestionCreateIt2 } from './old_it2_functions/questionIt2';
+import { adminQuestionCreateIt2, dupQuizQuestionIt2 } from './old_it2_functions/questionIt2';
 
 // Set up web app
 const app = express();
@@ -239,15 +239,6 @@ app.delete('/v2/admin/quiz/trash/empty', (req: Request, res: Response) => {
     return parseInt(item.trim(), 10);
   });
   const response = emptyTrash(String(token), numberArray);
-  res.json(response);
-});
-
-app.post('/v2/admin/quiz/:quizId/question', (req: Request, res: Response) => {
-  const { token } = req.headers;
-  const { questionBody } = req.body;
-  const { quizId } = req.params;
-  const response = adminQuestionCreate(String(token), parseInt(quizId), questionBody);
-
   res.json(response);
 });
 
@@ -478,7 +469,7 @@ app.post('/v1/admin/quiz/:quizId/question/:questionId/duplicate', (req: Request,
   const quizId = req.params.quizId;
   const questionId = req.params.questionId;
 
-  const response = dupQuizQuestion(String(token), parseInt(quizId), parseInt(questionId));
+  const response = dupQuizQuestionIt2(String(token), parseInt(quizId), parseInt(questionId));
 
   if (response.error === 'Token is empty or invalid') {
     return res.status(401).json(response);

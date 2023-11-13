@@ -350,7 +350,7 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
  * @param {number} questionId
  * @returns
  */
-export async function dupQuizQuestion(token: string, quizId: number, questionId: number): Promise<{ error?: string; newQuestionId?: number; }> {
+export function dupQuizQuestion(token: string, quizId: number, questionId: number): { error?: string; newQuestionId?: number; } {
   // Check errors
   // Invalid token
   const session = isToken(token);
@@ -383,5 +383,5 @@ export async function dupQuizQuestion(token: string, quizId: number, questionId:
   // Update quiz
   quiz.timeLastEdited = generateTime();
 
-  return { newQuestionId: (await dup).questionId };
+  return { newQuestionId: dup.questionId };
 }

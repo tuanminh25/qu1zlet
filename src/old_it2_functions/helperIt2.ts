@@ -3,7 +3,7 @@ import path from 'path';
 import crypto from 'crypto';
 import HttpError from 'http-errors';
 
-const filePath = path.join(__dirname, 'dataStore.json');
+const filePath = path.join(__dirname, '..', 'dataStore.json');
 
 enum Colours {
   red = 'red',
