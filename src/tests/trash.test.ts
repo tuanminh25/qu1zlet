@@ -243,7 +243,8 @@ describe('Restore Trash', () => {
         { answer: 'Barcelona', correct: false },
         { answer: 'Arsenal', correct: true },
         { answer: 'Bayern', correct: false }
-      ]
+      ],
+      thumbnailUrl: 'http://example.com/image.jpg',
     };
 
     const leagueQues = {
@@ -255,7 +256,8 @@ describe('Restore Trash', () => {
         { answer: 'tristana', correct: false },
         { answer: 'lulu', correct: false },
         { answer: 'leblanc', correct: true }
-      ]
+      ],
+      thumbnailUrl: 'http://example.com/image.jpg',
     };
 
     const ques = testCreateQuizQuestion(user.token, quiz2.quizId, footballQues).response;
@@ -277,7 +279,7 @@ describe('Restore Trash', () => {
           {
             questionId: ques.questionId,
             question: 'England teams',
-            thumbnailUrl: '',
+            thumbnailUrl: 'http://example.com/image.jpg',
             duration: 10,
             points: 5,
             answers: [
@@ -310,7 +312,7 @@ describe('Restore Trash', () => {
           {
             questionId: ques2.questionId,
             question: 'Champions',
-            thumbnailUrl: '',
+            thumbnailUrl: 'http://example.com/image.jpg',
             duration: 15,
             points: 5,
             answers: [

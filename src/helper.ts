@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import HttpError from 'http-errors';
+import validator from 'validator';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -396,6 +397,53 @@ export function sortPlayerNames(playerArray: Player[]): string[] {
     nameList.push(player.name);
   }
   return nameList.sort();
+}
+
+/**
+ * Validates the given URL for specific criteria: it should not be empty,
+ * must start with 'http://' or 'https://', and must end with '.jpg', '.jpeg', or '.png' (case insensitive).
+ * Throws an error if any of these conditions are not met.
+ *
+ * @param {string} url
+ * @throws {Error}
+ */
+export function checkUrlImage(url: string) {
+  if (!url || typeof url !== 'string' || url.length === 0) {
+    throw HttpError(400, 'ThumbnailUrl is empty');
+  }
+
+  const validProtocols = ['http://', 'https://'];
+  const isValidProtocol = validProtocols.some(protocol => url.startsWith(protocol));
+  if (!isValidProtocol) {
+    throw HttpError(400, 'The thumbnailUrl does not begin with \'http://\' or \'https://\'');
+  }
+
+  const validExtensions = ['.jpg', '.jpeg', '.png'];
+  const isValidExtension = validExtensions.some(extension => url.toLowerCase().endsWith(extension));
+  if (!isValidExtension) {
+    throw HttpError(400, 'The thumbnailUrl does not end with one of the following filetypes (case insensitive): jpg, jpeg, png');
+  }
+}
+
+// Helper function to validate URL
+export function isValidUrl(url: string) {
+  if (!validator.isURL(url)) {
+    throw HttpError(400, 'Invalid URL');
+  }
+}
+
+// Helper function to check if image is JPG or PNG
+export async function isImageJpgOrPng(url: string): Promise<void> {
+  const response = await fetch(url, { method: 'HEAD' });
+
+  if (!response.ok) {
+    throw HttpError('Network response was not ok');
+  }
+
+  const contentType = response.headers.get('content-type');
+  if (contentType !== 'image/jpeg' && contentType !== 'image/png') {
+    throw HttpError('Not an image');
+  }
 }
 
 /**
