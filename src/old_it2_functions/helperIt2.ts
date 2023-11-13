@@ -1,7 +1,5 @@
 import fs from 'fs';
 import path from 'path';
-import crypto from 'crypto';
-import HttpError from 'http-errors';
 
 const filePath = path.join(__dirname, '..', 'dataStore.json');
 
@@ -13,29 +11,6 @@ enum Colours {
   purple = 'purple',
   brown = 'brown',
   orange = 'orange'
-}
-
-export enum GameState {
-  LOBBY = 'LOBBY',
-  QUESTION_COUNTDOWN = 'QUESTION_COUNTDOWN',
-  QUESTION_OPEN = 'QUESTION_OPEN',
-  QUESTION_CLOSE = 'QUESTION_CLOSE',
-  ANSWER_SHOW = 'ANSWER_SHOW',
-  FINAL_RESULTS = 'FINAL_RESULTS',
-  END = 'END'
-}
-
-export enum GameAction {
-  NEXT_QUESTION = 'NEXT_QUESTION',
-  SKIP_COUNTDOWN = 'SKIP_COUNTDOWN',
-  GO_TO_ANSWER = 'GO_TO_ANSWER',
-  GO_TO_FINAL_RESULTS = 'GO_TO_FINAL_RESULTS',
-  END = 'END'
-}
-export interface Player {
-  sessionId: number;
-  name: string;
-  playerId: number;
 }
 
 export interface User {
@@ -60,7 +35,6 @@ export interface Question {
   questionId: number
   question: string,
   duration: number,
-  thumbnailUrl: string,
   points: number,
   answers: Answer[]
 }
@@ -74,10 +48,7 @@ export interface Quiz {
   quizOwnedby: number;
   duration: number;
   numQuestions: number;
-  questions: Question[];
-  thumbnailUrl: string;
-  activeSessions: number[];
-  inactiveSessions: number[]
+  questions: Question[]
 }
 
 export interface Session {
@@ -90,17 +61,6 @@ export interface Ids {
   quizId: number;
   questionId: number;
   answerId: number;
-  gameSessionId: number;
-  playerId: number;
-}
-
-export interface GameSession {
-  gameSessionId: number,
-  state: GameState;
-  atQuestion: number;
-  players: Player[];
-  metadata: Quiz;
-  autoStartNum: number
 }
 
 export interface DataStore {
@@ -108,17 +68,15 @@ export interface DataStore {
   quizzes: Quiz[];
   trash: Quiz[];
   sessions: Session[];
-  gameSessions: GameSession[];
-  ids: Ids;
-  players: Player[];
+  ids: Ids
 }
 
-export interface ReturnQuizList {
+export interface returnQuizList {
   name: string;
   quizId: number
 }
 
-export interface ReturnUserDetails {
+export interface returnUserDetails {
   userId: number,
   name: string,
   email: string,
@@ -126,7 +84,7 @@ export interface ReturnUserDetails {
   numFailedPasswordsSinceLastLogin: number,
 }
 
-export interface ReturnQuizInfo {
+export interface returnQuizInfo {
   quizId: number,
   name: string,
   timeCreated: number,
@@ -135,14 +93,6 @@ export interface ReturnQuizInfo {
   numQuestions: number,
   questions: Question[],
   duration: number,
-  thumbnailUrl: string
-}
-
-export interface ReturnGameSession {
-  state: GameState,
-  atQuestion: number;
-  players: string[];
-  metadata: ReturnQuizInfo;
 }
 
 export function load(): DataStore {
@@ -160,7 +110,7 @@ export function save(data: DataStore) {
   *
   * @param {string} quizId
   * @returns { quiz:
-  *   {
+*   {
   *     quizId,
   *     name,
   *     timeCreated,
@@ -173,9 +123,6 @@ export function save(data: DataStore) {
 export function checkquizId(quizId: number): Quiz {
   const data = load();
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
-  if (!quiz) {
-    throw HttpError(403, 'Quiz does not exist');
-  }
   return quiz;
 }
 
@@ -241,6 +188,7 @@ export function checkEmail(email: string): User {
   const data = load();
   return data.users.find((user) => user.email === email);
 }
+
 /**
  * Given a token, check if it is valid
  * @param {string} token
@@ -314,75 +262,4 @@ export function isQuizQuestion(questionId: number, quizId: number) : Question {
   const quiz = checkquizId(quizId);
   const question = quiz.questions.find((q) => q.questionId === questionId);
   return question;
-}
-/**
- * Hash password for security
- *
- * @param {string} plaintext
- */
-export function passwordHash(plaintext: string) {
-  return crypto.createHash('sha256').update(plaintext).digest('hex');
-}
-
-/**
- * Gets the sessionId given token
- *
- * @param {string} token
- * @return {Session}
- */
-export function getSession(token: string): Session {
-  const data = load();
-  const session = data.sessions.find((session) => session.sessionId === token);
-
-  if (!session) {
-    throw HttpError(401, 'Invalid token');
-  }
-
-  return session;
-}
-
-/**
- * Check whether given quiz id is in trash or not
- *
- * @param {number} quizId
- * @return {Quiz}
- */
-export function isQuizInTrash(quizId: number): Quiz {
-  const data = load();
-  return data.trash.find(quiz => quiz.quizId === quizId);
-}
-
-/**
-  * Given a quiz id, returns the quiz and its
-  *
-  * @param {string} quizId
-  * @returns { quiz:
-*   {
-  *     quizId,
-  *     name,
-  *     timeCreated,
-  *     timeLastEdited,
-  *     description,
-  *   }
-  * }
-  * @returns {undefined} - quizId is not a valid quiz id
-*/
-export function isQuizInCurrentQuizzies(quizId: number): Quiz {
-  const data = load();
-  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
-  return quiz;
-}
-
-/**
-  * Given a list of player objects
-  * Return Player name sorted in alphabetical order
-  * @param {Player[]} playerArray
-  * @returns { string[] }
-*/
-export function sortPlayerNames(playerArray: Player[]): string[] {
-  const nameList : string[] = [];
-  for (const player of playerArray) {
-    nameList.push(player.name);
-  }
-  return nameList.sort();
 }
