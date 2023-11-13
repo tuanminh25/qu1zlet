@@ -24,7 +24,7 @@ describe('CreateQuizQuestion', () => {
       { answer: 'Paris', correct: true },
       { answer: 'Rome', correct: false }
     ],
-    thumbnailUrl: 'http://example.com/image.jpg' 
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   beforeEach(() => {

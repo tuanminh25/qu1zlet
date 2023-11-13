@@ -399,7 +399,7 @@ describe('Get game status', () => {
             questionId: ques.questionId,
             question: validQuestion.question,
             duration: 4,
-            thumbnailUrl: '',
+            thumbnailUrl: 'http://example.com/image.jpg',
             points: 5,
             answers: [
               { answer: 'Berlin', correct: false, colour: expect.any(String), answerId: expect.any(Number) },

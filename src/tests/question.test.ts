@@ -29,7 +29,8 @@ describe('UpdateQuizQuestion', () => {
       { answer: 'Madrid', correct: true },
       { answer: 'Paris', correct: false },
       { answer: 'Rome', correct: false }
-    ]
+    ],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   const footballQues = {
@@ -41,7 +42,8 @@ describe('UpdateQuizQuestion', () => {
       { answer: 'Barcelona', correct: false },
       { answer: 'Arsenal', correct: true },
       { answer: 'Bayern', correct: false }
-    ]
+    ],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   const leagueQues = {
@@ -53,7 +55,8 @@ describe('UpdateQuizQuestion', () => {
       { answer: 'tristana', correct: false },
       { answer: 'lulu', correct: false },
       { answer: 'leblanc', correct: true }
-    ]
+    ],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   beforeEach(() => {
@@ -209,7 +212,7 @@ describe('UpdateQuizQuestion', () => {
         {
           questionId: question.questionId,
           question: 'England teams',
-          thumbnailUrl: '',
+          thumbnailUrl: 'http://example.com/image.jpg',
           duration: 10,
           points: 5,
           answers: [
@@ -266,7 +269,7 @@ describe('UpdateQuizQuestion', () => {
         {
           questionId: question.questionId,
           question: 'What is the capital of Spain?',
-          thumbnailUrl: '',
+          thumbnailUrl: 'http://example.com/image.jpg',
           duration: 4,
           points: 5,
           answers: [
@@ -299,7 +302,7 @@ describe('UpdateQuizQuestion', () => {
         {
           questionId: question2.questionId,
           question: 'Champions',
-          thumbnailUrl: '',
+          thumbnailUrl: 'http://example.com/image.jpg',
           duration: 15,
           points: 5,
           answers: [
@@ -349,7 +352,8 @@ describe('Question Delete', () => {
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
       { answer: 'Rome', correct: false }
-    ]
+    ],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
   const footballQues = {
     question: 'England teams',
@@ -360,7 +364,8 @@ describe('Question Delete', () => {
       { answer: 'Barcelona', correct: false },
       { answer: 'Arsenal', correct: true },
       { answer: 'Bayern', correct: false }
-    ]
+    ],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
   const leagueQues = {
     question: 'Champions',
@@ -371,7 +376,8 @@ describe('Question Delete', () => {
       { answer: 'tristana', correct: false },
       { answer: 'lulu', correct: false },
       { answer: 'leblanc', correct: true }
-    ]
+    ],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   beforeEach(() => {
@@ -447,7 +453,7 @@ describe('Question Delete', () => {
           {
             questionId: ques.questionId,
             question: 'What is the capital of France?',
-            thumbnailUrl: '',
+            thumbnailUrl: 'http://example.com/image.jpg',
             duration: 6,
             points: 5,
             answers: [
@@ -480,7 +486,7 @@ describe('Question Delete', () => {
           {
             questionId: ques3.questionId,
             question: 'Champions',
-            thumbnailUrl: '',
+            thumbnailUrl: 'http://example.com/image.jpg',
             duration: 15,
             points: 5,
             answers: [
@@ -512,7 +518,7 @@ describe('Question Delete', () => {
           }
         ],
         duration: 21,
-        thumbnailUrl: ''
+        thumbnailUrl: 'http://example.com/image.jpg'
       }
     );
   });
@@ -536,7 +542,7 @@ describe('Move A Quiz Question', () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
   };
 
   const validQuestion1 = {

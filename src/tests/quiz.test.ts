@@ -148,7 +148,8 @@ describe('adminQuizInfo', () => {
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
       { answer: 'Rome', correct: false }
-    ]
+    ],
+    thumbnailUrl: 'http://example.com/image.jpg'
   };
 
   beforeEach(() => {
@@ -171,7 +172,7 @@ describe('adminQuizInfo', () => {
         {
           questionId: question.questionId,
           question: 'What is the capital of France?',
-          thumbnailUrl: '',
+          thumbnailUrl: 'http://example.com/image.jpg',
           duration: 4,
           points: 5,
           answers: [
@@ -219,7 +220,8 @@ describe('adminQuizInfo', () => {
         { answer: 'Peymar', correct: false },
         { answer: 'Paaland', correct: false },
         { answer: 'Darwizzy', correct: true },
-      ]
+      ],
+      thumbnailUrl: 'http://example.com/image.jpg'
     };
     const validQuestion3 = {
       question: 'XDhenlo',
@@ -229,7 +231,8 @@ describe('adminQuizInfo', () => {
         { answer: 'Nopelol', correct: false },
         { answer: 'Yes yeah', correct: false },
         { answer: 'Darwizzy', correct: true },
-      ]
+      ],
+      thumbnailUrl: 'http://example.com/image.jpg'
     };
     const question = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion).response;
     const question2 = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion2).response;
@@ -246,7 +249,7 @@ describe('adminQuizInfo', () => {
         {
           questionId: question.questionId,
           question: 'What is the capital of France?',
-          thumbnailUrl: '',
+          thumbnailUrl: 'http://example.com/image.jpg',
           duration: 4,
           points: 5,
           answers: [
@@ -279,7 +282,7 @@ describe('adminQuizInfo', () => {
         {
           questionId: question2.questionId,
           question: 'Who is the Goat',
-          thumbnailUrl: '',
+          thumbnailUrl: 'http://example.com/image.jpg',
           duration: 10,
           points: 9,
           answers: [
@@ -318,7 +321,7 @@ describe('adminQuizInfo', () => {
         {
           questionId: question3.questionId,
           question: 'XDhenlo',
-          thumbnailUrl: '',
+          thumbnailUrl: 'http://example.com/image.jpg',
           duration: 10,
           points: 9,
           answers: [

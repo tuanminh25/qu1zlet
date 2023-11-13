@@ -17,6 +17,7 @@ import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQu
 import { viewQuizzesInTrash, restoreQuizInTrash, emptyTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState } from './game';
 import { adminQuizInfoIt2 } from './old_it2_functions/quizIt2';
+import { adminQuestionCreateIt2 } from './old_it2_functions/questionIt2';
 
 // Set up web app
 const app = express();
@@ -181,6 +182,15 @@ app.delete('/v2/admin/quiz/trash/empty', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.post('/v2/admin/quiz/:quizId/question', (req: Request, res: Response) => {
+  const { token } = req.headers;
+  const { questionBody } = req.body;
+  const { quizId } = req.params;
+  const response = adminQuestionCreate(String(token), parseInt(quizId), questionBody);
+
+  res.json(response);
+});
+
 // ====================================================================
 // it2 routes below
 // ====================================================================
@@ -280,7 +290,7 @@ app.post('/v1/admin/quiz/:quizId/restore', (req: Request, res: Response) => {
 app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   const { token, questionBody } = req.body;
   const { quizId } = req.params;
-  const response = adminQuestionCreate(token, parseInt(quizId), questionBody);
+  const response = adminQuestionCreateIt2(token, parseInt(quizId), questionBody);
 
   if (response.error === 'Invalid token') {
     return res.status(401).json(response);
