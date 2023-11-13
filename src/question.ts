@@ -13,7 +13,7 @@ import {
   getSession,
   findPlayerFromId
 } from './helper';
-
+import HttpError from 'http-errors';
 /**
   * Given details about a new question, add it to the specified quiz for the logged in user,
   * and then returns a questionId.
