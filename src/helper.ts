@@ -3,7 +3,6 @@ import path from 'path';
 import crypto from 'crypto';
 import HttpError from 'http-errors';
 import validator from 'validator';
-import fetch from 'node-fetch';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 

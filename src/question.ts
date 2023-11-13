@@ -11,11 +11,7 @@ import {
   isQuizQuestion,
   checkUrlImage,
   getSession,
-  getSession,
-  isValidUrl,
-  isImageJpgOrPng
 } from './helper';
-import HttpError from 'http-errors';
 
 import HttpError from 'http-errors';
 
@@ -37,14 +33,11 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
 
-  const userId = getSession(token).userId;
-
   // Error 401 checking
   const userId = getSession(token).userId;
 
   // Error 403 checking
   if (quiz.quizOwnedby !== userId) {
-    throw HttpError(403, 'Unauthorised');
     throw HttpError(403, 'Unauthorised');
   }
 
@@ -79,8 +72,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     throw HttpError(400, 'No Correct question');
   }
 
-  isValidUrl(questionBody.thumbnailUrl);
-  await isImageJpgOrPng(questionBody.thumbnailUrl);
+  checkUrlImage(questionBody.thumbnailUrl);
 
   const answers: Answer[] = [];
   for (const item of questionBody.answers) {
@@ -98,7 +90,6 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     duration: questionBody.duration,
     points: questionBody.points,
     answers: answers,
-    thumbnailUrl: questionBody.thumbnailUrl
     thumbnailUrl: questionBody.thumbnailUrl
   };
 
