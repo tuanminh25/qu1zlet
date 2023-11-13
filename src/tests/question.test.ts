@@ -7,7 +7,10 @@ import {
   testQuizInfo,
   testQuestionDelete,
   testMoveQuizQuestion,
-  testDupQuizQuestion
+  testDupQuizQuestion,
+  testCurrentPlayerInfo,
+  testPlayerJoin,
+  testGameSessionStart
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
@@ -1185,5 +1188,99 @@ describe('Duplicate Quiz Question', () => {
     expect(res.status).toStrictEqual(403);
   });
 });
+
+describe("Current question information for a player", () => {
+  let user1: { token: string };
+  let user2: { token: string };
+  let quiz1: { quizId: number };
+
+  let question0: {questionId: number};
+  let question1: {questionId: number};
+  let question2: {questionId: number};
+  let question3: {questionId: number};
+  let question4: {questionId: number};
+
+  let player1: {playerId: number};
+  let player2: {playerId: number};
+
+  let game1: { sessionId: number};
+  let game2: { sessionId: number};
+
+
+  const validQuestion0 = {
+    question: 'What is the capital of France?',
+    duration: 4,
+    points: 5,
+    answers: [{ answer: 'Berlin', correct: false },
+      { answer: 'Madrid', correct: false },
+      { answer: 'Paris', correct: true },
+      { answer: 'Rome', correct: false }]
+  };
+
+  const validQuestion1 = {
+    question: 'What is the capital of Spain?',
+    duration: 4,
+    points: 5,
+    answers: [{ answer: 'Berlin', correct: false },
+      { answer: 'Madrid', correct: false },
+      { answer: 'Paris', correct: true },
+      { answer: 'Rome', correct: false }]
+  };
+
+  const validQuestion2 = {
+    question: 'What is the capital of Brazil?',
+    duration: 4,
+    points: 5,
+    answers: [{ answer: 'Berlin', correct: false },
+      { answer: 'Madrid', correct: false },
+      { answer: 'Paris', correct: true },
+      { answer: 'Rome', correct: false }]
+  };
+
+  const validQuestion3 = {
+    question: 'What is the capital of Vietnam?',
+    duration: 4,
+    points: 5,
+    answers: [{ answer: 'Berlin', correct: false },
+      { answer: 'Madrid', correct: false },
+      { answer: 'Paris', correct: true },
+      { answer: 'Rome', correct: false }]
+  };
+
+  const validQuestion4 = {
+    question: 'What is the capital of China?',
+    duration: 4,
+    points: 5,
+    answers: [{ answer: 'Berlin', correct: false },
+      { answer: 'Madrid', correct: false },
+      { answer: 'Paris', correct: true },
+      { answer: 'Rome', correct: false }]
+  };
+
+  beforeEach(() => {
+    testClear();
+    // First person
+    user1 = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
+    user2 = testRegister('jayden.smith@unsw.edu.au', 'password123', 'nameFirst', 'nameLast').response;
+
+    quiz1 = testCreateQuiz(user1.token, 'Quiz by Hayden', '').response;
+    question0 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion0).response;
+    question1 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion1).response;
+    question2 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion2).response;
+    question3 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion3).response;
+    question4 = testCreateQuizQuestion(user1.token, quiz1.quizId, validQuestion4).response;
+
+    game1 = testGameSessionStart(user1.token, quiz1.quizId, 10).response;
+    player1 = testPlayerJoin(game1.sessionId, "Luca").response;
+  });
+
+  // Error cases:
+  test("player ID does not exist", () => {
+    let player1info = testCurrentPlayerInfo(player1.playerId + 100, 1);
+    expect(player1info.status).toStrictEqual(400);
+    expect(player1info.response).toStrictEqual(ERROR);
+    
+  })
+})
 
 testClear();
