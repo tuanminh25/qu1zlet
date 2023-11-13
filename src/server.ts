@@ -12,11 +12,11 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
+import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion } from './question';
 import { viewQuizzesInTrash, restoreQuizInTrash, emptyTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
-import { adminQuizInfoIt2 } from './old_it2_functions/quizIt2';
+import { adminQuizInfoIt2, adminQuizNameUpdate } from './old_it2_functions/quizIt2';
 import { adminQuestionCreateIt2, dupQuizQuestionIt2 } from './old_it2_functions/questionIt2';
 
 // Set up web app
