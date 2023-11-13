@@ -8,8 +8,10 @@ import {
   Answer,
   randomColour,
   checkquizId,
-  isQuizQuestion
+  isQuizQuestion,
+  findPlayerFromId
 } from './helper';
+import HttpError from 'http-errors';
 
 /**
   * Given details about a new question, add it to the specified quiz for the logged in user,
@@ -356,6 +358,7 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
   save(data);
   return {};
 }
+
 /**
  * A particular question gets duplicated to immediately after where the source question is
  *
@@ -396,4 +399,20 @@ export function dupQuizQuestion(token: string, quizId: number, questionId: numbe
   quiz.timeLastEdited = generateTime();
 
   return { newQuestionId: dup.questionId };
+}
+
+/**
+ * A particular question gets duplicated to immediately after where the source question is
+ *
+ * @param token
+ * @param {number} playerId
+ * @param {number} questionposition
+ * @returns {}
+ */
+export function currentPlayerQuestionInfor(playerId: number, questionposition: number) {
+  const data = load();
+
+  if (!findPlayerFromId(playerId)) {
+    throw HttpError(400 , "player ID does not exist");
+  }
 }

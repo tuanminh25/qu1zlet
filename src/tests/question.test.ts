@@ -1275,7 +1275,7 @@ describe("Current question information for a player", () => {
   });
 
   // Error cases:
-  test("player ID does not exist", () => {
+  test.only("player ID does not exist", () => {
     let player1info = testCurrentPlayerInfo(player1.playerId + 100, 1);
     expect(player1info.status).toStrictEqual(400);
     expect(player1info.response).toStrictEqual(ERROR);

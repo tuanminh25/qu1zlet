@@ -13,7 +13,7 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
-import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
+import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor } from './question';
 import { viewQuizzesInTrash, restoreQuizInTrash, emptyTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
 import { adminQuizInfoIt2 } from './old_it2_functions/quizIt2';
@@ -191,6 +191,13 @@ app.post('/v1/player/join', (req: Request, res: Response) => {
 app.get('/v1/player/:playerId', (req: Request, res: Response) => {
   const playerId = req.params.playerId;
   const response = playerStatus(parseInt(playerId));
+  res.json(response);
+});
+
+app.get('/v1/player/:playerId/question/:questionposition', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const questionposition = req.params.questionposition;
+  const response = currentPlayerQuestionInfor(parseInt(playerId), parseInt(questionposition));
   res.json(response);
 });
 // ====================================================================

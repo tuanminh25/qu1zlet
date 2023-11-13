@@ -509,3 +509,14 @@ export function updatePlayerState(gameSession: GameSession, data: DataStore) {
     }
   }
 }
+
+/**
+ * find player from player id
+  * @param {number} playerId
+  * @return {player}
+  *
+*/
+export function findPlayerFromId(playerId: number) {
+  const data = load();
+  return data.players.find(player => player.playerId === playerId);
+}
