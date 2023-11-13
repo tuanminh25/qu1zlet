@@ -224,6 +224,26 @@ describe('CreateQuizQuestion', () => {
     expect(question.response).toStrictEqual(ERROR);
     expect(question.status).toBe(400);
   });
+
+  const pointsTestCases = [
+    { description: 'points are 0', points: 0, shouldPass: false },
+    { description: 'points are -10', points: -10, shouldPass: false },
+    { description: 'points are 60', points: 60, shouldPass: false },
+    { description: 'points are 5', points: 5, shouldPass: true },
+  ];
+
+  test.each(pointsTestCases)('fails when $description', ({ points, shouldPass }) => {
+    const questionBody = { ...validQuestion, points };
+    const questionResponse = testCreateQuizQuestion(user.token, quiz.quizId, questionBody);
+
+    if (shouldPass) {
+      expect(questionResponse.response).toHaveProperty('questionId');
+      expect(questionResponse.status).toBe(200);
+    } else {
+      expect(questionResponse.response).toStrictEqual(ERROR);
+      expect(questionResponse.status).toBe(400);
+    }
+  });
 });
 
 testClear();
