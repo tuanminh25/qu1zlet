@@ -11,7 +11,8 @@ import {
   ReturnQuizList,
   ReturnQuizInfo,
   getSession,
-  checkQuizName
+  checkQuizName,
+  checkUrlImage
 } from './helper';
 import HttpError from 'http-errors';
 
@@ -297,6 +298,40 @@ export function adminQuizDescriptionUpdate (token: string, quizId: number, descr
 
   // Working case
   quiz.description = description;
+  quiz.timeLastEdited = generateTime();
+  save(data);
+  return {};
+}
+
+/**
+ * Update quiz Tthumbnail
+ *
+ * @param {string} token - unique user identifier
+ * @param {number} quizId - unique quiz identifier
+ * @param {string} imgUrl - thumbnail
+ *
+ * @returns {error: string}
+ * @returns {}
+ *
+ */
+export function adminThumbnailUpdate(token: string, quizId: number, imgUrl: string) {
+  const data = load();
+  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+
+  const session = getSession(token);
+  checkUrlImage(imgUrl);
+
+  if (!quiz) {
+    throw HttpError(403, 'Unauthorised');
+  }
+
+  // Quiz ID does not refer to a quiz that this user owns
+  if (quiz.quizOwnedby !== session.userId) {
+    throw HttpError(403, 'Unauthorised');
+  }
+
+  // Working case
+  quiz.thumbnailUrl = imgUrl;
   quiz.timeLastEdited = generateTime();
   save(data);
   return {};
