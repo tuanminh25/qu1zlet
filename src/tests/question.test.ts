@@ -1028,9 +1028,9 @@ describe("Current question information for a player", () => {
     duration: 4,
     points: 5,
     answers: [{ answer: 'Berlin', correct: false },
-      { answer: 'Madrid', correct: false },
-      { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }],
+      { answer: 'Madrid', correct: false},
+      { answer: 'Paris', correct: true},
+      { answer: 'Rome', correct: false}],
     thumbnailUrl: 'http://example.com/image.jpg'
 
   };
@@ -1039,10 +1039,10 @@ describe("Current question information for a player", () => {
     question: 'What is the capital of Spain?',
     duration: 4,
     points: 5,
-    answers: [{ answer: 'Berlin', correct: false },
-      { answer: 'Madrid', correct: false },
-      { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }],
+    answers: [{ answer: 'Berlin', correct: false},
+      { answer: 'Madrid', correct: true},
+      { answer: 'Paris', correct: false},
+      { answer: 'Rome', correct: false}],
     thumbnailUrl: 'http://example.com/image.jpg'
 
   };
@@ -1051,34 +1051,34 @@ describe("Current question information for a player", () => {
     question: 'What is the capital of Brazil?',
     duration: 4,
     points: 5,
-    answers: [{ answer: 'Berlin', correct: false },
-      { answer: 'Madrid', correct: false },
-      { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }],
+    answers: [{ answer: 'Berlin', correct: false},
+      { answer: 'Madrid', correct: false},
+      { answer: 'Paris', correct: true},
+      { answer: 'Rome', correct: false}],
     thumbnailUrl: 'http://example.com/image.jpg'
 
   };
 
   const validQuestion3 = {
-    question: 'What is the capital of Vietnam?',
+    question: 'What is the capital of Germany?',
     duration: 4,
     points: 5,
-    answers: [{ answer: 'Berlin', correct: false },
-      { answer: 'Madrid', correct: false },
-      { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }],
+    answers: [{ answer: 'Berlin', correct: true},
+      { answer: 'Madrid', correct: false},
+      { answer: 'Paris', correct: false},
+      { answer: 'Rome', correct: false}],
     thumbnailUrl: 'http://example.com/image.jpg'
 
   };
 
   const validQuestion4 = {
-    question: 'What is the capital of China?',
+    question: 'What is the capital of Italy?',
     duration: 4,
     points: 5,
-    answers: [{ answer: 'Berlin', correct: false },
-      { answer: 'Madrid', correct: false },
-      { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }],
+    answers: [{ answer: 'Berlin', correct: false},
+      { answer: 'Madrid', correct: false},
+      { answer: 'Paris', correct: false},
+      { answer: 'Rome', correct: true}],
     thumbnailUrl: 'http://example.com/image.jpg'
 
   };
@@ -1151,6 +1151,28 @@ describe("Current question information for a player", () => {
     expect(player1info.response).toStrictEqual(ERROR);
   })
 
+
+  // Working cases
+  test("In the first question", () => {
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);    
+    let player1info = testCurrentPlayerInfo(player1.playerId, 1);
+    expect(player1info.status).toStrictEqual(200);
+    expect(player1info.response).toStrictEqual({
+      questionId: expect.any(Number),
+      question: validQuestion0.question,
+      duration: validQuestion0.duration,
+      thumbnailUrl: validQuestion0.thumbnailUrl,
+      points: validQuestion0.points,
+      answers: [{ answer: 'Berlin', colour: expect.any(String), answerId: expect.any(Number) },
+      { answer: 'Madrid', colour: expect.any(String), answerId: expect.any(Number)  },
+      { answer: 'Paris', colour: expect.any(String), answerId: expect.any(Number)  },
+      { answer: 'Rome', colour: expect.any(String), answerId: expect.any(Number)  }],
+    });
+
+
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, 'END').status).toStrictEqual(200);
+
+  })
 })
 
 testClear();

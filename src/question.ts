@@ -11,7 +11,7 @@ import {
   getSession,
   findPlayerFromId
 } from './helper';
-import { Question, Answer } from './interface';
+import { Question, Answer, ReturnAnswer, ReturnQuestion } from './interface';
 import HttpError from 'http-errors';
 /**
   * Given details about a new question, add it to the specified quiz for the logged in user,
@@ -427,4 +427,22 @@ export function currentPlayerQuestionInfor(playerId: number, questionposition: n
     throw HttpError(400 , "session is not currently on this question");
   }
   
+  const findQuestion = gameSession.metadata.questions[questionposition];
+  const returnAnswer: ReturnAnswer[] = [];
+  for (let eachAnswer of findQuestion.answers) {
+    returnAnswer.push({
+      answerId: eachAnswer.answerId,
+      answer: eachAnswer.answer,
+      colour: eachAnswer.colour
+    })
+  }
+  const returnQuestion: ReturnQuestion = {
+    questionId: findQuestion.questionId,
+    question: findQuestion.question,
+    duration: findQuestion.duration,
+    thumbnailUrl: findQuestion.thumbnailUrl,
+    points: findQuestion.points,
+    answers: returnAnswer,
+  }
+  return returnQuestion;
 }
