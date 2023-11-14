@@ -21,6 +21,11 @@ was not rendering in a way to reflect that.
  * Added missing `401` error to `/v1/admin/quiz/{quizid}/sessions`
  * Clarified interface design can follow a similar pattern to the swagger docs
  * Clarified how to get the 10% bonus marks for typescript compliance
+* 09/11: 
+ * Clarified that question position starts at 1
+ * Clarified the maximum sessions not in END state is for a particular quiz (only clarified for the benefit of setting a standard, but that will not be tested this term); 
+ * Removed "SKIP_COUNTDOWN" from State enum
+* 10/11: Changed `403` error description for sessions from `Valid token is provided, but user is not authorised to view this session` to `Valid token is provided, but user is not an owner of this quiz`
 * 12/11:
  * For `POST /v2/admin/quiz/{quizid}/question` and `POST /v2/admin/quiz/{quizid}/question/{questionid}` we have removed the requirements to ensure that the file is valid by downloading it and checking its actual file type. Instead we've just replaced it with a string check of the file URL itself (with no need to fetch/request/download it). If you haven't implemented the original one, do not implement it. If you have already implemented it, you can talk to your tutor about putting it in as bonus marks.
 
@@ -1197,7 +1202,7 @@ In this iteration, you are expected to:
     
     * You must comply with instructions laid out in `5.3`
 
-    * Ensure that you correctly manage sessions (tokens) and passwords in terms of authentication and authorisation, as per requirements laid out in section 6.9.
+    * Ensure that you correctly manage sessions (tokens) and passwords in terms of authentication and authorisation, as per requirements laid out in section `5.8`.
 
 3. Continue demonstrating effective project management and git usage.
 
