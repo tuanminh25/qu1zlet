@@ -353,26 +353,23 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
 export function dupQuizQuestion(token: string, quizId: number, questionId: number): { error?: string; newQuestionId?: number; } {
   // Check errors
   // Invalid token
-  const session = isToken(token);
-  if (!session) {
-    return { error: 'Token is empty or invalid' };
-  }
+  const session = getSession(token);
 
   // Non-existent quiz
   const quiz = checkquizId(quizId);
-  if (quiz === undefined) {
-    return { error: 'Valid token is provided, quiz does not exist: ' + quizId };
+  if (!quiz) {
+    throw HttpError(403, 'Valid token is provided, quiz does not exist');
   }
 
   // User is not owner of the quiz
   if (session.userId !== quiz.quizOwnedby) {
-    return { error: 'Valid token is provided, but user is not an owner of this quiz' };
+    throw HttpError(403, 'Valid token is provided, but user is not an owner of this quiz');
   }
 
   // Question Id does not belong to this quiz
   const question = isQuizQuestion(questionId, quizId);
   if (!question) {
-    return { error: 'Question Id does not refer to a valid question within this quiz: ' + questionId };
+    throw HttpError(400, 'Question Id does not refer to a valid question within this quiz');
   }
 
   // Create new instance
