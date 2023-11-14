@@ -393,42 +393,38 @@ export function dupQuizQuestion(token: string, quizId: number, questionId: numbe
  * @returns {}
  */
 export function currentPlayerQuestionInfor(playerId: number, questionposition: number) {
-  const data = load();
-
   if (!findPlayerFromId(playerId)) {
-    throw HttpError(400 , "player ID does not exist");
+    throw HttpError(400, 'player ID does not exist');
   }
 
-  let gameSessionId = isPLayer(playerId);
-  let gameSession = findGameSession(gameSessionId);
-
+  const gameSessionId = isPLayer(playerId);
+  const gameSession = findGameSession(gameSessionId);
 
   // question position is not valid for the session this player is in
   questionposition = questionposition - 1;
-  if (questionposition >= gameSession.metadata.questions.length 
-    || questionposition < 0) {
-    throw HttpError(400 , "question position is not valid for the session this player is in");
+  if (questionposition >= gameSession.metadata.questions.length ||
+    questionposition < 0) {
+    throw HttpError(400, 'question position is not valid for the session this player is in');
   }
 
   // Session is in LOBBY or END state
-  if (gameSession.state === "END" || gameSession.state === "LOBBY") {
-    throw HttpError(400 , "Session is in LOBBY or END state");
-
+  if (gameSession.state === 'END' || gameSession.state === 'LOBBY') {
+    throw HttpError(400, 'Session is in LOBBY or END state');
   }
 
   // session is not currently on this question
   if (gameSession.atQuestion !== questionposition + 1) {
-    throw HttpError(400 , "session is not currently on this question");
+    throw HttpError(400, 'session is not currently on this question');
   }
-  
+
   const findQuestion = gameSession.metadata.questions[questionposition];
   const returnAnswer: ReturnAnswer[] = [];
-  for (let eachAnswer of findQuestion.answers) {
+  for (const eachAnswer of findQuestion.answers) {
     returnAnswer.push({
       answerId: eachAnswer.answerId,
       answer: eachAnswer.answer,
       colour: eachAnswer.colour
-    })
+    });
   }
   const returnQuestion: ReturnQuestion = {
     questionId: findQuestion.questionId,
@@ -437,6 +433,6 @@ export function currentPlayerQuestionInfor(playerId: number, questionposition: n
     thumbnailUrl: findQuestion.thumbnailUrl,
     points: findQuestion.points,
     answers: returnAnswer,
-  }
+  };
   return returnQuestion;
 }
