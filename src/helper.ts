@@ -413,23 +413,13 @@ export function generateRandomName() {
   return randomChars + randomNumbers;
 }
 
-/**
- * Update player state along with game state
-  * @param {number} playerId
-  *
-*/
-export function updatePlayerState(gameSession: GameSession, data: DataStore) {
-  for (const player of gameSession.players) {
-    player.state = gameSession.state;
-    player.numQuestions = gameSession.metadata.numQuestions;
-    player.atQuestion = gameSession.atQuestion;
+export function isPLayer(playerId: number): number {
+  const data = load();
+  const gameSessionId = data.players.find((p) => p.playerId === playerId).sessionId;
+
+  if (!gameSessionId) {
+    throw HttpError(400, 'Player ID does not exist');
   }
 
-  for (const player of data.players) {
-    if (player.sessionId === gameSession.gameSessionId) {
-      player.state = gameSession.state;
-      player.numQuestions = gameSession.metadata.numQuestions;
-      player.atQuestion = gameSession.atQuestion;
-    }
-  }
+  return gameSessionId;
 }
