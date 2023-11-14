@@ -145,3 +145,18 @@ atQuestion: number;
 players: string[];
 metadata: ReturnQuizInfo;
 }
+
+export interface ReturnAnswer {
+  answerId: number;
+  answer: string;
+  colour: string;
+}
+
+export interface ReturnQuestion {
+  questionId: number
+  question: string,
+  duration: number,
+  thumbnailUrl: string,
+  points: number,
+  answers: ReturnAnswer[]
+}

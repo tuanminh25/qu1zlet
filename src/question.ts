@@ -9,10 +9,12 @@ import {
   isQuizQuestion,
   checkUrlImage,
   getSession,
+  findPlayerFromId,
+  isPLayer,
+  findGameSession
 } from './helper';
-import { Question, Answer } from './interface';
+import { Question, Answer, ReturnAnswer, ReturnQuestion } from './interface';
 import HttpError from 'http-errors';
-
 /**
   * Given details about a new question, add it to the specified quiz for the logged in user,
   * and then returns a questionId.
@@ -377,4 +379,57 @@ export function dupQuizQuestion(token: string, quizId: number, questionId: numbe
   quiz.timeLastEdited = generateTime();
 
   return { newQuestionId: dup.questionId };
+}
+
+/**
+ * A particular question gets duplicated to immediately after where the source question is
+ *
+ * @param token
+ * @param {number} playerId
+ * @param {number} questionposition
+ * @returns {}
+ */
+export function currentPlayerQuestionInfor(playerId: number, questionposition: number) {
+  if (!findPlayerFromId(playerId)) {
+    throw HttpError(400, 'player ID does not exist');
+  }
+
+  const gameSessionId = isPLayer(playerId);
+  const gameSession = findGameSession(gameSessionId);
+
+  // question position is not valid for the session this player is in
+  questionposition = questionposition - 1;
+  if (questionposition >= gameSession.metadata.questions.length ||
+    questionposition < 0) {
+    throw HttpError(400, 'question position is not valid for the session this player is in');
+  }
+
+  // Session is in LOBBY or END state
+  if (gameSession.state === 'END' || gameSession.state === 'LOBBY') {
+    throw HttpError(400, 'Session is in LOBBY or END state');
+  }
+
+  // session is not currently on this question
+  if (gameSession.atQuestion !== questionposition + 1) {
+    throw HttpError(400, 'session is not currently on this question');
+  }
+
+  const findQuestion = gameSession.metadata.questions[questionposition];
+  const returnAnswer: ReturnAnswer[] = [];
+  for (const eachAnswer of findQuestion.answers) {
+    returnAnswer.push({
+      answerId: eachAnswer.answerId,
+      answer: eachAnswer.answer,
+      colour: eachAnswer.colour
+    });
+  }
+  const returnQuestion: ReturnQuestion = {
+    questionId: findQuestion.questionId,
+    question: findQuestion.question,
+    duration: findQuestion.duration,
+    thumbnailUrl: findQuestion.thumbnailUrl,
+    points: findQuestion.points,
+    answers: returnAnswer,
+  };
+  return returnQuestion;
 }

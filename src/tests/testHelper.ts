@@ -398,3 +398,8 @@ export function testUpdateQuizThumbnail(token: string, quizId: number, imgUrl: s
   });
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testCurrentPlayerInfo(playerId: number, questionposition: number) {
+  const res = request('GET', SERVER_URL + playerV1 + playerId + '/question/' + questionposition);
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}

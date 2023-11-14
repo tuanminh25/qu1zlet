@@ -13,7 +13,7 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizTransfer, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate } from './quiz';
-import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion } from './question';
+import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2 } from './old_it2_functions/quizIt2';
@@ -292,6 +292,12 @@ app.post('/v2/admin/quiz/:quizId/question/:questionId/duplicate', (req: Request,
   res.json(response);
 });
 
+app.get('/v1/player/:playerId/question/:questionposition', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const questionposition = req.params.questionposition;
+  const response = currentPlayerQuestionInfor(parseInt(playerId), parseInt(questionposition));
+  res.json(response);
+});
 // ====================================================================
 // it2 routes below
 // ====================================================================
