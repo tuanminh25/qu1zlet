@@ -408,11 +408,23 @@ export function currentPlayerQuestionInfor(playerId: number, questionposition: n
     }
   }
 
+
+  // question position is not valid for the session this player is in
   questionposition = questionposition - 1;
   if (questionposition >= gameSession.metadata.questions.length 
     || questionposition < 0) {
     throw HttpError(400 , "question position is not valid for the session this player is in");
   }
 
+  // Session is in LOBBY or END state
+  if (gameSession.state === "END" || gameSession.state === "LOBBY") {
+    throw HttpError(400 , "Session is in LOBBY or END state");
+
+  }
+
+  // session is not currently on this question
+  if (gameSession.atQuestion !== questionposition + 1) {
+    throw HttpError(400 , "session is not currently on this question");
+  }
   
 }

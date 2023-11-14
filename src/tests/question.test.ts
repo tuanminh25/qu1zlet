@@ -1005,7 +1005,7 @@ describe('Duplicate Quiz Question', () => {
   });
 });
 
-describe.skip("Current question information for a player", () => {
+describe("Current question information for a player", () => {
   let user1: { token: string };
   let user2: { token: string };
   let quiz1: { quizId: number };
@@ -1030,7 +1030,9 @@ describe.skip("Current question information for a player", () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
+
   };
 
   const validQuestion1 = {
@@ -1040,7 +1042,9 @@ describe.skip("Current question information for a player", () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
+
   };
 
   const validQuestion2 = {
@@ -1050,7 +1054,9 @@ describe.skip("Current question information for a player", () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
+
   };
 
   const validQuestion3 = {
@@ -1060,7 +1066,9 @@ describe.skip("Current question information for a player", () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
+
   };
 
   const validQuestion4 = {
@@ -1070,7 +1078,9 @@ describe.skip("Current question information for a player", () => {
     answers: [{ answer: 'Berlin', correct: false },
       { answer: 'Madrid', correct: false },
       { answer: 'Paris', correct: true },
-      { answer: 'Rome', correct: false }]
+      { answer: 'Rome', correct: false }],
+    thumbnailUrl: 'http://example.com/image.jpg'
+
   };
 
   beforeEach(() => {
@@ -1107,18 +1117,40 @@ describe.skip("Current question information for a player", () => {
     expect(player1info.response).toStrictEqual(ERROR);
   })
 
-  test.only("Session is not currently on this question", () => {
+  test("Session is not currently on this question", () => {
     expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);
     expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "SKIP_COUNTDOWN").status).toStrictEqual(200);
     expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "GO_TO_ANSWER").status).toStrictEqual(200);
     expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);
     
-    // working on
-
+    // Gone through this question
     let player1info = testCurrentPlayerInfo(player1.playerId, 1);
     expect(player1info.status).toStrictEqual(400);
     expect(player1info.response).toStrictEqual(ERROR);
+
+    // Havent come to this question
+    player1info = testCurrentPlayerInfo(player1.playerId, 3);
+    expect(player1info.status).toStrictEqual(400);
+    expect(player1info.response).toStrictEqual(ERROR);
+
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, 'END').status).toStrictEqual(200);
+
   })
+
+  test("Session is in LOBBY or END state", () => {
+    // LOBBY state
+    let player1info = testCurrentPlayerInfo(player1.playerId, 1);
+    expect(player1info.status).toStrictEqual(400);
+    expect(player1info.response).toStrictEqual(ERROR);
+
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, 'END').status).toStrictEqual(200);
+    
+    // END state
+    player1info = testCurrentPlayerInfo(player1.playerId, 3);
+    expect(player1info.status).toStrictEqual(400);
+    expect(player1info.response).toStrictEqual(ERROR);
+  })
+
 })
 
 testClear();
