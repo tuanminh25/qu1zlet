@@ -14,10 +14,11 @@ import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizTransfer, adminQuizDescriptionUpdate, adminQuizNameUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion } from './question';
-import { viewQuizzesInTrash, restoreQuizInTrash, emptyTrash } from './trash';
+import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2 } from './old_it2_functions/quizIt2';
 import { adminQuestionCreateIt2, dupQuizQuestionIt2 } from './old_it2_functions/questionIt2';
+import { restoreQuizInTrashIt2 } from './old_it2_functions/trashIt2';
 
 // Set up web app
 const app = express();
@@ -263,6 +264,14 @@ app.put('/v2/admin/quiz/:quizId/name', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.post('/v2/admin/quiz/:quizId/restore', (req: Request, res: Response) => {
+  const { token } = req.headers;
+  const { quizId } = req.params;
+
+  const response = restoreQuizInTrash(String(token), parseInt(quizId));
+  res.status(200).json(response);
+});
+
 // ====================================================================
 // it2 routes below
 // ====================================================================
@@ -346,7 +355,7 @@ app.post('/v1/admin/quiz/:quizId/restore', (req: Request, res: Response) => {
   const { token } = req.body;
   const { quizId } = req.params;
 
-  const response = restoreQuizInTrash(String(token), parseInt(quizId));
+  const response = restoreQuizInTrashIt2(String(token), parseInt(quizId));
 
   if (response.error === 'Invalid token') {
     return res.status(401).json(response);

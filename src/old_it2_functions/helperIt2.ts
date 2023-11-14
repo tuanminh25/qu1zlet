@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import HttpError from 'http-errors';
 
 const filePath = path.join(__dirname, '..', 'dataStore.json');
 
@@ -71,12 +72,12 @@ export interface DataStore {
   ids: Ids
 }
 
-export interface returnQuizList {
+export interface ReturnQuizList {
   name: string;
   quizId: number
 }
 
-export interface returnUserDetails {
+export interface ReturnUserDetails {
   userId: number,
   name: string,
   email: string,
@@ -262,4 +263,53 @@ export function isQuizQuestion(questionId: number, quizId: number) : Question {
   const quiz = checkquizId(quizId);
   const question = quiz.questions.find((q) => q.questionId === questionId);
   return question;
+}
+
+/**
+ * Gets the sessionId given token
+ *
+ * @param {string} token
+ * @return {Session}
+ */
+export function getSession(token: string): Session {
+  const data = load();
+  const session = data.sessions.find((session) => session.sessionId === token);
+
+  if (!session) {
+    throw HttpError(401, 'Invalid token');
+  }
+
+  return session;
+}
+
+/**
+ * Check whether given quiz id is in trash or not
+ *
+ * @param {number} quizId
+ * @return {Quiz}
+ */
+export function isQuizInTrash(quizId: number): Quiz {
+  const data = load();
+  return data.trash.find(quiz => quiz.quizId === quizId);
+}
+
+/**
+  * Given a quiz id, returns the quiz and its
+  *
+  * @param {string} quizId
+  * @returns { quiz:
+*   {
+  *     quizId,
+  *     name,
+  *     timeCreated,
+  *     timeLastEdited,
+  *     description,
+  *   }
+  * }
+  * @returns {undefined} - quizId is not a valid quiz id
+*/
+export function isQuizInCurrentQuizzies(quizId: number): Quiz {
+  const data = load();
+  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+  return quiz;
 }
