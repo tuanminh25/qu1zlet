@@ -3,13 +3,12 @@ import {
   save,
   isUserName,
   isPassword,
-  ReturnUserDetails,
   passwordHash,
   getSession
 } from './helper';
 import validator from 'validator';
 import HttpError from 'http-errors';
-
+import { ReturnUserDetails } from './interface';
 /**
  * For the given admin user that is logged in, return all of the relevant details
  *

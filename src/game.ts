@@ -1,21 +1,23 @@
 import {
   getSession,
-  GameSession,
-  GameState,
-  GameAction,
   load,
   save,
   checkquizId,
-  ReturnGameSession,
-  ReturnQuizInfo,
   sortPlayerNames,
   findPlayerFromGameId,
   generateRandomName,
-  Player,
-  PlayerStatus,
   updatePlayerState
 } from './helper';
 import HttpError from 'http-errors';
+import {
+  GameSession,
+  GameAction,
+  GameState,
+  ReturnGameSession,
+  ReturnQuizInfo,
+  Player,
+  PlayerStatus
+} from './interface';
 
 interface GameSessionTimeoutIds {
   sessionId: number;

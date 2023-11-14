@@ -2,17 +2,15 @@ import {
   isToken,
   checkauthUserId,
   generateTime,
-  Question,
   load,
   save,
-  Answer,
   randomColour,
   checkquizId,
   isQuizQuestion,
   checkUrlImage,
   getSession,
 } from './helper';
-
+import { Question, Answer } from './interface';
 import HttpError from 'http-errors';
 
 /**
