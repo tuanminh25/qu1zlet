@@ -296,8 +296,8 @@ export function testMoveQuizQuestion(token: string, quizId: number, questionId: 
 }
 
 export function testDupQuizQuestion(token: string, quizId: number, questionId: number) {
-  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}/duplicate`, {
-    json: {
+  const res = request('POST', `${SERVER_URL}/v2/admin/quiz/${quizId}/question/${questionId}/duplicate`, {
+    headers: {
       token: token,
     }
   });
