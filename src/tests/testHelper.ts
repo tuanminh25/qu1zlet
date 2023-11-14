@@ -267,8 +267,8 @@ export const testViewTrash = (token: string) => {
 };
 
 export function testRestoreTrash(token: string, quizId: number) {
-  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/restore`, {
-    json: {
+  const res = request('POST', `${SERVER_URL}/v2/admin/quiz/${quizId}/restore`, {
+    headers: {
       token: token
     }
   });
