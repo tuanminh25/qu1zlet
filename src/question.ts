@@ -2,10 +2,8 @@ import {
   isToken,
   checkauthUserId,
   generateTime,
-  Question,
   load,
   save,
-  Answer,
   randomColour,
   checkquizId,
   isQuizQuestion,
@@ -13,6 +11,7 @@ import {
   getSession,
   findPlayerFromId
 } from './helper';
+import { Question, Answer } from './interface';
 import HttpError from 'http-errors';
 /**
   * Given details about a new question, add it to the specified quiz for the logged in user,

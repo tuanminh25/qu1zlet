@@ -216,9 +216,11 @@ export function testQuizInfo(token: string, quizId: number) {
 }
 
 export function testQuizNameUpdate(token: string, quizId: number, name: string) {
-  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/name`, {
-    json: {
+  const res = request('PUT', `${SERVER_URL}/v2/admin/quiz/${quizId}/name`, {
+    headers: {
       token: token,
+    },
+    json: {
       name: name
     }
   });
@@ -267,8 +269,8 @@ export const testViewTrash = (token: string) => {
 };
 
 export function testRestoreTrash(token: string, quizId: number) {
-  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/restore`, {
-    json: {
+  const res = request('POST', `${SERVER_URL}/v2/admin/quiz/${quizId}/restore`, {
+    headers: {
       token: token
     }
   });
@@ -384,6 +386,31 @@ export function testPlayerStatus(playerId: number) {
   const res = request('GET', SERVER_URL + playerV1 + playerId);
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testUpdateQuizThumbnail(token: string, quizId: number, imgUrl: string) {
+  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/thumbnail/`, {
+    headers: {
+      token: token,
+    },
+    json: {
+      imgUrl: imgUrl,
+    }
+  });
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
+export function testUpdateQuizThumbnail(token: string, quizId: number, imgUrl: string) {
+  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/thumbnail/`, {
+    headers: {
+      token: token,
+    },
+    json: {
+      imgUrl: imgUrl,
+    }
+  });
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
+
 
 export function testCurrentPlayerInfo(playerId: number, questionposition: number) {
   const res = request('GET', SERVER_URL + playerV1 + playerId + "/question/" + questionposition);

@@ -5,15 +5,14 @@ import {
   isQuizDescription,
   isQuizName,
   generateTime,
-  Quiz,
   load,
   save,
-  ReturnQuizList,
-  ReturnQuizInfo,
-  getSession
+  getSession,
+  checkQuizName,
+  checkUrlImage
 } from './helper';
 import HttpError from 'http-errors';
-
+import { Quiz, ReturnQuizInfo, ReturnQuizList } from './interface';
 /**
   * Given basic details about a new quiz, create one for the logged in user.
   *  then returns a quizId.
@@ -179,34 +178,24 @@ export function adminQuizInfo(token: string, quizId: number): ReturnQuizInfo {
 */
 export function adminQuizNameUpdate(token: string, quizId : number, name: string): Record<string, never> | { error?: string } {
   const data = load();
-  const session = isToken(token);
+  const session = getSession(token);
   const quiz = data.quizzes.find(q => q.quizId === quizId);
 
   // error 401
-  if (!session) {
-    return {
-      error: 'Invalid Token'
-    };
+  if (!quiz) {
+    throw HttpError(403, 'Unauthorised');
   }
 
-  // error 403
+  // Quiz ID does not refer to a quiz that this user owns
   if (quiz.quizOwnedby !== session.userId) {
-    return {
-      error: 'Unauthorised'
-    };
+    throw HttpError(403, 'Unauthorised');
   }
 
-  // error 400
-  if (isQuizName(name) === false) {
-    return {
-      error: 'Invalid Quiz Name'
-    };
-  }
   if (data.quizzes.some((quiz) => quiz.name === name)) {
-    return {
-      error: 'Quiz name already exists'
-    };
+    throw HttpError(400, 'Quiz name already exists');
   }
+
+  checkQuizName(name);
 
   // Working case
   quiz.name = name;
@@ -306,6 +295,40 @@ export function adminQuizDescriptionUpdate (token: string, quizId: number, descr
 
   // Working case
   quiz.description = description;
+  quiz.timeLastEdited = generateTime();
+  save(data);
+  return {};
+}
+
+/**
+ * Update quiz Tthumbnail
+ *
+ * @param {string} token - unique user identifier
+ * @param {number} quizId - unique quiz identifier
+ * @param {string} imgUrl - thumbnail
+ *
+ * @returns {error: string}
+ * @returns {}
+ *
+ */
+export function adminThumbnailUpdate(token: string, quizId: number, imgUrl: string) {
+  const data = load();
+  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+
+  const session = getSession(token);
+  checkUrlImage(imgUrl);
+
+  if (!quiz) {
+    throw HttpError(403, 'Unauthorised');
+  }
+
+  // Quiz ID does not refer to a quiz that this user owns
+  if (quiz.quizOwnedby !== session.userId) {
+    throw HttpError(403, 'Unauthorised');
+  }
+
+  // Working case
+  quiz.thumbnailUrl = imgUrl;
   quiz.timeLastEdited = generateTime();
   save(data);
   return {};

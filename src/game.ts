@@ -1,21 +1,23 @@
 import {
   getSession,
-  GameSession,
-  GameState,
-  GameAction,
   load,
   save,
   checkquizId,
-  ReturnGameSession,
-  ReturnQuizInfo,
   sortPlayerNames,
   findPlayerFromGameId,
   generateRandomName,
-  Player,
-  PlayerStatus,
-  updatePlayerState
+  isPLayer,
 } from './helper';
 import HttpError from 'http-errors';
+import {
+  GameSession,
+  GameAction,
+  GameState,
+  ReturnGameSession,
+  ReturnQuizInfo,
+  Player,
+  PlayerStatus
+} from './interface';
 
 interface GameSessionTimeoutIds {
   sessionId: number;
@@ -100,6 +102,8 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
   const data = load();
   const session = getSession(token);
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+  const gameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
+  let atQuestionInt;
 
   if (!quiz) {
     throw HttpError(403, 'Quiz does not exist');
@@ -109,7 +113,7 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     throw HttpError(403, 'Unauthorised');
   }
 
-  if (!quiz.activeSessions.includes(gameSessionId)) {
+  if (!gameSession || gameSession.metadata.quizId !== quizId) {
     throw HttpError(400, 'Session Id does not refer to a valid session within this quiz');
   }
 
@@ -118,8 +122,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     throw HttpError(400, 'Not a valid action enum');
   }
 
-  const gameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
-  let atQuestionInt;
   if (gameSession.atQuestion === 0) {
     atQuestionInt = 0;
   } else {
@@ -141,8 +143,7 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     gameSession.state = GameState.END;
     gameSession.atQuestion = 0;
     quiz.inactiveSessions.push(gameSession.gameSessionId);
-    quiz.activeSessions = quiz.activeSessions.filter((g) => g === gameSession.gameSessionId);
-    updatePlayerState(gameSession, data);
+    quiz.activeSessions = quiz.activeSessions.filter((g) => g !== gameSession.gameSessionId);
     save(data);
 
     return {};
@@ -153,13 +154,11 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       throw HttpError(400, 'Action enum cannot be applied in the current state');
     } else {
       gameSession.state = GameState.QUESTION_COUNTDOWN;
-      updatePlayerState(gameSession, data);
       save(data);
       timerIds.questionCountDown = countDownTimer(gameSessionId);
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
 
       gameSession.atQuestion++;
-      updatePlayerState(gameSession, data);
       save(data);
       return {};
     }
@@ -174,7 +173,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       timerIds.questionCountDown = null;
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 0, currQues.duration);
       gameSession.state = GameState.QUESTION_OPEN;
-      updatePlayerState(gameSession, data);
 
       save(data);
 
@@ -189,7 +187,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       gameSession.state = GameState.ANSWER_SHOW;
       clearTimeout(timerIds.questionDurationTimer);
       timerIds.questionDurationTimer = null;
-      updatePlayerState(gameSession, data);
 
       save(data);
 
@@ -199,14 +196,19 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
 
   if (gameSession.state === GameState.ANSWER_SHOW) {
     if (action === GameAction.NEXT_QUESTION) {
+      if (gameSession.atQuestion === gameSession.metadata.numQuestions) {
+        gameSession.state = GameState.FINAL_RESULTS;
+        save(data);
+
+        return {};
+      }
+
       gameSession.state = GameState.QUESTION_COUNTDOWN;
-      updatePlayerState(gameSession, data);
 
       save(data);
       timerIds.questionCountDown = countDownTimer(gameSessionId);
 
       gameSession.atQuestion++;
-      updatePlayerState(gameSession, data);
 
       save(data);
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
@@ -215,7 +217,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     } else if (action === GameAction.GO_TO_FINAL_RESULTS) {
       gameSession.state = GameState.FINAL_RESULTS;
       gameSession.atQuestion = 0;
-      updatePlayerState(gameSession, data);
 
       save(data);
 
@@ -228,7 +229,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
   if (gameSession.state === GameState.QUESTION_CLOSE) {
     if (action === GameAction.GO_TO_ANSWER) {
       gameSession.state = GameState.ANSWER_SHOW;
-      updatePlayerState(gameSession, data);
 
       save(data);
 
@@ -236,20 +236,23 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     } else if (action === GameAction.GO_TO_FINAL_RESULTS) {
       gameSession.state = GameState.FINAL_RESULTS;
       gameSession.atQuestion = 0;
-      updatePlayerState(gameSession, data);
 
       save(data);
 
       return {};
     } else if (action === GameAction.NEXT_QUESTION) {
+      if (gameSession.atQuestion === gameSession.metadata.numQuestions) {
+        gameSession.state = GameState.FINAL_RESULTS;
+        save(data);
+
+        return {};
+      }
       gameSession.state = GameState.QUESTION_COUNTDOWN;
-      updatePlayerState(gameSession, data);
 
       save(data);
       timerIds.questionCountDown = countDownTimer(gameSessionId);
 
       gameSession.atQuestion++;
-      updatePlayerState(gameSession, data);
 
       save(data);
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
@@ -271,16 +274,16 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
   const data = load();
   const session = getSession(token);
   const quiz = checkquizId(quizId);
+  const gameSession: GameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
+
+  if (!gameSession || gameSession.metadata.quizId !== quizId) {
+    throw HttpError(400, 'Session Id does not refer to a valid session within this quiz');
+  }
 
   if (quiz.quizId !== session.userId) {
     throw HttpError(403, 'Unauthorised');
   }
 
-  if (!quiz.activeSessions.includes(gameSessionId)) {
-    throw HttpError(400, 'Session Id does not refer to a valid session within this quiz');
-  }
-
-  const gameSession: GameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
   const metadata: ReturnQuizInfo = {
     quizId: gameSession.metadata.quizId,
     name: gameSession.metadata.name,
@@ -330,10 +333,6 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
     sessionId: sessionId,
     name: name,
     playerId: data.ids.playerId,
-    state: gameSession.state,
-    numQuestions: gameSession.metadata.numQuestions,
-    atQuestion: gameSession.atQuestion,
-
   };
 
   // Save data
@@ -344,37 +343,14 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   return { playerId: player.playerId };
 }
 
-export function playerStatus (playerId: number) {
+export function playerStatus (playerId: number): PlayerStatus {
   const data = load();
+  const sessionId = isPLayer(playerId);
+  const gameSession = data.gameSessions.find((g) => g.gameSessionId === sessionId);
 
-  // Error cases:
-
-  // debug
-  // let findPlayer = undefined;
-  // for (let game of data.gameSessions) {
-  //   for (let player of game.players) {
-  //     if (player.playerId === playerId) {
-  //       findPlayer = player;
-  //     }
-  //   }
-  // }
-  // if (findPlayer === undefined) {
-  //   throw HttpError(400, "player ID does not exist");
-  // }
-  // const returnObj: PlayerStatus = {
-  //   state: findPlayer.state,
-  //   numQuestions: findPlayer.numQuestions,
-  //   atQuestion: findPlayer.atQuestion
-  // }
-
-  const player = data.players.find(player => player.playerId === playerId);
-  if (player === undefined) {
-    throw HttpError(400, 'player ID does not exist');
-  }
-  const returnObj: PlayerStatus = {
-    state: player.state,
-    numQuestions: player.numQuestions,
-    atQuestion: player.atQuestion
+  return {
+    state: gameSession.state,
+    atQuestion: gameSession.atQuestion,
+    numQuestions: gameSession.metadata.numQuestions
   };
-  return returnObj;
 }

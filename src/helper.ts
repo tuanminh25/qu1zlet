@@ -6,156 +6,15 @@ import validator from 'validator';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
-enum Colours {
-  red = 'red',
-  blue = 'blue',
-  green = 'green',
-  yellow = 'yellow',
-  purple = 'purple',
-  brown = 'brown',
-  orange = 'orange'
-}
-
-export enum GameState {
-  LOBBY = 'LOBBY',
-  QUESTION_COUNTDOWN = 'QUESTION_COUNTDOWN',
-  QUESTION_OPEN = 'QUESTION_OPEN',
-  QUESTION_CLOSE = 'QUESTION_CLOSE',
-  ANSWER_SHOW = 'ANSWER_SHOW',
-  FINAL_RESULTS = 'FINAL_RESULTS',
-  END = 'END'
-}
-
-export enum GameAction {
-  NEXT_QUESTION = 'NEXT_QUESTION',
-  SKIP_COUNTDOWN = 'SKIP_COUNTDOWN',
-  GO_TO_ANSWER = 'GO_TO_ANSWER',
-  GO_TO_FINAL_RESULTS = 'GO_TO_FINAL_RESULTS',
-  END = 'END'
-}
-
-export interface PlayerStatus {
-  state: GameState,
-  numQuestions: number,
-  atQuestion: number
-}
-
-export interface Player {
-  // Game session id this player belong to
-  sessionId: number,
-  name: string,
-  playerId: number,
-  state: GameState,
-  numQuestions: number,
-  atQuestion: number
-}
-
-export interface User {
-  userId: number;
-  nameFirst: string;
-  nameLast: string;
-  email: string;
-  password: string;
-  usedPasswords: string[],
-  numSuccessfulLogins: number;
-  numFailedPasswordsSinceLastLogin: number;
-}
-
-export interface Answer {
-  answerId: number;
-  answer: string;
-  colour: string;
-  correct: boolean;
-}
-
-export interface Question {
-  questionId: number
-  question: string,
-  duration: number,
-  thumbnailUrl: string,
-  points: number,
-  answers: Answer[]
-}
-
-export interface Quiz {
-  quizId: number;
-  name: string;
-  timeCreated: number;
-  timeLastEdited: number;
-  description: string;
-  quizOwnedby: number;
-  duration: number;
-  numQuestions: number;
-  questions: Question[];
-  thumbnailUrl: string;
-  activeSessions: number[];
-  inactiveSessions: number[]
-}
-
-export interface Session {
-  userId: number;
-  sessionId: string
-}
-
-export interface Ids {
-  userId: number;
-  quizId: number;
-  questionId: number;
-  answerId: number;
-  gameSessionId: number;
-  playerId: number;
-}
-
-export interface GameSession {
-  gameSessionId: number,
-  state: GameState;
-  atQuestion: number;
-  players: Player[];
-  metadata: Quiz;
-  autoStartNum: number
-}
-
-export interface DataStore {
-  users: User[];
-  quizzes: Quiz[];
-  trash: Quiz[];
-  sessions: Session[];
-  gameSessions: GameSession[];
-  ids: Ids;
-  players: Player[];
-}
-
-export interface ReturnQuizList {
-  name: string;
-  quizId: number
-}
-
-export interface ReturnUserDetails {
-  userId: number,
-  name: string,
-  email: string,
-  numSuccessfulLogins: number,
-  numFailedPasswordsSinceLastLogin: number,
-}
-
-export interface ReturnQuizInfo {
-  quizId: number,
-  name: string,
-  timeCreated: number,
-  timeLastEdited: number,
-  description: string,
-  numQuestions: number,
-  questions: Question[],
-  duration: number,
-  thumbnailUrl: string
-}
-
-export interface ReturnGameSession {
-  state: GameState,
-  atQuestion: number;
-  players: string[];
-  metadata: ReturnQuizInfo;
-}
+import {
+  DataStore,
+  Question,
+  Quiz,
+  User,
+  Colours,
+  Session,
+  Player
+} from './interface';
 
 export function load(): DataStore {
   const data = fs.readFileSync(filePath, 'utf8');
@@ -277,6 +136,22 @@ export function isQuizName(name: string): boolean {
   } else {
     return true;
   }
+}
+
+/**
+  * Checks whether the string follows the requirements for a name.
+  *
+  * @param {string} name
+  * @returns {boolean}
+*/
+export function checkQuizName(name: string): string {
+  if (name.length < 3 || name.length > 30) {
+    throw HttpError(400, 'Invalid name length');
+  } else if (/^[\w\s]+$/.test(name) === false) {
+    throw HttpError(400, 'Name should be alphanumeric');
+  }
+
+  return name;
 }
 
 /**
@@ -536,26 +411,18 @@ export function generateRandomName() {
   // Concatenate characters and numbers to form the final string
   return randomChars + randomNumbers;
 }
+/** '
+ * return gameSessionId if playerId exists
+ */
+export function isPLayer(playerId: number): number {
+  const data = load();
+  const gameSessionId = data.players.find((p) => p.playerId === playerId);
 
-/**
- * Update player state along with game state
-  * @param {number} playerId
-  *
-*/
-export function updatePlayerState(gameSession: GameSession, data: DataStore) {
-  for (const player of gameSession.players) {
-    player.state = gameSession.state;
-    player.numQuestions = gameSession.metadata.numQuestions;
-    player.atQuestion = gameSession.atQuestion;
+  if (!gameSessionId) {
+    throw HttpError(400, 'Player ID does not exist');
   }
 
-  for (const player of data.players) {
-    if (player.sessionId === gameSession.gameSessionId) {
-      player.state = gameSession.state;
-      player.numQuestions = gameSession.metadata.numQuestions;
-      player.atQuestion = gameSession.atQuestion;
-    }
-  }
+  return gameSessionId.sessionId;
 }
 
 /**

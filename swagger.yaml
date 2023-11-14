@@ -62,7 +62,7 @@ components:
       enum: [NEXT_QUESTION, SKIP_COUNTDOWN, GO_TO_ANSWER, GO_TO_FINAL_RESULTS, END]
     State:
       type: string
-      enum: [LOBBY, QUESTION_COUNTDOWN, SKIP_COUNTDOWN, QUESTION_OPEN, QUESTION_CLOSE, ANSWER_SHOW, FINAL_RESULTS, END]
+      enum: [LOBBY, QUESTION_COUNTDOWN, QUESTION_OPEN, QUESTION_CLOSE, ANSWER_SHOW, FINAL_RESULTS, END]
     Url:
       type: string
       example: http://google.com/some/image/path.jpg
@@ -1721,8 +1721,8 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - imgUrl when fetched does not return a valid file
-            - imgUrl when fetch is not a JPG or PNG image
+            - The imgUrl does not end with one of the following filetypes (case insensitive): jpg, jpeg, png
+            - The imgUrl does not begin with 'http://' or 'https://'
           schema:
             $ref: '#/components/return/Error'
       security:
@@ -2225,7 +2225,7 @@ paths:
           description: |
             If any of the following are true:
             - autoStartNum is a number greater than 50
-            - A maximum of 10 sessions that are not in END state currently exist
+            - A maximum of 10 sessions that are not in END state currently exist for this quiz
             - The quiz does not have any questions in it
           schema:
             $ref: '#/components/return/Error'
@@ -2253,7 +2253,7 @@ paths:
           schema:
             $ref: '#/components/return/Error'
         403:
-          description: Valid token is provided, but user is not authorised to modify this session
+          description: Valid token is provided, but user is not an owner of this quiz
           schema:
             $ref: '#/components/return/Error'
         400:
@@ -2286,7 +2286,7 @@ paths:
           schema:
             $ref: '#/components/return/Error'
         403:
-          description: Valid token is provided, but user is not authorised to view this session
+          description: Valid token is provided, but user is not an owner of this quiz
           schema:
             $ref: '#/components/return/Error'
         400:
@@ -2319,7 +2319,7 @@ paths:
           schema:
             $ref: '#/components/return/Error'
         403:
-          description: Valid token is provided, but user is not authorised to view this session
+          description: Valid token is provided, but user is not an owner of this quiz
           schema:
             $ref: '#/components/return/Error'
         400:
@@ -2352,7 +2352,7 @@ paths:
           schema:
             $ref: '#/components/return/Error'
         403:
-          description: Valid token is provided, but user is not authorised to view this session
+          description: Valid token is provided, but user is not an owner of this quiz
           schema:
             $ref: '#/components/return/Error'
         400:
@@ -2428,7 +2428,7 @@ paths:
   /v1/player/{playerid}/question/{questionposition}:
     get:
       summary: Current question information for a player
-      description: Get the information about a question that the guest player is on
+      description: Get the information about a question that the guest player is on. Question position starts at 1
       tags:
         # - "By Topic: Playing a session"
         - "Iteration 3 (New)"
@@ -2453,7 +2453,7 @@ paths:
     put:
       summary: Player submission of answers(s)
       description: |
-        Allow the current player to submit answer(s) to the currently active question
+        Allow the current player to submit answer(s) to the currently active question. Question position starts at 1
         Note: An answer can be re-submitted once first selection is made, as long as game is in the right state
       tags:
         # - "By Topic: Playing a session"
@@ -2482,7 +2482,7 @@ paths:
   /v1/player/{playerid}/question/{questionposition}/results:
     get:
       summary: Results for a question
-      description: Get the results for a particular question of the session a player is playing in
+      description: Get the results for a particular question of the session a player is playing in. Question position starts at 1
       tags:
         # - "By Topic: Playing a session"
         - "Iteration 3 (New)"
