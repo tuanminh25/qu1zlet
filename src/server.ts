@@ -13,11 +13,11 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizTransfer, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate } from './quiz';
-import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor } from './question';
+import { adminQuestionCreate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2 } from './old_it2_functions/quizIt2';
-import { adminQuestionCreateIt2, dupQuizQuestionIt2 } from './old_it2_functions/questionIt2';
+import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2 } from './old_it2_functions/questionIt2';
 import { restoreQuizInTrashIt2 } from './old_it2_functions/trashIt2';
 
 // Set up web app
@@ -433,7 +433,7 @@ app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Respo
   const questionId = parseInt(req.params.questionId);
   const questionBody = req.body.questionBody;
 
-  const response = adminQuestionUpdate(String(token), quizId, questionId, questionBody);
+  const response = adminQuestionUpdateIt2(String(token), quizId, questionId, questionBody);
 
   if (response.error === 'Invalid token') {
     return res.status(401).json(response);

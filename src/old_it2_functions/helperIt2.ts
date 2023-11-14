@@ -40,6 +40,13 @@ export interface Question {
   answers: Answer[]
 }
 
+export interface QuestionBody {
+  question: string,
+  duration: number,
+  points: number,
+  answers: Answer[]
+}
+
 export interface Quiz {
   quizId: number;
   name: string;
