@@ -34,12 +34,9 @@ export interface PlayerStatus {
 
 export interface Player {
   // Game session id this player belong to
-  sessionId: number,
   name: string,
   playerId: number,
-  state: GameState,
-  numQuestions: number,
-  atQuestion: number
+  sessionId: number
 }
 
 export interface User {

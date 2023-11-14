@@ -6,7 +6,7 @@ import {
   sortPlayerNames,
   findPlayerFromGameId,
   generateRandomName,
-  updatePlayerState
+  isPLayer,
 } from './helper';
 import HttpError from 'http-errors';
 import {
@@ -144,7 +144,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     gameSession.atQuestion = 0;
     quiz.inactiveSessions.push(gameSession.gameSessionId);
     quiz.activeSessions = quiz.activeSessions.filter((g) => g !== gameSession.gameSessionId);
-    updatePlayerState(gameSession, data);
     save(data);
 
     return {};
@@ -155,13 +154,11 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       throw HttpError(400, 'Action enum cannot be applied in the current state');
     } else {
       gameSession.state = GameState.QUESTION_COUNTDOWN;
-      updatePlayerState(gameSession, data);
       save(data);
       timerIds.questionCountDown = countDownTimer(gameSessionId);
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
 
       gameSession.atQuestion++;
-      updatePlayerState(gameSession, data);
       save(data);
       return {};
     }
@@ -176,7 +173,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       timerIds.questionCountDown = null;
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 0, currQues.duration);
       gameSession.state = GameState.QUESTION_OPEN;
-      updatePlayerState(gameSession, data);
 
       save(data);
 
@@ -191,7 +187,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       gameSession.state = GameState.ANSWER_SHOW;
       clearTimeout(timerIds.questionDurationTimer);
       timerIds.questionDurationTimer = null;
-      updatePlayerState(gameSession, data);
 
       save(data);
 
@@ -209,13 +204,11 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       }
 
       gameSession.state = GameState.QUESTION_COUNTDOWN;
-      updatePlayerState(gameSession, data);
 
       save(data);
       timerIds.questionCountDown = countDownTimer(gameSessionId);
 
       gameSession.atQuestion++;
-      updatePlayerState(gameSession, data);
 
       save(data);
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
@@ -224,7 +217,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     } else if (action === GameAction.GO_TO_FINAL_RESULTS) {
       gameSession.state = GameState.FINAL_RESULTS;
       gameSession.atQuestion = 0;
-      updatePlayerState(gameSession, data);
 
       save(data);
 
@@ -237,7 +229,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
   if (gameSession.state === GameState.QUESTION_CLOSE) {
     if (action === GameAction.GO_TO_ANSWER) {
       gameSession.state = GameState.ANSWER_SHOW;
-      updatePlayerState(gameSession, data);
 
       save(data);
 
@@ -245,7 +236,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     } else if (action === GameAction.GO_TO_FINAL_RESULTS) {
       gameSession.state = GameState.FINAL_RESULTS;
       gameSession.atQuestion = 0;
-      updatePlayerState(gameSession, data);
 
       save(data);
 
@@ -258,13 +248,11 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
         return {};
       }
       gameSession.state = GameState.QUESTION_COUNTDOWN;
-      updatePlayerState(gameSession, data);
 
       save(data);
       timerIds.questionCountDown = countDownTimer(gameSessionId);
 
       gameSession.atQuestion++;
-      updatePlayerState(gameSession, data);
 
       save(data);
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
@@ -345,10 +333,6 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
     sessionId: sessionId,
     name: name,
     playerId: data.ids.playerId,
-    state: gameSession.state,
-    numQuestions: gameSession.metadata.numQuestions,
-    atQuestion: gameSession.atQuestion,
-
   };
 
   // Save data
@@ -359,37 +343,14 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   return { playerId: player.playerId };
 }
 
-export function playerStatus (playerId: number) {
+export function playerStatus (playerId: number): PlayerStatus {
   const data = load();
-
-  // Error cases:
-
-  // debug
-  // let findPlayer = undefined;
-  // for (let game of data.gameSessions) {
-  //   for (let player of game.players) {
-  //     if (player.playerId === playerId) {
-  //       findPlayer = player;
-  //     }
-  //   }
-  // }
-  // if (findPlayer === undefined) {
-  //   throw HttpError(400, "player ID does not exist");
-  // }
-  // const returnObj: PlayerStatus = {
-  //   state: findPlayer.state,
-  //   numQuestions: findPlayer.numQuestions,
-  //   atQuestion: findPlayer.atQuestion
-  // }
-
-  const player = data.players.find(player => player.playerId === playerId);
-  if (player === undefined) {
-    throw HttpError(400, 'player ID does not exist');
-  }
-  const returnObj: PlayerStatus = {
-    state: player.state,
-    numQuestions: player.numQuestions,
-    atQuestion: player.atQuestion
+  const sessionId = isPLayer(playerId);
+  const gameSession = data.gameSessions.find((g) => g.gameSessionId === sessionId);
+  
+  return {
+    state: gameSession.state,
+    atQuestion: gameSession.atQuestion,
+    numQuestions: gameSession.metadata.numQuestions
   };
-  return returnObj;
 }

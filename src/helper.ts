@@ -412,14 +412,16 @@ export function generateRandomName() {
   // Concatenate characters and numbers to form the final string
   return randomChars + randomNumbers;
 }
-
+/**'
+ * return gameSessionId if playerId exists
+ */
 export function isPLayer(playerId: number): number {
   const data = load();
-  const gameSessionId = data.players.find((p) => p.playerId === playerId).sessionId;
+  const gameSessionId = data.players.find((p) => p.playerId === playerId);
 
   if (!gameSessionId) {
     throw HttpError(400, 'Player ID does not exist');
   }
 
-  return gameSessionId;
+  return gameSessionId.sessionId;
 }
