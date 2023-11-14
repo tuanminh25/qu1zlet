@@ -1060,14 +1060,14 @@ describe("Current question information for a player", () => {
   };
 
   const validQuestion3 = {
-    question: 'What is the capital of Germany?',
-    duration: 4,
-    points: 5,
-    answers: [{ answer: 'Berlin', correct: true},
+    question: 'What is the capital of Vietnam?',
+    duration: 3,
+    points: 10,
+    answers: [{ answer: 'Hanoi', correct: true},
       { answer: 'Madrid', correct: false},
       { answer: 'Paris', correct: false},
       { answer: 'Rome', correct: false}],
-    thumbnailUrl: 'http://example.com/image.jpg'
+    thumbnailUrl: 'http://example.com/image111.jpg'
 
   };
 
@@ -1080,7 +1080,6 @@ describe("Current question information for a player", () => {
       { answer: 'Paris', correct: false},
       { answer: 'Rome', correct: true}],
     thumbnailUrl: 'http://example.com/image.jpg'
-
   };
 
   beforeEach(() => {
@@ -1172,6 +1171,56 @@ describe("Current question information for a player", () => {
 
     expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, 'END').status).toStrictEqual(200);
 
+  })
+
+  test("In the first question then the 4th question", () => {
+    // Go to question 1
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);    
+    let player1info = testCurrentPlayerInfo(player1.playerId, 1);
+    expect(player1info.status).toStrictEqual(200);
+    expect(player1info.response).toStrictEqual({
+      questionId: expect.any(Number),
+      question: validQuestion0.question,
+      duration: validQuestion0.duration,
+      thumbnailUrl: validQuestion0.thumbnailUrl,
+      points: validQuestion0.points,
+      answers: [{ answer: 'Berlin', colour: expect.any(String), answerId: expect.any(Number) },
+      { answer: 'Madrid', colour: expect.any(String), answerId: expect.any(Number)  },
+      { answer: 'Paris', colour: expect.any(String), answerId: expect.any(Number)  },
+      { answer: 'Rome', colour: expect.any(String), answerId: expect.any(Number)  }],
+    });
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "SKIP_COUNTDOWN").status).toStrictEqual(200);
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "GO_TO_ANSWER").status).toStrictEqual(200);
+
+    // TO question 2
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "SKIP_COUNTDOWN").status).toStrictEqual(200);
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "GO_TO_ANSWER").status).toStrictEqual(200);
+
+    // TO question 3
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "SKIP_COUNTDOWN").status).toStrictEqual(200);
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "GO_TO_ANSWER").status).toStrictEqual(200);
+
+    // TO question 4
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);
+    let player1info4 = testCurrentPlayerInfo(player1.playerId, 4);
+    expect(player1info4.status).toStrictEqual(200);
+    expect(player1info4.response).toStrictEqual({
+      questionId: expect.any(Number),
+      question: validQuestion3.question,
+      duration: validQuestion3.duration,
+      thumbnailUrl: validQuestion3.thumbnailUrl,
+      points: validQuestion3.points,
+      answers: [{ answer: 'Hanoi', colour: expect.any(String), answerId: expect.any(Number) },
+      { answer: 'Madrid', colour: expect.any(String), answerId: expect.any(Number)  },
+      { answer: 'Paris', colour: expect.any(String), answerId: expect.any(Number)  },
+      { answer: 'Rome', colour: expect.any(String), answerId: expect.any(Number)  }],
+    });
+
+
+
+    expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, 'END').status).toStrictEqual(200);
   })
 })
 
