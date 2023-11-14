@@ -1721,8 +1721,8 @@ paths:
         400:
           description: |
             If any of the following are true:
-            - imgUrl when fetched does not return a valid file
-            - imgUrl when fetch is not a JPG or PNG image
+            - The imgUrl does not end with one of the following filetypes (case insensitive): jpg, jpeg, png
+            - The imgUrl does not begin with 'http://' or 'https://'
           schema:
             $ref: '#/components/return/Error'
       security:
