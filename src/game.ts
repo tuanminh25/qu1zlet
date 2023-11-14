@@ -100,6 +100,8 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
   const data = load();
   const session = getSession(token);
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
+  const gameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
+  let atQuestionInt;
 
   if (!quiz) {
     throw HttpError(403, 'Quiz does not exist');
@@ -109,7 +111,7 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     throw HttpError(403, 'Unauthorised');
   }
 
-  if (!quiz.activeSessions.includes(gameSessionId)) {
+  if (!gameSession || gameSession.metadata.quizId !== quizId) {
     throw HttpError(400, 'Session Id does not refer to a valid session within this quiz');
   }
 
@@ -118,8 +120,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     throw HttpError(400, 'Not a valid action enum');
   }
 
-  const gameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
-  let atQuestionInt;
   if (gameSession.atQuestion === 0) {
     atQuestionInt = 0;
   } else {
@@ -141,7 +141,7 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     gameSession.state = GameState.END;
     gameSession.atQuestion = 0;
     quiz.inactiveSessions.push(gameSession.gameSessionId);
-    quiz.activeSessions = quiz.activeSessions.filter((g) => g === gameSession.gameSessionId);
+    quiz.activeSessions = quiz.activeSessions.filter((g) => g !== gameSession.gameSessionId);
     updatePlayerState(gameSession, data);
     save(data);
 
@@ -199,6 +199,13 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
 
   if (gameSession.state === GameState.ANSWER_SHOW) {
     if (action === GameAction.NEXT_QUESTION) {
+      if (gameSession.atQuestion === gameSession.metadata.numQuestions) {
+        gameSession.state = GameState.FINAL_RESULTS;
+        save(data);
+
+        return {};
+      }
+
       gameSession.state = GameState.QUESTION_COUNTDOWN;
       updatePlayerState(gameSession, data);
 
@@ -242,6 +249,12 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
 
       return {};
     } else if (action === GameAction.NEXT_QUESTION) {
+      if (gameSession.atQuestion === gameSession.metadata.numQuestions) {
+        gameSession.state = GameState.FINAL_RESULTS;
+        save(data);
+
+        return {};
+      }
       gameSession.state = GameState.QUESTION_COUNTDOWN;
       updatePlayerState(gameSession, data);
 
@@ -271,16 +284,16 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
   const data = load();
   const session = getSession(token);
   const quiz = checkquizId(quizId);
+  const gameSession: GameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
+
+  if (!gameSession || gameSession.metadata.quizId !== quizId) {
+    throw HttpError(400, 'Session Id does not refer to a valid session within this quiz');
+  }
 
   if (quiz.quizId !== session.userId) {
     throw HttpError(403, 'Unauthorised');
   }
 
-  if (!quiz.activeSessions.includes(gameSessionId)) {
-    throw HttpError(400, 'Session Id does not refer to a valid session within this quiz');
-  }
-
-  const gameSession: GameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
   const metadata: ReturnQuizInfo = {
     quizId: gameSession.metadata.quizId,
     name: gameSession.metadata.name,
