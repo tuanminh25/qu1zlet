@@ -52,33 +52,24 @@ export function viewQuizzesInTrash(token: string): {error?: string, quizzes?: Re
  */
 export function restoreQuizInTrash(token: string, quizId: number): { error?: string } {
   const data = load();
-  const session = isToken(token);
+  const session = getSession(token);
 
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
-
-  const quiz = data.trash.find((q) => q.quizId === quizId);
-
+  const quiz = isQuizInTrash(quizId);
   if (!quiz) {
-    return {
-      error: 'Quiz ID refers to a quiz that is not currently in the trash'
-    };
+    throw HttpError(400, 'Unauthorised');
   }
 
   if (quiz.quizOwnedby !== session.userId) {
-    return {
-      error: 'Unauthorised'
-    };
+    throw HttpError(403, 'Unauthorised');
+  }
+
+  if (!quiz) {
+    throw HttpError(400, 'Quiz ID refers to a quiz that is not currently in the trash');
   }
 
   const activeQuizzes = data.quizzes.filter((q) => q.quizOwnedby === session.userId);
   if (activeQuizzes.find((q) => q.name === quiz.name)) {
-    return {
-      error: 'Quiz name of the restored quiz is already used by another active quiz'
-    };
+    throw HttpError(400, 'Quiz name of the restored quiz is already used by another active quiz');
   }
 
   const newTrash = data.trash.filter((q) => q.quizId !== quizId);
