@@ -347,7 +347,7 @@ export function playerStatus (playerId: number): PlayerStatus {
   const data = load();
   const sessionId = isPLayer(playerId);
   const gameSession = data.gameSessions.find((g) => g.gameSessionId === sessionId);
-  
+
   return {
     state: gameSession.state,
     atQuestion: gameSession.atQuestion,

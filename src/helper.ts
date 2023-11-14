@@ -13,8 +13,7 @@ import {
   User,
   Colours,
   Session,
-  Player,
-  GameSession
+  Player
 } from './interface';
 
 export function load(): DataStore {
@@ -412,7 +411,7 @@ export function generateRandomName() {
   // Concatenate characters and numbers to form the final string
   return randomChars + randomNumbers;
 }
-/**'
+/** '
  * return gameSessionId if playerId exists
  */
 export function isPLayer(playerId: number): number {
