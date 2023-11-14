@@ -5,17 +5,14 @@ import {
   isQuizDescription,
   isQuizName,
   generateTime,
-  Quiz,
   load,
   save,
-  ReturnQuizList,
-  ReturnQuizInfo,
   getSession,
   checkQuizName,
   checkUrlImage
 } from './helper';
 import HttpError from 'http-errors';
-
+import { Quiz, ReturnQuizInfo, ReturnQuizList } from './interface';
 /**
   * Given basic details about a new quiz, create one for the logged in user.
   *  then returns a quizId.

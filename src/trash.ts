@@ -2,13 +2,12 @@ import {
   isToken,
   load,
   save,
-  ReturnQuizList,
   getSession,
   isQuizInTrash,
   isQuizInCurrentQuizzies
 } from './helper';
 import HttpError from 'http-errors';
-
+import { ReturnQuizList } from './interface';
 /**
  * View the quizzes that are currently in the trash for the logged in user
  *

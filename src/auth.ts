@@ -5,13 +5,12 @@ import {
   checkEmail,
   load,
   save,
-  User,
-  Session,
   passwordHash,
   getSession
 } from './helper';
 import { v4 as uuidv4 } from 'uuid';
 import HttpError from 'http-errors';
+import { User, Session } from './interface';
 
 /**
   * Takes in information about a new admin user and registers them in the system
