@@ -386,3 +386,15 @@ export function testPlayerStatus(playerId: number) {
   const res = request('GET', SERVER_URL + playerV1 + playerId);
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testUpdateQuizThumbnail(token: string, quizId: number, imgUrl: string) {
+  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/thumbnail/`, {
+    headers: {
+      token: token,
+    },
+    json: {
+      imgUrl: imgUrl,
+    }
+  });
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}

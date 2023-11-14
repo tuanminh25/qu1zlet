@@ -3,7 +3,7 @@ import {
   testCreateQuiz,
   testCreateQuizQuestion,
   testClear,
-} from './testHelper';
+} from '../testHelper';
 
 const ERROR = { error: expect.any(String) };
 
