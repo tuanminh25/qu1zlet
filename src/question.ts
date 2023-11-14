@@ -9,7 +9,9 @@ import {
   isQuizQuestion,
   checkUrlImage,
   getSession,
-  findPlayerFromId
+  findPlayerFromId,
+  isPLayer,
+  findGameSession
 } from './helper';
 import { Question, Answer, ReturnAnswer, ReturnQuestion } from './interface';
 import HttpError from 'http-errors';
@@ -397,16 +399,8 @@ export function currentPlayerQuestionInfor(playerId: number, questionposition: n
     throw HttpError(400 , "player ID does not exist");
   }
 
-  let gameSession = undefined;
-  let findPlayer = undefined;
-  for (let game of data.gameSessions) {
-    for (let player of game.players) {
-      if (player.playerId === playerId) {
-        gameSession = game;
-        findPlayer = player;
-      }
-    }
-  }
+  let gameSessionId = isPLayer(playerId);
+  let gameSession = findGameSession(gameSessionId);
 
 
   // question position is not valid for the session this player is in
