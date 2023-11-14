@@ -216,9 +216,11 @@ export function testQuizInfo(token: string, quizId: number) {
 }
 
 export function testQuizNameUpdate(token: string, quizId: number, name: string) {
-  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/name`, {
-    json: {
+  const res = request('PUT', `${SERVER_URL}/v2/admin/quiz/${quizId}/name`, {
+    headers: {
       token: token,
+    },
+    json: {
       name: name
     }
   });

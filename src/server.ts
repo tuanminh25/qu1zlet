@@ -12,11 +12,11 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizNameUpdate, adminQuizTransfer, adminQuizDescriptionUpdate } from './quiz';
+import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizTransfer, adminQuizDescriptionUpdate, adminQuizNameUpdate } from './quiz';
 import { adminQuestionCreate, adminQuestionUpdate, adminQuestionDelete, listOfQuestions, moveQuizQuestion } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
-import { adminQuizInfoIt2 } from './old_it2_functions/quizIt2';
+import { adminQuizInfoIt2, adminQuizNameUpdateIt2 } from './old_it2_functions/quizIt2';
 import { adminQuestionCreateIt2, dupQuizQuestionIt2 } from './old_it2_functions/questionIt2';
 import { restoreQuizInTrashIt2 } from './old_it2_functions/trashIt2';
 
@@ -256,6 +256,14 @@ app.get('/v1/player/:playerId', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.put('/v2/admin/quiz/:quizId/name', (req: Request, res: Response) => {
+  const { name } = req.body;
+  const { token } = req.headers;
+  const { quizId } = req.params;
+  const response = adminQuizNameUpdate(String(token), parseInt(quizId), String(name));
+  res.json(response);
+});
+
 app.post('/v2/admin/quiz/:quizId/restore', (req: Request, res: Response) => {
   const { token } = req.headers;
   const { quizId } = req.params;
@@ -416,7 +424,7 @@ app.put('/v1/admin/quiz/:quizId/name', (req: Request, res: Response) => {
   const { token, name } = req.body;
   const { quizId } = req.params;
 
-  const response = adminQuizNameUpdate(String(token), parseInt(quizId), String(name));
+  const response = adminQuizNameUpdateIt2(String(token), parseInt(quizId), String(name));
 
   if ('error' in response) {
     if (response.error === 'Invalid Quiz Name') {
