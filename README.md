@@ -28,6 +28,7 @@ was not rendering in a way to reflect that.
 * 10/11: Changed `403` error description for sessions from `Valid token is provided, but user is not authorised to view this session` to `Valid token is provided, but user is not an owner of this quiz`
 * 12/11:
  * For `POST /v2/admin/quiz/{quizid}/question` and `POST /v2/admin/quiz/{quizid}/question/{questionid}` we have removed the requirements to ensure that the file is valid by downloading it and checking its actual file type. Instead we've just replaced it with a string check of the file URL itself (with no need to fetch/request/download it). If you haven't implemented the original one, do not implement it. If you have already implemented it, you can talk to your tutor about putting it in as bonus marks.
+* 14/11: Info about where to upload your deployment URL shared (don't stress, you can just email your tutor too)
 
 ## 🫡 0. Aims:
 
@@ -1417,6 +1418,8 @@ A sample flow logging a user in might be as follows (other flows exist too):
 _This section previously spoke about image uploading and is no longer required. For iteration 3 it is fine to store and image URL and then just serve that again to the user._
 
 For this iteration some part of the marks (see marking criteria) will come from your group having deployed a version of your code to a public web server. Instructions about how to deploy can be found in `lab09_deploy`.
+
+Once you have deployed your server to a URL, share this URL with your tutor by adding it to deploy.md
 
 ### 🦆 5.10. Scoring & Ranking
 
