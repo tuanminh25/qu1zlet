@@ -16,6 +16,13 @@ import {
 
 const ERROR = { error: expect.any(String) };
 
+function sleepSync(ms: number) {
+  const startTime = new Date().getTime();
+  while (new Date().getTime() - startTime < ms) {
+    // zzzZZ - comment needed so eslint doesn't complain
+  }
+}
+
 beforeEach(() => {
   testClear();
 });
@@ -1218,10 +1225,48 @@ describe("Current question information for a player", () => {
       { answer: 'Rome', colour: expect.any(String), answerId: expect.any(Number)  }],
     });
 
-
-
+    // End session
     expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, 'END').status).toStrictEqual(200);
   })
+
+    test.only("In the first question wait to second question", () => {
+      expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);    
+      let player1info = testCurrentPlayerInfo(player1.playerId, 1);
+      expect(player1info.status).toStrictEqual(200);
+      expect(player1info.response).toStrictEqual({
+        questionId: expect.any(Number),
+        question: validQuestion0.question,
+        duration: validQuestion0.duration,
+        thumbnailUrl: validQuestion0.thumbnailUrl,
+        points: validQuestion0.points,
+        answers: [{ answer: 'Berlin', colour: expect.any(String), answerId: expect.any(Number) },
+        { answer: 'Madrid', colour: expect.any(String), answerId: expect.any(Number)  },
+        { answer: 'Paris', colour: expect.any(String), answerId: expect.any(Number)  },
+        { answer: 'Rome', colour: expect.any(String), answerId: expect.any(Number)  }],
+      });
+
+      expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "SKIP_COUNTDOWN").status).toStrictEqual(200);
+      sleepSync(4*1000);
+      expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "GO_TO_ANSWER").status).toStrictEqual(200);
+      expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);    
+      
+      let player1info2 = testCurrentPlayerInfo(player1.playerId, 2);
+      expect(player1info2.status).toStrictEqual(200);
+      expect(player1info2.response).toStrictEqual({
+        questionId: expect.any(Number),
+        question: validQuestion1.question,
+        duration: validQuestion1.duration,
+        thumbnailUrl: validQuestion1.thumbnailUrl,
+        points: validQuestion1.points,
+        answers: [{ answer: 'Berlin', colour: expect.any(String), answerId: expect.any(Number) },
+        { answer: 'Madrid', colour: expect.any(String), answerId: expect.any(Number)  },
+        { answer: 'Paris', colour: expect.any(String), answerId: expect.any(Number)  },
+        { answer: 'Rome', colour: expect.any(String), answerId: expect.any(Number)  }],
+      });
+
+      // End session
+      expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, 'END').status).toStrictEqual(200);
+    })
 })
 
 testClear();
