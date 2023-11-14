@@ -1229,7 +1229,7 @@ describe("Current question information for a player", () => {
     expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, 'END').status).toStrictEqual(200);
   })
 
-    test.only("In the first question wait to second question", () => {
+    test("In the first question wait to second question", () => {
       expect(testGameSessionUpdate(user1.token, quiz1.quizId, game1.sessionId, "NEXT_QUESTION").status).toStrictEqual(200);    
       let player1info = testCurrentPlayerInfo(player1.playerId, 1);
       expect(player1info.status).toStrictEqual(200);
