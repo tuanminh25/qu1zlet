@@ -409,3 +409,14 @@ export function testGetChatMessages(playerId: number) {
   const res = request('GET', SERVER_URL + playerV1 + playerId + '/chat');
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testSendChatMessages(playerId: number, messagesBody: string) {
+  const res = request('POST', SERVER_URL + playerV1 + playerId + '/chat', {
+    json: {
+      message: {
+        messagesBody: messagesBody
+      }
+    }
+  });
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
