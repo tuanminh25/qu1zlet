@@ -15,7 +15,7 @@ import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate, adminQuizTransfer } from './quiz';
 import { adminQuestionCreate, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
-import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer } from './game';
+import { gameSessionStart, getGameStatus, updateGameSessionState } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
 
 import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
@@ -23,7 +23,8 @@ import {
   getChatMessages,
   sendChatMessages,
   playerStatus,
-  playerSubmission
+  playerSubmission,
+  joinPlayer
 } from './player';
 
 // Set up web app

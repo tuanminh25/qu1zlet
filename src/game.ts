@@ -4,7 +4,6 @@ import {
   save,
   checkquizId,
   sortPlayerNames,
-  generateRandomName,
 } from './helper';
 import HttpError from 'http-errors';
 import {
@@ -13,7 +12,6 @@ import {
   GameState,
   ReturnGameSession,
   ReturnQuizInfo,
-  Player,
   QuestionData
 } from './interface';
 
@@ -336,44 +334,4 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
     players: sortPlayerNames(gameSession.players),
     metadata: metadata
   };
-}
-
-export function joinPlayer(sessionId: number, name: string): {playerId: number} {
-  const data = load();
-  const gameSession = data.gameSessions.find(g => g.gameSessionId === sessionId);
-
-  if (!gameSession) {
-    throw HttpError(400, 'Session does not exist');
-  }
-
-  if (gameSession.players.find((p) => p.name === name)) {
-    throw HttpError(400, 'Name of user is not unique');
-  }
-
-  // Session is not in LOBBY state
-  if (gameSession.state !== 'LOBBY') {
-    throw HttpError(400, 'Session is not in LOBBY state');
-  }
-
-  // Check name, generate new one if neccessary
-  if (name === '') {
-    name = generateRandomName();
-    while (gameSession.players.find((p) => p.name === name)) {
-      name = generateRandomName();
-    }
-  }
-
-  // Initialize new player
-  const player: Player = {
-    sessionId: sessionId,
-    name: name,
-    playerId: data.ids.playerId,
-  };
-
-  // Save data
-  data.players.push(player);
-  gameSession.players.push(player);
-  data.ids.playerId++;
-  save(data);
-  return { playerId: player.playerId };
 }

@@ -231,7 +231,7 @@ describe('Update Game Session', () => {
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
     expect(update.response).toStrictEqual({});
     expect(update.status).toStrictEqual(200);
-  })
+  });
 
   test('NEXT_QUESTION at last question State QUESTION_CLOSE', () => {
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
@@ -243,13 +243,13 @@ describe('Update Game Session', () => {
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
     expect(update.response).toStrictEqual({});
     expect(update.status).toStrictEqual(200);
-  })
-  
+  });
+
   test('Invalid quizId', () => {
     const update = testGameSessionUpdate(user.token, quiz.quizId + 123, gameSession.sessionId, 'END');
     expect(update.response).toStrictEqual(ERROR);
     expect(update.status).toStrictEqual(403);
-  })
+  });
 
   test('Invalid token', () => {
     const update = testGameSessionUpdate(user.token + '1234lol', quiz.quizId, gameSession.sessionId, 'END');
