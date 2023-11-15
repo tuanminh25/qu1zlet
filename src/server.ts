@@ -12,7 +12,7 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate } from './quiz';
+import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate, adminQuizTransfer } from './quiz';
 import { adminQuestionCreate, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
@@ -323,6 +323,16 @@ app.delete('/v2/admin/quiz/:quizId/question/:questionId', (req: Request, res: Re
 
   const response = adminQuestionDelete(String(token), quizId, questionId);
   res.json(response);
+});
+
+app.post('/v2/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
+  const { token } = req.headers;
+  const { userEmail } = req.body;
+  const { quizId } = req.params;
+
+  const response = adminQuizTransfer(String(token), parseInt(quizId), String(userEmail));
+
+  res.status(200).json(response);
 });
 
 // ====================================================================

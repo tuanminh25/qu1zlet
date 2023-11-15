@@ -230,9 +230,11 @@ export function testQuizNameUpdate(token: string, quizId: number, name: string) 
 }
 
 export function testQuizTransfer(token: string, quizId: number, userEmail: string) {
-  const res = request('POST', `${SERVER_URL}/v1/admin/quiz/${quizId}/transfer`, {
-    json: {
+  const res = request('POST', `${SERVER_URL}/v2/admin/quiz/${quizId}/transfer`, {
+    headers: {
       token: token,
+    },
+    json: {
       userEmail: userEmail
     }
   });
