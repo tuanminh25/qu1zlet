@@ -335,3 +335,17 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
     metadata: metadata
   };
 }
+
+export function viewGameSession(token: string, quizId: number) {
+  const session = getSession(token);
+  const quiz = checkquizId(quizId);
+
+  if (quiz.quizOwnedby !== session.userId) {
+    throw HttpError(403, 'Unauthorised');
+  }
+
+  return {
+    activeSessions: quiz.activeSessions,
+    inactiveSessions: quiz.inactiveSessions
+  };
+}

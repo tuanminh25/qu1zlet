@@ -15,7 +15,7 @@ import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate, adminQuizTransfer } from './quiz';
 import { adminQuestionCreate, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
-import { gameSessionStart, getGameStatus, updateGameSessionState } from './game';
+import { gameSessionStart, getGameStatus, updateGameSessionState, viewGameSession } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
 
 import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
@@ -149,6 +149,13 @@ app.delete('/v2/admin/quiz/:quizId', (req: Request, res: Response) => {
 
   const response = adminQuizRemove(String(token), parseInt(quizId));
   res.status(200).json(response);
+});
+
+app.get('/v1/admin/quiz/:quizid/sessions', (req: Request, res: Response) => {
+  const token = req.headers.token;
+  const quizId = req.params.quizid;
+  const response = viewGameSession(String(token), parseInt(quizId));
+  res.json(response);
 });
 
 app.post('/v1/admin/quiz/:quizid/session/start', (req: Request, res: Response) => {

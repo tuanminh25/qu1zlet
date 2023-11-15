@@ -506,12 +506,11 @@ describe('Get game status', () => {
 describe('View Sessions', () => {
   let user: { token: string; };
   let quiz: { quizId: number; };
-  let ques: { questionId: number};
   let gameSession: { sessionId: number};
   beforeEach(() => {
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
     quiz = testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description').response;
-    ques = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion).response;
+    testCreateQuizQuestion(user.token, quiz.quizId, validQuestion);
     gameSession = testGameSessionStart(user.token, quiz.quizId, 10).response;
   });
 
@@ -528,7 +527,7 @@ describe('View Sessions', () => {
   });
 
   test('Empty token', () => {
-    const sessions =testViewSessions('', quiz.quizId);
+    const sessions = testViewSessions('', quiz.quizId);
     expect(sessions.response).toStrictEqual(ERROR);
     expect(sessions.status).toStrictEqual(401);
   });
@@ -537,7 +536,7 @@ describe('View Sessions', () => {
     const sessions = testViewSessions(user.token, quiz.quizId);
     expect(sessions.response).toStrictEqual({
       activeSessions: [gameSession.sessionId],
-      inactiveSessoins: []
+      inactiveSessions: []
     });
     expect(sessions.status).toStrictEqual(200);
   });
@@ -552,9 +551,9 @@ describe('View Sessions', () => {
     const sessions = testViewSessions(user.token, quiz.quizId);
     expect(sessions.response).toStrictEqual({
       activeSessions: [gameSession.sessionId, session3.sessionId, session4.sessionId],
-      inactiveSessoins: [session2.sessionId]
+      inactiveSessions: [session2.sessionId]
     });
     expect(sessions.status).toStrictEqual(200);
   });
-})
+});
 testClear();
