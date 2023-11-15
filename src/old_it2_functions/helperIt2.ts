@@ -155,49 +155,6 @@ export function checkauthUserId(authUserId: number): User {
 }
 
 /**
-  * Checks if password is valid
-  *
-  * @param {string} password
-  * @returns {boolean}
-*/
-export function isPassword(password: string): boolean {
-  if (password.length < 8) {
-    return false;
-  } else if (/\d/.test(password) === false || /[a-zA-Z]/.test(password) === false) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-/**
-  * Checks if username is valid
-  *
-  * @param {string} password
-  * @returns {boolean}
-*/
-export function isUserName(name: string): boolean {
-  if (name.length < 2 || name.length > 20) {
-    return false;
-  } else if (/^[a-zA-Z\s'-]+$/.test(name) === false) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-/**
- * Checks if email exists
- *
- * @param {string} email
- * @returns {}
-*/
-export function checkEmail(email: string): User {
-  const data = load();
-  return data.users.find((user) => user.email === email);
-}
-
-/**
  * Given a token, check if it is valid
  * @param {string} token
  * @returns {boolean}
@@ -217,20 +174,6 @@ export function isQuizName(name: string): boolean {
   if (name.length < 3 || name.length > 30) {
     return false;
   } else if (/^[\w\s]+$/.test(name) === false) {
-    return false;
-  } else {
-    return true;
-  }
-}
-
-/**
-  * Checks whether the string follows the requirements for a description.
-  *
-  * @param {string} name
-  * @returns {boolean}
-*/
-export function isQuizDescription(name: string): boolean {
-  if (name.length > 100) {
     return false;
   } else {
     return true;
@@ -287,36 +230,4 @@ export function getSession(token: string): Session {
   }
 
   return session;
-}
-
-/**
- * Check whether given quiz id is in trash or not
- *
- * @param {number} quizId
- * @return {Quiz}
- */
-export function isQuizInTrash(quizId: number): Quiz {
-  const data = load();
-  return data.trash.find(quiz => quiz.quizId === quizId);
-}
-
-/**
-  * Given a quiz id, returns the quiz and its
-  *
-  * @param {string} quizId
-  * @returns { quiz:
-*   {
-  *     quizId,
-  *     name,
-  *     timeCreated,
-  *     timeLastEdited,
-  *     description,
-  *   }
-  * }
-  * @returns {undefined} - quizId is not a valid quiz id
-*/
-export function isQuizInCurrentQuizzies(quizId: number): Quiz {
-  const data = load();
-  const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
-  return quiz;
 }

@@ -18,7 +18,6 @@ import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
 import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
-import { restoreQuizInTrashIt2 } from './old_it2_functions/trashIt2';
 import {
   getChatMessages,
   sendChatMessages
@@ -427,16 +426,7 @@ app.post('/v1/admin/quiz/:quizId/restore', (req: Request, res: Response) => {
   const { token } = req.body;
   const { quizId } = req.params;
 
-  const response = restoreQuizInTrashIt2(String(token), parseInt(quizId));
-
-  if (response.error === 'Invalid token') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Unauthorised') {
-    return res.status(403).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
-
+  const response = restoreQuizInTrash(String(token), parseInt(quizId));
   res.status(200).json(response);
 });
 
