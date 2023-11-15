@@ -5,7 +5,6 @@ import {
   checkquizId,
   sortPlayerNames,
   generateRandomName,
-  findPlayerFromId,
 } from './helper';
 import HttpError from 'http-errors';
 import {
@@ -15,7 +14,6 @@ import {
   ReturnGameSession,
   ReturnQuizInfo,
   Player,
-  PlayerStatus,
   QuestionData
 } from './interface';
 
@@ -56,7 +54,7 @@ export function clearAllTimers() {
     }
 
     if (timer.questionDurationTimer !== null) {
-      clearTimeout(timer.questionDurationTimer)
+      clearTimeout(timer.questionDurationTimer);
     }
   }
 }
@@ -86,7 +84,7 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
     throw HttpError(400, 'Quiz does not have any question');
   }
 
-  const newQuestionDatas: QuestionData[] = []
+  const newQuestionDatas: QuestionData[] = [];
   for (const ques of quiz.questions) {
     const correctAnswerIds: number[] = [];
     const validAnswerIds: number[] = [];
@@ -94,7 +92,7 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
       if (answer.correct === true) {
         correctAnswerIds.push(answer.answerId);
       }
-      validAnswerIds.push(answer.answerId)
+      validAnswerIds.push(answer.answerId);
     }
     newQuestionDatas.push(
       {
@@ -107,7 +105,7 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
         correctAnswerIds: correctAnswerIds,
         validAnswerIds: validAnswerIds
       }
-    )
+    );
   }
 
   const newGameSession: GameSession = {
@@ -381,4 +379,3 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   save(data);
   return { playerId: player.playerId };
 }
-

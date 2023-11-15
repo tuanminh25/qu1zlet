@@ -195,4 +195,3 @@ export interface PlayerSubmission {
   answerIds: number[];
   name: string
 }
-

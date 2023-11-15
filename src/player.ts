@@ -91,6 +91,6 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
 
   gameSession.questionDatas[questionPosition - 1].playerSubmissions.push(playerSubmit);
   save(data);
-  
+
   return {};
 }
