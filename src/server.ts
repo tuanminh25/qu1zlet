@@ -19,9 +19,9 @@ import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, pl
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2 } from './old_it2_functions/quizIt2';
 import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
 import { restoreQuizInTrashIt2 } from './old_it2_functions/trashIt2';
-import { 
+import {
   getChatMessages,
-  sendChatMessages 
+  sendChatMessages
 } from './player';
 
 // Set up web app
@@ -223,7 +223,7 @@ app.post('/v1/player/join', (req: Request, res: Response) => {
 
 app.post('/v1/player/:playerId/chat', (req: Request, res: Response) => {
   const playerId = req.params.playerId;
-  const message  = req.body.message;
+  const message = req.body.message;
   const response = sendChatMessages(parseInt(playerId), String(message.messageBody));
   res.json(response);
 });

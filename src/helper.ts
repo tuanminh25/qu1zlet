@@ -283,7 +283,7 @@ export function sortPlayerNames(playerArray: Player[]): string[] {
  * @param {string} url
  * @throws {Error}
  */
-export function checkUrlImage(url: string): void{
+export function checkUrlImage(url: string): void {
   if (!url || typeof url !== 'string' || url.length === 0) {
     throw HttpError(400, 'ThumbnailUrl is empty');
   }
@@ -355,9 +355,9 @@ export function generateRandomName(): string {
 export function findPlayerFromId(playerId: number): Player {
   const data = load();
   const player = data.players.find(player => player.playerId === playerId);
-  
+
   if (!player) {
-    throw HttpError(400, 'Player ID does not exist'); 
+    throw HttpError(400, 'Player ID does not exist');
   }
 
   return player;

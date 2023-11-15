@@ -6,7 +6,7 @@ import {
 } from './helper';
 import { ChatMessage } from './interface';
 import HttpError from 'http-errors';
-export function getChatMessages(playerId: number): {messages: ChatMessage[]}  {
+export function getChatMessages(playerId: number): {messages: ChatMessage[]} {
   const data = load();
   const player = findPlayerFromId(playerId);
   const gameSession = data.gameSessions.find((g) => g.gameSessionId === player.sessionId);
@@ -16,7 +16,7 @@ export function getChatMessages(playerId: number): {messages: ChatMessage[]}  {
   };
 }
 
-export function sendChatMessages(playerId: number, message: string): Record<string, never>  {
+export function sendChatMessages(playerId: number, message: string): Record<string, never> {
   const data = load();
   const player = findPlayerFromId(playerId);
   const gameSession = data.gameSessions.find((q) => q.gameSessionId === player.sessionId);

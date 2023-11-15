@@ -69,16 +69,16 @@ describe('Send messages', () => {
   test('Successful 1 player chat', () => {
     const message = testSendChatMessages(player.playerId, 'First Message');
     expect(message.response).toStrictEqual({});
-    expect(message.status).toStrictEqual(200)
+    expect(message.status).toStrictEqual(200);
 
     const chat = testGetChatMessages(player.playerId);
     expect(chat.response).toStrictEqual({
-      messages: [ 
+      messages: [
         {
-            messageBody: 'First Message',
-            playerId: player.playerId,
-            playerName: 'LUCA',
-            timeSent: expect.any(Number)
+          messageBody: 'First Message',
+          playerId: player.playerId,
+          playerName: 'LUCA',
+          timeSent: expect.any(Number)
         }
       ]
     });
@@ -114,7 +114,7 @@ describe('Send messages', () => {
 
     const chat = testGetChatMessages(player.playerId);
     expect(chat.response).toStrictEqual({
-      messages: [ 
+      messages: [
         {
           messageBody: 'Player1',
           playerId: player.playerId,
