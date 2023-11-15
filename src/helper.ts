@@ -2,7 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import HttpError from 'http-errors';
-import validator from 'validator';
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -298,13 +297,6 @@ export function checkUrlImage(url: string): void {
   const isValidExtension = validExtensions.some(extension => url.toLowerCase().endsWith(extension));
   if (!isValidExtension) {
     throw HttpError(400, 'The thumbnailUrl does not end with one of the following filetypes (case insensitive): jpg, jpeg, png');
-  }
-}
-
-// Helper function to validate URL
-export function isValidUrl(url: string): void {
-  if (!validator.isURL(url)) {
-    throw HttpError(400, 'Invalid URL');
   }
 }
 
