@@ -19,7 +19,10 @@ import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, pl
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2 } from './old_it2_functions/quizIt2';
 import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
 import { restoreQuizInTrashIt2 } from './old_it2_functions/trashIt2';
-import { getChatMessages } from './player';
+import {
+  getChatMessages,
+  sendChatMessages
+} from './player';
 
 // Set up web app
 const app = express();
@@ -192,6 +195,38 @@ app.put('/v1/admin/quiz/:quizId/thumbnail', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.get('/v1/player/:playerId/question/:questionposition', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const questionposition = req.params.questionposition;
+  const response = currentPlayerQuestionInfor(parseInt(playerId), parseInt(questionposition));
+  res.json(response);
+});
+
+app.get('/v1/player/:playerId/chat', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const response = getChatMessages(parseInt(playerId));
+  res.json(response);
+});
+
+app.get('/v1/player/:playerId', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const response = playerStatus(parseInt(playerId));
+  res.json(response);
+});
+
+app.post('/v1/player/join', (req: Request, res: Response) => {
+  const sessionId = req.body.sessionId;
+  const name = req.body.name;
+  const response = joinPlayer(sessionId, name);
+  res.json(response);
+});
+
+app.post('/v1/player/:playerId/chat', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const message = req.body.message;
+  const response = sendChatMessages(parseInt(playerId), String(message.messageBody));
+  res.json(response);
+});
 // ====================================================================
 // it2 routes below
 // ====================================================================
@@ -254,25 +289,6 @@ app.delete('/v2/admin/quiz/trash/empty', (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.post('/v1/player/join', (req: Request, res: Response) => {
-  const sessionId = req.body.sessionId;
-  const name = req.body.name;
-  const response = joinPlayer(sessionId, name);
-  res.json(response);
-});
-
-app.get('/v1/player/:playerId/chat', (req: Request, res: Response) => {
-  const playerId = req.params.playerId;
-  const response = getChatMessages(parseInt(playerId));
-  res.json(response);
-});
-
-app.get('/v1/player/:playerId', (req: Request, res: Response) => {
-  const playerId = req.params.playerId;
-  const response = playerStatus(parseInt(playerId));
-  res.json(response);
-});
-
 app.put('/v2/admin/quiz/:quizId/name', (req: Request, res: Response) => {
   const { name } = req.body;
   const { token } = req.headers;
@@ -306,13 +322,6 @@ app.post('/v2/admin/quiz/:quizId/question/:questionId/duplicate', (req: Request,
 
   const response = dupQuizQuestion(String(token), parseInt(quizId), parseInt(questionId));
 
-  res.json(response);
-});
-
-app.get('/v1/player/:playerId/question/:questionposition', (req: Request, res: Response) => {
-  const playerId = req.params.playerId;
-  const questionposition = req.params.questionposition;
-  const response = currentPlayerQuestionInfor(parseInt(playerId), parseInt(questionposition));
   res.json(response);
 });
 

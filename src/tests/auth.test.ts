@@ -43,7 +43,7 @@ describe('adminAuthRegister', () => {
     { a: 'Roger', b: '' },
     { a: '', b: '' },
   ])('Invalid names : ($a, $b)', ({ a, b }) => {
-    const user1 = testRegister('Rogergmail.com', 'Roger1234', a, b);
+    const user1 = testRegister('Roger@gmail.com', 'Roger1234', a, b);
     expect(user1.response).toStrictEqual(ERROR);
     expect(user1.status).toStrictEqual(400);
   });
@@ -54,7 +54,7 @@ describe('adminAuthRegister', () => {
     { a: 'RogerDuong' },
     { a: '' },
   ])('Invalid passwords : $a', ({ a }) => {
-    const user1 = testRegister('Rogergmail.com', a, 'Roger', 'Duong');
+    const user1 = testRegister('Roger@gmail.com', a, 'Roger', 'Duong');
     expect(user1.response).toStrictEqual(ERROR);
     expect(user1.status).toStrictEqual(400);
   });

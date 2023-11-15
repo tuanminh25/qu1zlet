@@ -283,7 +283,7 @@ export function sortPlayerNames(playerArray: Player[]): string[] {
  * @param {string} url
  * @throws {Error}
  */
-export function checkUrlImage(url: string) {
+export function checkUrlImage(url: string): void {
   if (!url || typeof url !== 'string' || url.length === 0) {
     throw HttpError(400, 'ThumbnailUrl is empty');
   }
@@ -302,23 +302,9 @@ export function checkUrlImage(url: string) {
 }
 
 // Helper function to validate URL
-export function isValidUrl(url: string) {
+export function isValidUrl(url: string): void {
   if (!validator.isURL(url)) {
     throw HttpError(400, 'Invalid URL');
-  }
-}
-
-// Helper function to check if image is JPG or PNG
-export async function isImageJpgOrPng(url: string): Promise<void> {
-  const response = await fetch(url, { method: 'HEAD' });
-
-  if (!response.ok) {
-    throw HttpError('Network response was not ok');
-  }
-
-  const contentType = response.headers.get('content-type');
-  if (contentType !== 'image/jpeg' && contentType !== 'image/png') {
-    throw HttpError('Not an image');
   }
 }
 
@@ -335,66 +321,13 @@ export function findGameSession(gameSessionId: number) {
 }
 
 /**
-  * Given a game player name or id and a gameSessionId
-  * Return that player if exist
-  * @param {string} playerName
-  * @param {number} playerId
-  *
-  * @returns { Player }
-  * This version check from dataStore.gameSession
-  * Find the correct session then
-  * Check for player in that session
-  *
-*/
-export function findPlayerFromGameId(gameSessionId: number, playerName?: string, playerId?: number) {
-  const gameSession = findGameSession(gameSessionId);
-  if (gameSession === undefined) {
-    throw HttpError('Wrong gameSessionId: ');
-  }
-
-  if (playerName !== undefined) {
-    return gameSession.players.find(player => player.name === playerName);
-  }
-
-  if (playerId !== undefined) {
-    return gameSession.players.find(player => player.playerId === playerId);
-  }
-
-  throw HttpError('Either player name or player id is wrong !');
-}
-
-/**
-  * Given a game player name or id and a gameSessionId
-  *
-  * Return that player if exist
-  * @param {string} playerName
-  * @param {number} playerId
-  *
-  * @returns { Player }
-  * This version check from dataStore.players
-*/
-export function findPlayerFromGameId2(gameSessionId: number, playerName?: string, playerId?: number) {
-  if (playerName === undefined && playerId === undefined) {
-    throw HttpError('Either player name or player id is wrong !');
-  }
-
-  const data = load();
-  for (const player of data.players) {
-    if (player.name === playerName && player.sessionId === gameSessionId) {
-      return player;
-    }
-  }
-  return undefined;
-}
-
-/**
  * generate a name which satisfies
  * the structure "[5 letters][3 numbers]" (e.g. valid123, ifjru483, ofijr938)
  *  where there are no repetitions of numbers or characters within the same name
   * @returns { string }
   *
 */
-export function generateRandomName() {
+export function generateRandomName(): string {
   // Define characters and numbers
   const characters = 'abcdefghijklmnopqrstuvwxyz';
   const numbers = '0123456789';
@@ -412,19 +345,6 @@ export function generateRandomName() {
   // Concatenate characters and numbers to form the final string
   return randomChars + randomNumbers;
 }
-/** '
- * return gameSessionId if playerId exists
- */
-export function isPLayer(playerId: number): number {
-  const data = load();
-  const gameSessionId = data.players.find((p) => p.playerId === playerId);
-
-  if (!gameSessionId) {
-    throw HttpError(400, 'Player ID does not exist');
-  }
-
-  return gameSessionId.sessionId;
-}
 
 /**
  * find player from player id
@@ -432,9 +352,15 @@ export function isPLayer(playerId: number): number {
   * @return {player}
   *
 */
-export function findPlayerFromId(playerId: number) {
+export function findPlayerFromId(playerId: number): Player {
   const data = load();
-  return data.players.find(player => player.playerId === playerId);
+  const player = data.players.find(player => player.playerId === playerId);
+
+  if (!player) {
+    throw HttpError(400, 'Player ID does not exist');
+  }
+
+  return player;
 }
 
 /**
@@ -442,7 +368,7 @@ export function findPlayerFromId(playerId: number) {
   * @param {number} quizId
   *
 */
-export function checkSessionsEnded(quizId: number) {
+export function checkSessionsEnded(quizId: number): void {
   const data = load();
   const notEndedSessions = data.gameSessions.some(session =>
     session.metadata.quizId === quizId && session.state !== GameState.END

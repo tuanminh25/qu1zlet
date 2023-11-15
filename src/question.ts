@@ -10,7 +10,6 @@ import {
   checkUrlImage,
   getSession,
   findPlayerFromId,
-  isPLayer,
   findGameSession,
   checkSessionsEnded
 } from './helper';
@@ -366,12 +365,8 @@ export function dupQuizQuestion(token: string, quizId: number, questionId: numbe
  * @returns {}
  */
 export function currentPlayerQuestionInfor(playerId: number, questionposition: number) {
-  if (!findPlayerFromId(playerId)) {
-    throw HttpError(400, 'player ID does not exist');
-  }
-
-  const gameSessionId = isPLayer(playerId);
-  const gameSession = findGameSession(gameSessionId);
+  const player = findPlayerFromId(playerId);
+  const gameSession = findGameSession(player.sessionId);
 
   // question position is not valid for the session this player is in
   questionposition = questionposition - 1;

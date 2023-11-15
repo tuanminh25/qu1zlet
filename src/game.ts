@@ -4,9 +4,8 @@ import {
   save,
   checkquizId,
   sortPlayerNames,
-  findPlayerFromGameId,
   generateRandomName,
-  isPLayer,
+  findPlayerFromId,
 } from './helper';
 import HttpError from 'http-errors';
 import {
@@ -307,16 +306,17 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
 
 export function joinPlayer(sessionId: number, name: string): {playerId: number} {
   const data = load();
+  const gameSession = data.gameSessions.find(g => g.gameSessionId === sessionId);
 
-  // Error cases
-  // 400
-  // Name of user entered is not unique
-  if (findPlayerFromGameId(sessionId, name)) {
-    throw HttpError(400, 'Name of user entered is not unique');
+  if (!gameSession) {
+    throw HttpError(400, 'Session does not exist');
+  }
+
+  if (gameSession.players.find((p) => p.name === name)) {
+    throw HttpError(400, 'Name of user is not unique');
   }
 
   // Session is not in LOBBY state
-  const gameSession = data.gameSessions.find(g => g.gameSessionId === sessionId);
   if (gameSession.state !== 'LOBBY') {
     throw HttpError(400, 'Session is not in LOBBY state');
   }
@@ -324,7 +324,7 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   // Check name, generate new one if neccessary
   if (name === '') {
     name = generateRandomName();
-    while (findPlayerFromGameId(sessionId, name)) {
+    while (gameSession.players.find((p) => p.name === name)) {
       name = generateRandomName();
     }
   }
@@ -344,10 +344,10 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   return { playerId: player.playerId };
 }
 
-export function playerStatus (playerId: number): PlayerStatus {
+export function playerStatus(playerId: number): PlayerStatus {
   const data = load();
-  const sessionId = isPLayer(playerId);
-  const gameSession = data.gameSessions.find((g) => g.gameSessionId === sessionId);
+  const player = findPlayerFromId(playerId);
+  const gameSession = data.gameSessions.find((g) => g.gameSessionId === player.sessionId);
 
   return {
     state: gameSession.state,
