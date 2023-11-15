@@ -194,14 +194,15 @@ export function testUpdateQuestion(
   questionId: number,
   questionBody: object
 ) {
-  const res = request('PUT', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}`,
+  const res = request('PUT', `${SERVER_URL}/v2/admin/quiz/${quizId}/question/${questionId}`,
     {
       json: {
+        questionBody: questionBody,
+      },
+      headers: {
         token: token,
-        questionBody: questionBody
-      }
+      },
     });
-
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
