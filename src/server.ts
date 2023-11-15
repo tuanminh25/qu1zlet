@@ -344,6 +344,15 @@ app.post('/v2/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
   res.status(200).json(response);
 });
 
+app.put('/v2/admin/quiz/:quizId/question/:questionId/move', (req: Request, res: Response) => {
+  const { token } = req.headers;
+  const { newPosition } = req.body;
+  const { quizId, questionId } = req.params;
+
+  const response = moveQuizQuestion(String(token), parseInt(quizId), parseInt(questionId), parseInt(newPosition));
+  res.json(response);
+});
+
 // ====================================================================
 // it2 routes below
 // ====================================================================
@@ -552,17 +561,6 @@ app.put('/v1/admin/quiz/:quizId/question/:questionId/move', (req: Request, res: 
   const { quizId, questionId } = req.params;
 
   const response = moveQuizQuestion(String(token), parseInt(quizId), parseInt(questionId), parseInt(newPosition));
-
-  if (response.error === 'Token is empty or invalid') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Valid token is provided, quiz does not exist: ' + parseInt(quizId)) {
-    return res.status(403).json(response);
-  } else if (response.error === 'Valid token is provided, but user is not an owner of this quiz') {
-    return res.status(403).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
-
   res.json(response);
 });
 
