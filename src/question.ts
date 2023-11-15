@@ -265,11 +265,12 @@ export function listOfQuestions(token: string, quizId: number) {
 
   return list;
 }
+
 /**
  * Move a question from one particular position in the quiz to another
  * @param {string} token
  * @param {number} quizId
- * @param {number} clearquestionId
+ * @param {number} questionId
  * @param {number} newPosition
  * @returns
  */
@@ -278,37 +279,34 @@ export function moveQuizQuestion(token: string, quizId: number, questionId: numb
 
   // Check errors
   // Invalid token
-  const session = data.sessions.find((session) => session.sessionId === token);
-  if (!session) {
-    return { error: 'Token is empty or invalid' };
-  }
+  const session = getSession(token);
 
   // Non-existent quiz
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
-  if (quiz === undefined) {
-    return { error: 'Valid token is provided, quiz does not exist: ' + quizId };
+  if (!quiz) {
+    throw HttpError(403, 'Valid token is provided, quiz does not exist: ' + quizId);
   }
 
   // User is not owner of the quiz
   if (session.userId !== quiz.quizOwnedby) {
-    return { error: 'Valid token is provided, but user is not an owner of this quiz' };
+    throw HttpError(403, 'Valid token is provided, but user is not an owner of this quiz');
   }
 
   // Question Id does not belong to this quiz
   const question = quiz.questions.find((question) => question.questionId === questionId);
   if (!question) {
-    return { error: 'Question Id does not refer to a valid question within this quiz: ' + questionId };
+    throw HttpError(400, 'Question Id does not refer to a valid question within this quiz: ' + questionId);
   }
 
   // Out of range newPosition
   if (newPosition < 0 || newPosition > quiz.questions.length - 1) {
-    return { error: 'NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions: ' + newPosition };
+    throw HttpError(400, 'NewPosition is less than 0, or NewPosition is greater than n-1 where n is the number of questions: ' + newPosition);
   }
 
   // Current position === new position
   const currentPosition = quiz.questions.findIndex(question => question.questionId === questionId);
   if (currentPosition === newPosition) {
-    return { error: 'NewPosition is the position of the current question: ' + currentPosition };
+    throw HttpError(400, 'NewPosition is the position of the current question: ' + currentPosition);
   }
 
   quiz.questions.splice(currentPosition, 1);
