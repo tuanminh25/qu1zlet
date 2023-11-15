@@ -13,7 +13,8 @@ import {
   User,
   Colours,
   Session,
-  Player
+  Player,
+  GameState
 } from './interface';
 
 export function load(): DataStore {
@@ -434,4 +435,20 @@ export function isPLayer(playerId: number): number {
 export function findPlayerFromId(playerId: number) {
   const data = load();
   return data.players.find(player => player.playerId === playerId);
+}
+
+/**
+ * throws an error if there is a game not in END state.
+  * @param {number} quizId
+  *
+*/
+export function checkSessionsEnded(quizId: number) {
+  const data = load();
+  const notEndedSessions = data.gameSessions.some(session =>
+    session.metadata.quizId === quizId && session.state !== GameState.END
+  );
+
+  if (notEndedSessions) {
+    throw HttpError(400, 'Not all game sessions are in END state for quizId ' + quizId);
+  }
 }
