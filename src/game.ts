@@ -80,7 +80,8 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
     atQuestion: 0,
     players: [],
     metadata: quiz,
-    autoStartNum: autoStartNum
+    autoStartNum: autoStartNum,
+    messages: [],
   };
 
   quiz.activeSessions.push(newGameSession.gameSessionId);

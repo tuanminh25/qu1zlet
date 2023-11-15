@@ -91,7 +91,7 @@ describe('adminAuthLogin v1', () => {
 });
 
 describe('adminAuthLogout v1', () => {
-  let user1: any;
+  let user1: { token: string};
   beforeEach(() => {
     user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;
   });
