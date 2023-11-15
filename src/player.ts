@@ -2,10 +2,11 @@ import {
   load,
   findPlayerFromId,
   generateTime,
-  save
+  save,
 } from './helper';
-import { ChatMessage } from './interface';
+import { ChatMessage, PlayerStatus } from './interface';
 import HttpError from 'http-errors';
+
 export function getChatMessages(playerId: number): {messages: ChatMessage[]} {
   const data = load();
   const player = findPlayerFromId(playerId);
@@ -36,4 +37,16 @@ export function sendChatMessages(playerId: number, message: string): Record<stri
   save(data);
 
   return {};
+}
+
+export function playerStatus(playerId: number): PlayerStatus {
+  const data = load();
+  const player = findPlayerFromId(playerId);
+  const gameSession = data.gameSessions.find((g) => g.gameSessionId === player.sessionId);
+
+  return {
+    state: gameSession.state,
+    atQuestion: gameSession.atQuestion,
+    numQuestions: gameSession.metadata.numQuestions
+  };
 }

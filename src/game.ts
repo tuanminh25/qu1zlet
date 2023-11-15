@@ -48,6 +48,18 @@ function durationTimer(gameSessionId: number, countdown: number, duration: numbe
   }, (countdown + duration) * 1000);
 }
 
+export function clearAllTimers() {
+  for (const timer of gameSessionTimeoutIds) {
+    if (timer.questionCountDown !== null) {
+      clearTimeout(timer.questionCountDown);
+    }
+
+    if (timer.questionDurationTimer !== null) {
+      clearTimeout(timer.questionDurationTimer)
+    }
+  }
+}
+
 export function gameSessionStart(token: string, quizId: number, autoStartNum: number): {sessionId: number} {
   const data = load();
   const session = getSession(token);
@@ -344,14 +356,3 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   return { playerId: player.playerId };
 }
 
-export function playerStatus(playerId: number): PlayerStatus {
-  const data = load();
-  const player = findPlayerFromId(playerId);
-  const gameSession = data.gameSessions.find((g) => g.gameSessionId === player.sessionId);
-
-  return {
-    state: gameSession.state,
-    atQuestion: gameSession.atQuestion,
-    numQuestions: gameSession.metadata.numQuestions
-  };
-}
