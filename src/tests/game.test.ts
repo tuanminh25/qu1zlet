@@ -532,6 +532,13 @@ describe('View Sessions', () => {
     expect(sessions.status).toStrictEqual(401);
   });
 
+  test('Unauthorised', () => {
+    const user2 = testRegister('testuser2@example.com', 'password1235', 'Roger', 'Duong').response;
+    const sessions = testViewSessions(user2.token, quiz.quizId);
+    expect(sessions.response).toStrictEqual(ERROR);
+    expect(sessions.status).toStrictEqual(403);
+  });
+
   test('1 active session', () => {
     const sessions = testViewSessions(user.token, quiz.quizId);
     expect(sessions.response).toStrictEqual({
