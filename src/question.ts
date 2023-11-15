@@ -300,9 +300,6 @@ export function dupQuizQuestion(token: string, quizId: number, questionId: numbe
 
   // Non-existent quiz
   const quiz = checkquizId(quizId);
-  if (!quiz) {
-    throw HttpError(403, 'Valid token is provided, quiz does not exist');
-  }
 
   // User is not owner of the quiz
   if (session.userId !== quiz.quizOwnedby) {
