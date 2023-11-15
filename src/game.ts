@@ -181,8 +181,6 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     quiz.inactiveSessions.push(gameSession.gameSessionId);
     quiz.activeSessions = quiz.activeSessions.filter((g) => g !== gameSession.gameSessionId);
     save(data);
-
-    return {};
   }
 
   if (gameSession.state === GameState.LOBBY) {

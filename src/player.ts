@@ -69,6 +69,10 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
     throw HttpError(400, 'Session is not yet up to this question');
   }
 
+  if (answerIds.length === 0) {
+    throw HttpError(400, 'Less than 1 answer ID was submitted');
+  }
+
   if (!answerIds.some(ids => gameSession.questionDatas[questionPosition - 1].validAnswerIds.includes(ids))) {
     throw HttpError(400, 'Answer IDs are not valid for this particular questio');
   }
@@ -76,10 +80,6 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
   const uniqueAnswerIds = new Set(answerIds);
   if (uniqueAnswerIds.size !== answerIds.length) {
     throw HttpError(400, 'There are duplicate answer IDs provided');
-  }
-
-  if (answerIds.length === 0) {
-    throw HttpError(400, 'Less than 1 answer ID was submitted');
   }
 
   const playerSubmit: PlayerSubmission = {
