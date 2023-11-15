@@ -15,6 +15,7 @@
         "ques": "jest question.test.ts",
         "trash": "jest trash.test.ts",
         "game": "jest game.test.ts",
+        "chat": "jest chat.test.ts",
         "startNodemon": "nodemon src/server.ts"
     },
     "dependencies": {
