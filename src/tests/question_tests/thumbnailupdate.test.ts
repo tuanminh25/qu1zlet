@@ -48,8 +48,15 @@ describe('UpdateQuizThumbnail', () => {
   });
 
   test('User not an owner of the quiz', () => {
-    const anotherUser = testRegister('anotheruser@example.com', 'password1234', 'Another', 'User').response;
+    const anotherUser = testRegister('anotheruser@example.com', 'Password1234', 'Another', 'User').response;
     const updateResponse = testUpdateQuizThumbnail(anotherUser.token, quiz.quizId, 'http://example.com/image.jpg');
+    expect(updateResponse.response).toStrictEqual(ERROR);
+    expect(updateResponse.status).toBe(403);
+  });
+
+  test('Quiz doesnt exist', () => {
+    const anotherUser = testRegister('anotheruser@example.com', 'Password1234', 'Another', 'User').response;
+    const updateResponse = testUpdateQuizThumbnail(anotherUser.token, quiz.quizId + 3, 'http://example.com/image.jpg');
     expect(updateResponse.response).toStrictEqual(ERROR);
     expect(updateResponse.status).toBe(403);
   });

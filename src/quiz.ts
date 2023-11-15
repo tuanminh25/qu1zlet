@@ -307,7 +307,7 @@ export function adminThumbnailUpdate(token: string, quizId: number, imgUrl: stri
   checkUrlImage(imgUrl);
 
   if (!quiz) {
-    throw HttpError(403, 'Unauthorised');
+    throw HttpError(403, 'Quiz doesnt exist');
   }
 
   // Quiz ID does not refer to a quiz that this user owns
