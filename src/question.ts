@@ -1,5 +1,4 @@
 import {
-  isToken,
   checkauthUserId,
   generateTime,
   load,
@@ -235,35 +234,6 @@ export function adminQuestionDelete(token: string, quizId: number, questionId: n
 
   save(data);
   return {};
-}
-
-/**
- *
- *
- * @param token
- * @param quizId
- * @returns
- */
-export function listOfQuestions(token: string, quizId: number) {
-  // Error 401 checking
-  if (!isToken(token)) {
-    return { error: 'Invalid token' };
-  }
-
-  const quiz = checkquizId(quizId);
-  if (quiz === undefined) {
-    return { error: 'Quiz error, quizId:' + quizId };
-  }
-
-  const list = [];
-  for (const question of quiz.questions) {
-    list.push({
-      questionId: question.questionId,
-      question: question.question,
-    });
-  }
-
-  return list;
 }
 
 /**

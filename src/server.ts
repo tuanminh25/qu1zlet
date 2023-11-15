@@ -13,14 +13,17 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate, adminQuizTransfer } from './quiz';
-import { adminQuestionCreate, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
+import { adminQuestionCreate, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
-import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
+import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
+
 import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
 import {
   getChatMessages,
-  sendChatMessages
+  sendChatMessages,
+  playerStatus,
+  playerSubmission
 } from './player';
 
 // Set up web app
@@ -194,6 +197,15 @@ app.put('/v1/admin/quiz/:quizId/thumbnail', (req: Request, res: Response) => {
   res.json(response);
 });
 
+app.put('/v1/player/:playerId/question/:questionposition/answer', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const questionposition = req.params.questionposition;
+  const answerIds = req.body.answerIds;
+  const parsedAnswerIds = answerIds.map((id: string) => parseInt(id));
+  const response = playerSubmission(parseInt(playerId), parseInt(questionposition), parsedAnswerIds);
+  res.json(response);
+});
+
 app.get('/v1/player/:playerId/question/:questionposition', (req: Request, res: Response) => {
   const playerId = req.params.playerId;
   const questionposition = req.params.questionposition;
@@ -226,8 +238,9 @@ app.post('/v1/player/:playerId/chat', (req: Request, res: Response) => {
   const response = sendChatMessages(parseInt(playerId), String(message.messageBody));
   res.json(response);
 });
+
 // ====================================================================
-// it2 routes below
+// it2 version routes below
 // ====================================================================
 
 app.post('/v1/admin/auth/logout', (req: Request, res: Response) => {
@@ -349,48 +362,6 @@ app.put('/v2/admin/quiz/:quizId/question/:questionId/move', (req: Request, res: 
   const { quizId, questionId } = req.params;
 
   const response = moveQuizQuestion(String(token), parseInt(quizId), parseInt(questionId), parseInt(newPosition));
-  res.json(response);
-});
-
-// ====================================================================
-// it2 routes below
-// ====================================================================
-
-app.post('/v1/admin/auth/logout', (req: Request, res: Response) => {
-  const token = req.body.token;
-  const response = adminAuthLogout(String(token));
-
-  res.json(response);
-});
-
-app.get('/v1/admin/user/details', (req: Request, res: Response) => {
-  const token = req.query.token;
-  const response = adminUserDetails(String(token));
-
-  res.json(response);
-});
-
-app.put('/v1/admin/user/password', (req: Request, res: Response) => {
-  const { token, oldPassword, newPassword } = req.body;
-  const response = updatePassword(token, oldPassword, newPassword);
-
-  res.json(response);
-});
-
-app.post('/v1/admin/quiz', (req: Request, res: Response) => {
-  const token = req.body.token;
-  const name = req.body.name;
-  const description = req.body.description;
-
-  const response = adminQuizCreate(String(token), String(name), String(description));
-
-  res.json(response);
-});
-
-app.put('/v1/admin/user/details', (req: Request, res: Response) => {
-  const { token, email, nameFirst, nameLast } = req.body;
-  const response = adminUserUpdate(token, email, nameFirst, nameLast);
-
   res.json(response);
 });
 
@@ -537,13 +508,6 @@ app.post('/v1/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
     }
   }
   res.status(200).json(response);
-});
-
-app.get('/v1/admin/quiz/listOfQuestions/:quizId', (req: Request, res: Response) => {
-  const token = req.query.token;
-  const { quizId } = req.params;
-  const response = listOfQuestions(String(token), parseInt(quizId));
-  res.json(response);
 });
 
 app.put('/v1/admin/quiz/:quizId/question/:questionId/move', (req: Request, res: Response) => {
