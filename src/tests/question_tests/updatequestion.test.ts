@@ -87,6 +87,10 @@ describe('UpdateQuizQuestion', () => {
       update: { ...validQuestionUpdate, duration: -4 }
     },
     {
+      description: 'Extreme question duration',
+      update: { ...validQuestionUpdate, duration: 400 }
+    },
+    {
       description: 'Invalid points (too low)',
       update: { ...validQuestionUpdate, points: 0 }
     },
@@ -114,6 +118,13 @@ describe('UpdateQuizQuestion', () => {
         ...validQuestionUpdate,
         answers: [{ answer: 'Yes', correct: true }, { answer: 'Yes', correct: false }]
       }
+    },
+    {
+      description: 'No Correct Answers',
+      update: {
+        ...validQuestionUpdate,
+        answers: [{ answer: 'Yes', correct: false }, { answer: 'No', correct: false }]
+      }
     }
   ];
 
@@ -140,6 +151,18 @@ describe('UpdateQuizQuestion', () => {
   test('Not an owner of the quiz', () => {
     const anotherUser = testRegister('anotheruser@example.com', 'password1234', 'Another', 'User').response;
     const updatedQuestion = testUpdateQuestion(anotherUser.token, quiz.quizId, question.questionId, validQuestionUpdate);
+    expect(updatedQuestion.response).toStrictEqual(ERROR);
+    expect(updatedQuestion.status).toBe(403);
+  });
+
+  test('Question doesnt exist', () => {
+    const updatedQuestion = testUpdateQuestion(user.token, quiz.quizId, question.questionId + 102, validQuestionUpdate);
+    expect(updatedQuestion.response).toStrictEqual(ERROR);
+    expect(updatedQuestion.status).toBe(400);
+  });
+
+  test('Quiz doesnt exist', () => {
+    const updatedQuestion = testUpdateQuestion(user.token, quiz.quizId + 792, question.questionId, validQuestionUpdate);
     expect(updatedQuestion.response).toStrictEqual(ERROR);
     expect(updatedQuestion.status).toBe(403);
   });
