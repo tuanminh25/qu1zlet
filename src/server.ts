@@ -13,7 +13,7 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizTransfer, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate } from './quiz';
-import { adminQuestionCreate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor } from './question';
+import { adminQuestionCreate, adminQuestionDelete, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2 } from './old_it2_functions/quizIt2';
@@ -298,6 +298,18 @@ app.get('/v1/player/:playerId/question/:questionposition', (req: Request, res: R
   const response = currentPlayerQuestionInfor(parseInt(playerId), parseInt(questionposition));
   res.json(response);
 });
+
+app.put('/v2/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
+  const token = req.headers.token;
+  const quizId = parseInt(req.params.quizId);
+  const questionId = parseInt(req.params.questionId);
+  const { questionBody } = req.body;
+
+  const response = adminQuestionUpdate(String(token), quizId, questionId, questionBody);
+
+  res.json(response);
+});
+
 // ====================================================================
 // it2 routes below
 // ====================================================================

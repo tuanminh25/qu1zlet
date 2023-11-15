@@ -66,6 +66,14 @@ export interface Question {
   answers: Answer[]
 }
 
+export interface QuestionBody {
+  question: string,
+  duration: number,
+  points: number,
+  answers: Answer[]
+  thumbnailUrl: string,
+}
+
 export interface Quiz {
   quizId: number;
   name: string;

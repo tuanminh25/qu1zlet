@@ -11,9 +11,9 @@ import {
   getSession,
   findPlayerFromId,
   isPLayer,
-  findGameSession
+  findGameSession,
 } from './helper';
-import { Question, Answer, ReturnAnswer, ReturnQuestion } from './interface';
+import { Question, Answer, ReturnAnswer, ReturnQuestion, QuestionBody } from './interface';
 import HttpError from 'http-errors';
 /**
   * Given details about a new question, add it to the specified quiz for the logged in user,
@@ -120,85 +120,65 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
 * }} questionBody
 * @returns {{ questionId?: number, error?: string }}
 */
-export function adminQuestionUpdate(token: string, quizId: number, questionId: number, questionBody: any):{ error?: string } {
+export function adminQuestionUpdate(token: string, quizId: number, questionId: number, questionBody: QuestionBody): void {
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
   const question = quiz.questions.find(q => q.questionId === questionId);
 
-  // Error 401 checking
-  if (!isToken(token)) {
-    return { error: 'Invalid token' };
-  }
+  const userId = getSession(token).userId;
 
-  const userId = isToken(token).userId;
   if (!checkauthUserId(userId)) {
-    return { error: 'Invalid token' };
+    throw HttpError(403, 'Unauthorised');
   }
 
   // Error 403 checking
   if (quiz.quizOwnedby !== userId) {
-    return { error: 'Unauthorised' };
+    throw HttpError(403, 'Unauthorised');
   }
 
   // Error 400 checking
   if (!quiz.questions.some(q => q.questionId === questionId)) {
-    return {
-      error: 'Question Id does not refer to a valid question within this quiz'
-    };
+    throw HttpError(400, 'Question Id does not refer to a valid question within this quiz');
   }
 
   if (questionBody.question.length < 5 || questionBody.question.length > 50) {
-    return {
-      error: 'Question string is less than 5 characters in length or greater than 50 characters in length'
-    };
+    throw HttpError(400, 'Question string is less than 5 characters in length or greater than 50 characters in length');
   }
 
   if (questionBody.answers.length < 2 || questionBody.answers.length > 6) {
-    return {
-      error: 'The question has more than 6 answers or less than 2 answers'
-    };
+    throw HttpError(400, 'The question has more than 6 answers or less than 2 answers');
   }
 
   if (questionBody.duration <= 0) {
-    return {
-      error: 'The question duration is not a positive number'
-    };
+    throw HttpError(400, 'The question duration is not a positive number');
   }
 
   const totalDurationWithoutCurrentQuestion = quiz.duration - question.duration;
   const totalDurationWithUpdatedQuestion = totalDurationWithoutCurrentQuestion + questionBody.duration;
   if (totalDurationWithUpdatedQuestion > 180) {
-    return {
-      error: 'If this question were to be updated, the sum of the question durations in the quiz exceeds 3 minutes'
-    };
+    throw HttpError(400, 'If this question were to be updated, the sum of the question durations in the quiz exceeds 3 minutes');
   }
 
   if (questionBody.points < 1 || questionBody.points > 10) {
-    return {
-      error: 'The points awarded for the question are less than 1 or greater than 10'
-    };
+    throw HttpError(400, 'The points awarded for the question are less than 1 or greater than 10');
   }
 
   for (const answer of questionBody.answers) {
     if (answer.answer.length < 1 || answer.answer.length > 30) {
-      return {
-        error: 'The length of an answer is shorter than 1 character long, or longer than 30 characters long'
-      };
+      throw HttpError(400, 'The length of an answer is shorter than 1 character long, or longer than 30 characters long');
     }
   }
 
   const uniqueAnswers = new Set(questionBody.answers.map((ans: Answer) => ans.answer));
   if (uniqueAnswers.size !== questionBody.answers.length) {
-    return {
-      error: 'Any answer strings are duplicates of one another (within the same question)'
-    };
+    throw HttpError(400, 'Any answer strings are duplicates of one another (within the same question)');
   }
 
   if (!questionBody.answers.some((ans: Answer) => ans.correct)) {
-    return {
-      error: 'There are no correct answers'
-    };
+    throw HttpError(400, 'There are no correct answers');
   }
+
+  checkUrlImage(questionBody.thumbnailUrl);
 
   const answers: Answer[] = [];
   for (const item of questionBody.answers) {
@@ -217,8 +197,8 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
   question.answers = answers;
 
   save(data);
-  return {};
 }
+
 /**
  * Delete a particular question from a quiz
  *
