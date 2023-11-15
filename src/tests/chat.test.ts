@@ -75,17 +75,21 @@ describe('Send messages', () => {
     expect(chat.response).toStrictEqual({
       messages: [ 
         {
-            messageBody: "First Message",
+            messageBody: 'First Message',
             playerId: player.playerId,
-            playerName: "LUCA",
+            playerName: 'LUCA',
             timeSent: expect.any(Number)
         }
       ]
     });
+
+    const message2 = testSendChatMessages(player.playerId, 'a'.repeat(100));
+    expect(message2.response).toStrictEqual({});
+    expect(message2.status).toStrictEqual(200);
   });
 
   test('Invalid playerId', () => {
-    const message = testSendChatMessages(player.playerId, 'First Message');
+    const message = testSendChatMessages(player.playerId + 1234, 'First Message');
     expect(message.response).toStrictEqual(ERROR);
     expect(message.status).toStrictEqual(400);
   });
@@ -95,7 +99,7 @@ describe('Send messages', () => {
     expect(message.response).toStrictEqual(ERROR);
     expect(message.status).toStrictEqual(400);
 
-    const message2 = testSendChatMessages(player.playerId, 'a'.repeat(100));
+    const message2 = testSendChatMessages(player.playerId, 'a'.repeat(101));
     expect(message2.response).toStrictEqual(ERROR);
     expect(message2.status).toStrictEqual(400);
   });

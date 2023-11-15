@@ -410,11 +410,11 @@ export function testGetChatMessages(playerId: number) {
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
 
-export function testSendChatMessages(playerId: number, messagesBody: string) {
+export function testSendChatMessages(playerId: number, messageBody: string) {
   const res = request('POST', SERVER_URL + playerV1 + playerId + '/chat', {
     json: {
       message: {
-        messagesBody: messagesBody
+        messageBody: messageBody
       }
     }
   });
