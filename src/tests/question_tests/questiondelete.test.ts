@@ -66,6 +66,15 @@ describe('Question Delete', () => {
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 
+  test('Game not ended', () => {
+    const quiz2 = testCreateQuiz(user.token, 'ample Quiz', 'Sample Description').response;
+    const ques2 = testCreateQuizQuestion(user.token, quiz2.quizId, footballQues).response;
+    gameSession = testGameSessionStart(user.token, quiz2.quizId, 10).response;
+    const delete2 = testQuestionDelete(user.token, quiz2.quizId, ques2.questionId);
+    expect(delete2.response).toStrictEqual(ERROR);
+    expect(delete2.status).toStrictEqual(400);
+  });
+
   test('Empty token', () => {
     const delete1 = testQuestionDelete('', quiz.quizId, ques.questionId);
     expect(delete1.response).toStrictEqual(ERROR);
