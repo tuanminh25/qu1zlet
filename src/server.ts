@@ -15,13 +15,15 @@ import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizTransfer, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate } from './quiz';
 import { adminQuestionCreate, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
-import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
+import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2 } from './old_it2_functions/quizIt2';
 import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
 import { restoreQuizInTrashIt2 } from './old_it2_functions/trashIt2';
 import {
   getChatMessages,
-  sendChatMessages
+  sendChatMessages,
+  playerStatus,
+  playerSubmission
 } from './player';
 
 // Set up web app
@@ -192,6 +194,15 @@ app.put('/v1/admin/quiz/:quizId/thumbnail', (req: Request, res: Response) => {
 
   const response = adminThumbnailUpdate(String(token), parseInt(quizId), String(imgUrl));
 
+  res.json(response);
+});
+
+app.put('/v1/player/:playerId/question/:questionposition/answer', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const questionposition = req.params.questionposition;
+  const answerIds = req.body.answerIds;
+  const parsedAnswerIds = answerIds.map((id: string) => parseInt(id));
+  const response = playerSubmission(parseInt(playerId), parseInt(questionposition), parsedAnswerIds);
   res.json(response);
 });
 

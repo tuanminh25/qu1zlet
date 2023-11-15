@@ -89,10 +89,12 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
   const newQuestionDatas: QuestionData[] = []
   for (const ques of quiz.questions) {
     const correctAnswerIds: number[] = [];
+    const validAnswerIds: number[] = [];
     for (const answer of ques.answers) {
       if (answer.correct === true) {
         correctAnswerIds.push(answer.answerId);
       }
+      validAnswerIds.push(answer.answerId)
     }
     newQuestionDatas.push(
       {
@@ -102,7 +104,8 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
         playersCorrectList: [],
         openTime: 0,
         playerSubmissions: [],
-        correctAnswerIds: correctAnswerIds
+        correctAnswerIds: correctAnswerIds,
+        validAnswerIds: validAnswerIds
       }
     )
   }

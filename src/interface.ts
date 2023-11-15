@@ -185,12 +185,14 @@ export interface QuestionData {
   percentCorrect: number;
   playerSubmissions: PlayerSubmission[];
   openTime: number;
-  correctAnswerIds: number[]
+  correctAnswerIds: number[];
+  validAnswerIds: number[]
 }
 
 export interface PlayerSubmission {
   playerId: number;
   timeSubmitted: number;
   answerIds: number[];
+  name: string
 }
 

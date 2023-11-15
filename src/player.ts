@@ -4,7 +4,7 @@ import {
   generateTime,
   save,
 } from './helper';
-import { ChatMessage, PlayerStatus } from './interface';
+import { ChatMessage, PlayerStatus, PlayerSubmission, GameState } from './interface';
 import HttpError from 'http-errors';
 
 export function getChatMessages(playerId: number): {messages: ChatMessage[]} {
@@ -49,4 +49,52 @@ export function playerStatus(playerId: number): PlayerStatus {
     atQuestion: gameSession.atQuestion,
     numQuestions: gameSession.metadata.numQuestions
   };
+}
+
+export function playerSubmission(playerId: number, questionPosition: number, answerIds: number[]) {
+  const data = load();
+  const player = findPlayerFromId(playerId);
+
+  const gameSession = data.gameSessions.find((g) => g.gameSessionId === player.sessionId);
+
+  if (questionPosition === 0 || questionPosition > gameSession.metadata.numQuestions) {
+    throw HttpError(400, 'Invalid questionPosition');
+  }
+
+  if (gameSession.state !== GameState.QUESTION_OPEN) {
+    throw HttpError(400, 'Session is not in QUESTION_OPEN state');
+  }
+
+  if (gameSession.atQuestion < questionPosition) {
+    throw HttpError(400, 'Session is not yet up to this question');
+  }
+
+  for (const validAns of gameSession.questionDatas[questionPosition - 1].correctAnswerIds) {
+    for (const userAns of answerIds) {
+      if (validAns !== userAns) {
+        throw HttpError(400, 'Answer IDs are not valid for this particular question');
+      }
+    }
+  }
+
+  const uniqueAnswerIds = new Set(answerIds);
+  if (uniqueAnswerIds.size !== answerIds.length) {
+    throw HttpError(400, 'There are duplicate answer IDs provided');
+  }
+
+  if (answerIds.length === 0) {
+    throw HttpError(400, 'Less than 1 answer ID was submitted');
+  }
+
+  const playerSubmit: PlayerSubmission = {
+    playerId: playerId,
+    answerIds: answerIds,
+    name: player.name,
+    timeSubmitted: generateTime()
+  };
+
+  gameSession.questionDatas[questionPosition - 1].playerSubmissions.push(playerSubmit);
+  save(data);
+  
+  return {};
 }
