@@ -420,3 +420,12 @@ export function testSendChatMessages(playerId: number, messageBody: string) {
   });
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testPlayerSubmit(playerId: number, questionPosition: number, answerIds: number[]) {
+  const res = request('PUT', SERVER_URL + playerV1 + playerId + `/question/${questionPosition}/answer`, {
+    json: {
+      answerIds: answerIds
+    }
+  });
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
