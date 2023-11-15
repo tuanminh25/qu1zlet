@@ -242,6 +242,8 @@ export function adminQuizTransfer(token: string, quizId: number, userEmail: stri
     throw HttpError(400, 'Quiz name already exists for target user');
   }
 
+  checkSessionsEnded(quizId);
+
   quizFound.quizOwnedby = email.userId;
   save(data);
 
@@ -278,8 +280,6 @@ export function adminQuizDescriptionUpdate (token: string, quizId: number, descr
   if (description.length > 100) {
     throw HttpError(400, 'Invalid quiz description');
   }
-
-  checkSessionsEnded(quiz.quizId);
 
   // Working case
   quiz.description = description;
