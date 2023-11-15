@@ -69,12 +69,8 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
     throw HttpError(400, 'Session is not yet up to this question');
   }
 
-  for (const validAns of gameSession.questionDatas[questionPosition - 1].correctAnswerIds) {
-    for (const userAns of answerIds) {
-      if (validAns !== userAns) {
-        throw HttpError(400, 'Answer IDs are not valid for this particular question');
-      }
-    }
+  if (!answerIds.some(ids => gameSession.questionDatas[questionPosition - 1].validAnswerIds.includes(ids))) {
+    throw HttpError(400, 'Answer IDs are not valid for this particular questio');
   }
 
   const uniqueAnswerIds = new Set(answerIds);
