@@ -431,3 +431,12 @@ export function testPlayerSubmit(playerId: number, questionPosition: number, ans
   });
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testViewSessions(token: string, quizId: number) {
+  const res = request('GET', SERVER_URL + `/v1/admin/quiz/${quizId}/sessions`, {
+    headers: {
+      token: token
+    }
+  });
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
