@@ -58,12 +58,12 @@ export interface Answer {
 }
 
 export interface Question {
-  questionId: number
+  questionId: number,
   question: string,
   duration: number,
-  thumbnailUrl: string,
   points: number,
-  answers: Answer[]
+  answers: Answer[],
+  thumbnailUrl: string,
 }
 
 export interface QuestionBody {

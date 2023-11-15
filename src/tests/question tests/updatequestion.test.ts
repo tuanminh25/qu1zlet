@@ -335,5 +335,3 @@ describe('UpdateQuizQuestion', () => {
     });
   });
 });
-
-testClear();

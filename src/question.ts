@@ -90,7 +90,7 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
     duration: questionBody.duration,
     points: questionBody.points,
     answers: answers,
-    thumbnailUrl: questionBody.thumbnailUrl
+    thumbnailUrl: questionBody.thumbnailUrl,
   };
 
   quiz.questions.push(newQuestion);
@@ -116,11 +116,12 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
 *     question: string,
 *     duration: number,
 *     points: number,
-*     answers: Answer[]
+*     answers: Answer[],
+*     thumbnailUrl: string,
 * }} questionBody
 * @returns {{ questionId?: number, error?: string }}
 */
-export function adminQuestionUpdate(token: string, quizId: number, questionId: number, questionBody: QuestionBody): void {
+export function adminQuestionUpdate(token: string, quizId: number, questionId: number, questionBody: QuestionBody) {
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
   const question = quiz.questions.find(q => q.questionId === questionId);
@@ -194,9 +195,11 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
   question.question = questionBody.question;
   question.duration = questionBody.duration;
   question.points = questionBody.points;
+  question.thumbnailUrl = questionBody.thumbnailUrl;
   question.answers = answers;
 
   save(data);
+  return {};
 }
 
 /**

@@ -282,6 +282,16 @@ app.post('/v2/admin/quiz/:quizId/restore', (req: Request, res: Response) => {
   res.status(200).json(response);
 });
 
+app.put('/v2/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
+  const { token } = req.headers;
+  const quizId = parseInt(req.params.quizId.toString());
+  const questionId = parseInt(req.params.questionId.toString());
+  const { questionBody } = req.body;
+
+  const response = adminQuestionUpdate(String(token), quizId, questionId, questionBody);
+  res.json(response);
+});
+
 app.post('/v2/admin/quiz/:quizId/question/:questionId/duplicate', (req: Request, res: Response) => {
   const { token } = req.headers;
   const quizId = req.params.quizId;
@@ -296,17 +306,6 @@ app.get('/v1/player/:playerId/question/:questionposition', (req: Request, res: R
   const playerId = req.params.playerId;
   const questionposition = req.params.questionposition;
   const response = currentPlayerQuestionInfor(parseInt(playerId), parseInt(questionposition));
-  res.json(response);
-});
-
-app.put('/v2/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
-  const token = req.headers.token;
-  const quizId = parseInt(req.params.quizId);
-  const questionId = parseInt(req.params.questionId);
-  const { questionBody } = req.body;
-
-  const response = adminQuestionUpdate(String(token), quizId, questionId, questionBody);
-
   res.json(response);
 });
 
