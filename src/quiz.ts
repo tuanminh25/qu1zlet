@@ -183,7 +183,7 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
 
   // error 401
   if (!quiz) {
-    throw HttpError(403, 'Unauthorised');
+    throw HttpError(403, 'Quiz does not exist');
   }
 
   // Quiz ID does not refer to a quiz that this user owns

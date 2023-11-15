@@ -443,56 +443,62 @@ describe('QuizNameUpdate', () => {
 
       expect(quizinfo.name).toStrictEqual('My Quiz Name');
     });
+  });
 
-    test('Name is less than 3 characters', () => {
-      const nameUpdate = testQuizNameUpdate(user.token, quiz.quizId, 'hi');
-      const quizinfo = testQuizInfo(user.token, quiz.quizId).response;
+  test('Name is less than 3 characters', () => {
+    const nameUpdate = testQuizNameUpdate(user.token, quiz.quizId, 'hi');
+    const quizinfo = testQuizInfo(user.token, quiz.quizId).response;
 
-      expect(nameUpdate.response).toStrictEqual(ERROR);
-      expect(nameUpdate.status).toStrictEqual(400);
+    expect(nameUpdate.response).toStrictEqual(ERROR);
+    expect(nameUpdate.status).toStrictEqual(400);
 
-      expect(quizinfo.name).toStrictEqual('My Quiz Name');
-    });
+    expect(quizinfo.name).toStrictEqual('My Quiz Name');
+  });
 
-    test('Name is more than 30 characters', () => {
-      const nameUpdate = testQuizNameUpdate(user.token, quiz.quizId, 'A'.repeat(31));
-      const quizinfo = testQuizInfo(user.token, quiz.quizId).response;
+  test('Name is more than 30 characters', () => {
+    const nameUpdate = testQuizNameUpdate(user.token, quiz.quizId, 'A'.repeat(31));
+    const quizinfo = testQuizInfo(user.token, quiz.quizId).response;
 
-      expect(nameUpdate.response).toStrictEqual(ERROR);
-      expect(nameUpdate.status).toStrictEqual(400);
+    expect(nameUpdate.response).toStrictEqual(ERROR);
+    expect(nameUpdate.status).toStrictEqual(400);
 
-      expect(quizinfo.name).toStrictEqual('My Quiz Name');
-    });
+    expect(quizinfo.name).toStrictEqual('My Quiz Name');
+  });
 
-    test('Quiz Name in use by same user', () => {
-      testCreateQuiz(user.token, 'NewQuiz', 'A description of my quiz');
-      const nameUpdate = testQuizNameUpdate(user.token, quiz.quizId, 'NewQuiz');
-      const quizinfo = testQuizInfo(user.token, quiz.quizId).response;
+  test('Quiz Name in use by same user', () => {
+    testCreateQuiz(user.token, 'NewQuiz', 'A description of my quiz');
+    const nameUpdate = testQuizNameUpdate(user.token, quiz.quizId, 'NewQuiz');
+    const quizinfo = testQuizInfo(user.token, quiz.quizId).response;
 
-      expect(nameUpdate.response).toStrictEqual(ERROR);
-      expect(nameUpdate.status).toStrictEqual(400);
+    expect(nameUpdate.response).toStrictEqual(ERROR);
+    expect(nameUpdate.status).toStrictEqual(400);
 
-      expect(quizinfo.name).toStrictEqual('My Quiz Name');
-    });
+    expect(quizinfo.name).toStrictEqual('My Quiz Name');
+  });
 
-    test('Invalid Token', () => {
-      const nameUpdate = testQuizNameUpdate(user.token + 'abc', quiz.quizId, 'Quiz Name');
-      expect(nameUpdate.response).toStrictEqual(ERROR);
-      expect(nameUpdate.status).toStrictEqual(401);
-    });
+  test('Invalid Token', () => {
+    const nameUpdate = testQuizNameUpdate(user.token + 'abc', quiz.quizId, 'Quiz Name');
+    expect(nameUpdate.response).toStrictEqual(ERROR);
+    expect(nameUpdate.status).toStrictEqual(401);
+  });
 
-    test('Empty Token', () => {
-      const nameUpdate = testQuizNameUpdate('', quiz.quizId, 'Quiz Name');
-      expect(nameUpdate.response).toStrictEqual(ERROR);
-      expect(nameUpdate.status).toStrictEqual(401);
-    });
+  test('Empty Token', () => {
+    const nameUpdate = testQuizNameUpdate('', quiz.quizId, 'Quiz Name');
+    expect(nameUpdate.response).toStrictEqual(ERROR);
+    expect(nameUpdate.status).toStrictEqual(401);
+  });
 
-    test('Unauthorized', () => {
-      const unauthorizedUser = testRegister('unauthorized@example.com', 'password123', 'Unauthorized', 'User').response;
-      const nameUpdate = testQuizNameUpdate(unauthorizedUser.token, quiz.quizId, 'Quiz Name');
-      expect(nameUpdate.response).toStrictEqual(ERROR);
-      expect(nameUpdate.status).toStrictEqual(403);
-    });
+  test('Unauthorized', () => {
+    const unauthorizedUser = testRegister('unauthorized@example.com', 'password123', 'Unauthorized', 'User').response;
+    const nameUpdate = testQuizNameUpdate(unauthorizedUser.token, quiz.quizId, 'Quiz Name');
+    expect(nameUpdate.response).toStrictEqual(ERROR);
+    expect(nameUpdate.status).toStrictEqual(403);
+  });
+
+  test('Quiz doesnt exist', () => {
+    const nameUpdate = testQuizNameUpdate(user.token, quiz.quizId + 23, 'Quiz Name');
+    expect(nameUpdate.response).toStrictEqual(ERROR);
+    expect(nameUpdate.status).toStrictEqual(403);
   });
 });
 
