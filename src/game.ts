@@ -15,7 +15,8 @@ import {
   ReturnGameSession,
   ReturnQuizInfo,
   Player,
-  PlayerStatus
+  PlayerStatus,
+  QuestionData
 } from './interface';
 
 interface GameSessionTimeoutIds {
@@ -85,6 +86,20 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
     throw HttpError(400, 'Quiz does not have any question');
   }
 
+  let newQuestionDatas: QuestionData[];
+  for (const ques of quiz.questions) {
+    newQuestionDatas.push(
+      {
+        questionId: ques.questionId,
+        averageAnswerTime: 0,
+        percentCorrect: 0,
+        playersCorrectList: [],
+        openTime: 0,
+        playerSubmissions: []
+      }
+    )
+  }
+  
   const newGameSession: GameSession = {
     gameSessionId: ++data.ids.gameSessionId,
     state: GameState.LOBBY,
@@ -93,6 +108,7 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
     metadata: quiz,
     autoStartNum: autoStartNum,
     messages: [],
+    questionDatas: newQuestionDatas
   };
 
   quiz.activeSessions.push(newGameSession.gameSessionId);
