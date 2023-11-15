@@ -13,7 +13,7 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate, adminQuizTransfer } from './quiz';
-import { adminQuestionCreate, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
+import { adminQuestionCreate, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
@@ -537,13 +537,6 @@ app.post('/v1/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
     }
   }
   res.status(200).json(response);
-});
-
-app.get('/v1/admin/quiz/listOfQuestions/:quizId', (req: Request, res: Response) => {
-  const token = req.query.token;
-  const { quizId } = req.params;
-  const response = listOfQuestions(String(token), parseInt(quizId));
-  res.json(response);
 });
 
 app.put('/v1/admin/quiz/:quizId/question/:questionId/move', (req: Request, res: Response) => {

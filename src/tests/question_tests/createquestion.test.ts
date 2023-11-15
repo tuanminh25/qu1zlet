@@ -55,6 +55,7 @@ describe('CreateQuizQuestion', () => {
   test('Too many answers', () => {
     const question = testCreateQuizQuestion(user.token, quiz.quizId, {
       question: 'Which of the following are prime numbers?',
+      thumbnailUrl: 'http://example.com/image.jpg',
       duration: 4,
       points: 5,
       answers: [
@@ -74,6 +75,7 @@ describe('CreateQuizQuestion', () => {
   test('Invalid question duration', () => {
     const question = testCreateQuizQuestion(user.token, quiz.quizId, {
       question: 'What is 2 + 2?',
+      thumbnailUrl: 'http://example.com/image.jpg',
       duration: -4,
       points: 5,
       answers: [
@@ -88,7 +90,8 @@ describe('CreateQuizQuestion', () => {
   test('Sum of question durations exceeds 3 minutes', () => {
     testCreateQuizQuestion(user.token, quiz.quizId, {
       question: 'Is three a number?',
-      duration: 100,
+      duration: 400,
+      thumbnailUrl: 'http://example.com/image.jpg',
       points: 5,
       answers: [
         { answer: 'Yes', correct: true },
@@ -99,6 +102,7 @@ describe('CreateQuizQuestion', () => {
     const finalQuestion = testCreateQuizQuestion(user.token, quiz.quizId, {
       question: 'Final question?',
       duration: 1000,
+      thumbnailUrl: 'http://example.com/image.jpg',
       points: 5,
       answers: [
         { answer: 'Yes', correct: true },
@@ -113,6 +117,7 @@ describe('CreateQuizQuestion', () => {
     const question = testCreateQuizQuestion(user.token, quiz.quizId, {
       question: 'What is the capital of Spain?',
       duration: 5,
+      thumbnailUrl: 'http://example.com/image.jpg',
       points: 0,
       answers: [
         { answer: 'Madrid', correct: true },
@@ -123,24 +128,11 @@ describe('CreateQuizQuestion', () => {
     expect(question.status).toBe(400);
   });
 
-  test('Answer string is too long', () => {
-    const question = testCreateQuizQuestion(user.token, quiz.quizId, {
-      question: 'What is the answer to this very long answer option?',
-      duration: 5,
-      points: 5,
-      answers: [
-        { answer: 'A'.repeat(31), correct: true }, // 31 characters long
-        { answer: 'B', correct: false }
-      ]
-    });
-    expect(question.response).toStrictEqual(ERROR);
-    expect(question.status).toBe(400);
-  });
-
   test('Duplicate answer strings', () => {
     const question = testCreateQuizQuestion(user.token, quiz.quizId, {
       question: 'Which of these are colors?',
       duration: 5,
+      thumbnailUrl: 'http://example.com/image.jpg',
       points: 5,
       answers: [
         { answer: 'Red', correct: true },
@@ -155,6 +147,7 @@ describe('CreateQuizQuestion', () => {
     const question = testCreateQuizQuestion(user.token, quiz.quizId, {
       question: 'Which of these are colors?',
       duration: 5,
+      thumbnailUrl: 'http://example.com/image.jpg',
       points: 5,
       answers: [
         { answer: 'Red', correct: false },
@@ -170,6 +163,22 @@ describe('CreateQuizQuestion', () => {
     const question = testCreateQuizQuestion(user.token, quiz.quizId, {
       question: 'A'.repeat(51), // Creates a string with 51 "A" characters
       duration: 10,
+      thumbnailUrl: 'http://example.com/image.jpg',
+      points: 5,
+      answers: [
+        { answer: 'Yes', correct: true },
+        { answer: 'No', correct: false }
+      ]
+    });
+    expect(question.response).toStrictEqual(ERROR);
+    expect(question.status).toBe(400);
+  });
+
+  test('Question string is empty', () => {
+    const question = testCreateQuizQuestion(user.token, quiz.quizId, {
+      question: '',
+      duration: 10,
+      thumbnailUrl: 'http://example.com/image.jpg',
       points: 5,
       answers: [
         { answer: 'Yes', correct: true },
@@ -243,6 +252,30 @@ describe('CreateQuizQuestion', () => {
       expect(questionResponse.response).toStrictEqual(ERROR);
       expect(questionResponse.status).toBe(400);
     }
+  });
+
+  test('Answer string is too long', () => {
+    const long = validQuestion;
+    long.answers = [
+      { answer: 'A'.repeat(31), correct: true }, // 31 characters long
+      { answer: 'B', correct: false }
+    ];
+
+    const question = testCreateQuizQuestion(user.token, quiz.quizId, long);
+    expect(question.response).toStrictEqual(ERROR);
+    expect(question.status).toBe(400);
+  });
+
+  test('Answer string is too short', () => {
+    const short = validQuestion;
+    short.answers = [
+      { answer: 'A', correct: true }, // 31 characters long
+      { answer: '', correct: false }
+    ];
+
+    const question = testCreateQuizQuestion(user.token, quiz.quizId, short);
+    expect(question.response).toStrictEqual(ERROR);
+    expect(question.status).toBe(400);
   });
 });
 
