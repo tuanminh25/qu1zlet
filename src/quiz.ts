@@ -1,6 +1,5 @@
 import {
   isToken,
-  checkauthUserId,
   checkquizId,
   isQuizDescription,
   isQuizName,
@@ -9,7 +8,8 @@ import {
   save,
   getSession,
   checkQuizName,
-  checkUrlImage
+  checkUrlImage,
+  checkSessionsEnded
 } from './helper';
 import HttpError from 'http-errors';
 import { Quiz, ReturnQuizInfo, ReturnQuizList } from './interface';
@@ -214,48 +214,36 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
  * @returns {}
  * @returns {error: string} -
  */
-export function adminQuizTransfer(token: string, quizId: number, userEmail: string): Record<string, never> | { error?: string } {
+export function adminQuizTransfer(token: string, quizId: number, userEmail: string): Record<string, never> {
   const data = load();
-  const session = isToken(token);
+  const session = getSession(token);
   const quizFound = data.quizzes.find(q => q.quizId === quizId);
-
-  // error 401
-  if (!session) {
-    return {
-      error: 'Invalid Token'
-    };
-  }
 
   // error 403
   if (quizFound.quizOwnedby !== session.userId) {
-    return {
-      error: 'Unauthorised'
-    };
+    throw HttpError(403, 'Unauthorised');
   }
 
   // error 400
   const email = data.users.find(user => user.email === userEmail);
   if (!email) {
-    return {
-      error: 'Email not found'
-    };
+    throw HttpError(400, 'Email not found');
   }
 
-  const user = checkauthUserId(session.userId);
+  const user = data.users.find((user) => user.userId === session.userId);
   const currEmail = user.email;
   if (userEmail === currEmail) {
-    return {
-      error: 'userEmail cannot already be the owner of the quiz'
-    };
+    throw HttpError(400, 'userEmail cannot already be the owner of the quiz');
   }
 
   const userquizzes = data.quizzes.filter(quiz => quiz.quizOwnedby === email.userId);
   const duplicateQuiz = userquizzes.find(quiz => quiz.name === quizFound.name);
   if (duplicateQuiz) {
-    return {
-      error: 'Quiz name already exists for target user',
-    };
+    throw HttpError(400, 'Quiz name already exists for target user');
   }
+
+  checkSessionsEnded(quizId);
+
   quizFound.quizOwnedby = email.userId;
   save(data);
 
@@ -279,7 +267,7 @@ export function adminQuizDescriptionUpdate (token: string, quizId: number, descr
 
   const session = getSession(token);
 
-  if (quiz === undefined) {
+  if (!quiz) {
     throw HttpError(403, 'Unauthorised');
   }
 

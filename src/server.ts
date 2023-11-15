@@ -12,13 +12,13 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizTransfer, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate } from './quiz';
+import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate, adminQuizTransfer } from './quiz';
 import { adminQuestionCreate, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer } from './game';
-import { adminQuizInfoIt2, adminQuizNameUpdateIt2 } from './old_it2_functions/quizIt2';
+import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
+
 import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
-import { restoreQuizInTrashIt2 } from './old_it2_functions/trashIt2';
 import {
   getChatMessages,
   sendChatMessages,
@@ -345,6 +345,25 @@ app.delete('/v2/admin/quiz/:quizId/question/:questionId', (req: Request, res: Re
   res.json(response);
 });
 
+app.post('/v2/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
+  const { token } = req.headers;
+  const { userEmail } = req.body;
+  const { quizId } = req.params;
+
+  const response = adminQuizTransfer(String(token), parseInt(quizId), String(userEmail));
+
+  res.status(200).json(response);
+});
+
+app.put('/v2/admin/quiz/:quizId/question/:questionId/move', (req: Request, res: Response) => {
+  const { token } = req.headers;
+  const { newPosition } = req.body;
+  const { quizId, questionId } = req.params;
+
+  const response = moveQuizQuestion(String(token), parseInt(quizId), parseInt(questionId), parseInt(newPosition));
+  res.json(response);
+});
+
 // ====================================================================
 // it2 routes below
 // ====================================================================
@@ -428,16 +447,7 @@ app.post('/v1/admin/quiz/:quizId/restore', (req: Request, res: Response) => {
   const { token } = req.body;
   const { quizId } = req.params;
 
-  const response = restoreQuizInTrashIt2(String(token), parseInt(quizId));
-
-  if (response.error === 'Invalid token') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Unauthorised') {
-    return res.status(403).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
-
+  const response = restoreQuizInTrash(String(token), parseInt(quizId));
   res.status(200).json(response);
 });
 
@@ -520,7 +530,7 @@ app.post('/v1/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
   const { token, userEmail } = req.body;
   const { quizId } = req.params;
 
-  const response = adminQuizTransfer(String(token), parseInt(quizId), String(userEmail));
+  const response = adminQuizTransferIt2(String(token), parseInt(quizId), String(userEmail));
 
   if ('error' in response) {
     if (response.error === 'Email not found') {
@@ -553,17 +563,6 @@ app.put('/v1/admin/quiz/:quizId/question/:questionId/move', (req: Request, res: 
   const { quizId, questionId } = req.params;
 
   const response = moveQuizQuestion(String(token), parseInt(quizId), parseInt(questionId), parseInt(newPosition));
-
-  if (response.error === 'Token is empty or invalid') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Valid token is provided, quiz does not exist: ' + parseInt(quizId)) {
-    return res.status(403).json(response);
-  } else if (response.error === 'Valid token is provided, but user is not an owner of this quiz') {
-    return res.status(403).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
-
   res.json(response);
 });
 
