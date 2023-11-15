@@ -45,7 +45,7 @@ describe('Chat messages', () => {
   });
 
   test('Invalid playerId', () => {
-    const chat = testGetChatMessages(player.playerId);
+    const chat = testGetChatMessages(player.playerId + 1234);
     expect(chat.response).toStrictEqual(ERROR);
     expect(chat.status).toStrictEqual(400);
   });

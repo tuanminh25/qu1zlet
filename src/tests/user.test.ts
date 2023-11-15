@@ -14,7 +14,7 @@ beforeEach(() => {
 });
 
 describe('adminUserDetails', () => {
-  let user1: any;
+  let user1: { token: string};
   beforeEach(() => {
     user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;
   });
@@ -115,7 +115,7 @@ describe('adminUserDetails', () => {
 });
 
 describe('adminUserPasswordUpdate', () => {
-  let user1: any;
+  let user1: { token: string };
   beforeEach(() => {
     user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;
   });
@@ -191,7 +191,7 @@ describe('adminUserPasswordUpdate', () => {
 });
 
 describe('adminUserDetailsUpdate', () => {
-  let user1: any;
+  let user1: { token: string };
 
   beforeEach(() => {
     user1 = testRegister('Roger@gmail.com', 'hieu12345', 'Roger', 'Duong').response;

@@ -101,7 +101,8 @@ export interface GameSession {
   atQuestion: number;
   players: Player[];
   metadata: Quiz;
-  autoStartNum: number
+  autoStartNum: number;
+  messages: ChatMessage[];
 }
 
 export interface DataStore {
@@ -115,8 +116,8 @@ export interface DataStore {
 }
 
 export interface ReturnQuizList {
-name: string;
-quizId: number
+  name: string;
+  quizId: number
 }
 
 export interface ReturnUserDetails {
@@ -140,10 +141,10 @@ export interface ReturnQuizInfo {
 }
 
 export interface ReturnGameSession {
-state: GameState,
-atQuestion: number;
-players: string[];
-metadata: ReturnQuizInfo;
+  state: GameState,
+  atQuestion: number;
+  players: string[];
+  metadata: ReturnQuizInfo;
 }
 
 export interface ReturnAnswer {
@@ -159,4 +160,11 @@ export interface ReturnQuestion {
   thumbnailUrl: string,
   points: number,
   answers: ReturnAnswer[]
+}
+
+export interface ChatMessage {
+  messageBody: string,
+  playerId: number,
+  playerName: string,
+  timeSent: number
 }
