@@ -12,11 +12,11 @@ import process from 'process';
 import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
-import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizTransfer, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate } from './quiz';
+import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate, adminQuizTransfer } from './quiz';
 import { adminQuestionCreate, listOfQuestions, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, joinPlayer, playerStatus } from './game';
-import { adminQuizInfoIt2, adminQuizNameUpdateIt2 } from './old_it2_functions/quizIt2';
+import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
 import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
 import { restoreQuizInTrashIt2 } from './old_it2_functions/trashIt2';
 import {
@@ -334,6 +334,16 @@ app.delete('/v2/admin/quiz/:quizId/question/:questionId', (req: Request, res: Re
   res.json(response);
 });
 
+app.post('/v2/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
+  const { token } = req.headers;
+  const { userEmail } = req.body;
+  const { quizId } = req.params;
+
+  const response = adminQuizTransfer(String(token), parseInt(quizId), String(userEmail));
+
+  res.status(200).json(response);
+});
+
 // ====================================================================
 // it2 routes below
 // ====================================================================
@@ -509,7 +519,7 @@ app.post('/v1/admin/quiz/:quizId/transfer', (req: Request, res: Response) => {
   const { token, userEmail } = req.body;
   const { quizId } = req.params;
 
-  const response = adminQuizTransfer(String(token), parseInt(quizId), String(userEmail));
+  const response = adminQuizTransferIt2(String(token), parseInt(quizId), String(userEmail));
 
   if ('error' in response) {
     if (response.error === 'Email not found') {

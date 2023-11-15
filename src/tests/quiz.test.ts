@@ -10,17 +10,21 @@ import {
   testQuizTransfer,
   testQuizDescriptionUpdate,
   testGameSessionStart,
-  validQuestion
+  validQuestion,
+  testGameSessionUpdate
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
+
+beforeEach(() => {
+  testClear();
+});
 
 // Tests:
 describe('adminQuizCreate', () => {
   let user: { token: string; };
 
   beforeEach(() => {
-    testClear();
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
   });
 
@@ -94,7 +98,6 @@ describe('SendQuizToTrash', () => {
   let quiz: { quizId: number; };
 
   beforeEach(() => {
-    testClear();
     user = testRegister('testuser@example.com', 'Password123', 'Test', 'User').response;
     quiz = testCreateQuiz(user.token, 'My Quiz Name', 'A description of my quiz').response;
   });
@@ -393,7 +396,6 @@ describe('QuizNameUpdate', () => {
   let quiz: { quizId: number };
 
   beforeEach(() => {
-    testClear();
     user = testRegister('testuser@example.com', 'Password123', 'Test', 'User').response;
     quiz = testCreateQuiz(user.token, 'My Quiz Name', 'A description of my quiz').response;
   });
@@ -510,12 +512,15 @@ describe('/v1/admin/quiz/:quizid/transfer', () => {
   let userfromtoken: {token: string};
   let usertotoken: {token: string};
   let quiz: { quizId: number };
+  let gameSession: { sessionId: number };
 
   beforeEach(() => {
-    testClear();
     userfromtoken = testRegister(userfrom.email, userfrom.password, userfrom.nameFirst, userfrom.nameLast).response;
     usertotoken = testRegister(userto.email, userto.password, userto.nameFirst, userto.nameLast).response;
     quiz = testCreateQuiz(userfromtoken.token, 'My Quiz Name', 'A description of my quiz').response;
+    testCreateQuizQuestion(userfromtoken.token, quiz.quizId, validQuestion);
+    gameSession = testGameSessionStart(userfromtoken.token, quiz.quizId, 10).response;
+    testGameSessionUpdate(userfromtoken.token, quiz.quizId, gameSession.sessionId, 'END');
   });
 
   // Successful Case
@@ -530,7 +535,7 @@ describe('/v1/admin/quiz/:quizid/transfer', () => {
     expect(transferredQuiz.name).toStrictEqual('My Quiz Name');
     expect(transferredQuiz.description).toStrictEqual('A description of my quiz');
   });
-  // Error 400
+
   test('Transferring to an non-existent email - ERROR', () => {
     const quizTransfer = testQuizTransfer(userfromtoken.token, quiz.quizId, 'fakeemail@domain.com');
     expect(quizTransfer.response).toStrictEqual(ERROR);
@@ -538,6 +543,13 @@ describe('/v1/admin/quiz/:quizid/transfer', () => {
   });
 
   test('Transferring to itself - ERROR', () => {
+    const quizTransfer = testQuizTransfer(userfromtoken.token, quiz.quizId, userfrom.email);
+    expect(quizTransfer.response).toStrictEqual(ERROR);
+    expect(quizTransfer.status).toStrictEqual(400);
+  });
+
+  test('Not in END state - ERROR', () => {
+    testGameSessionUpdate(userfromtoken.token, quiz.quizId, gameSession.sessionId, 'LOBBY');
     const quizTransfer = testQuizTransfer(userfromtoken.token, quiz.quizId, userfrom.email);
     expect(quizTransfer.response).toStrictEqual(ERROR);
     expect(quizTransfer.status).toStrictEqual(400);
@@ -580,7 +592,6 @@ describe('QuizDescriptionUpdate', () => {
   let user : {token: string};
   let quiz : {quizId: number};
   beforeEach(() => {
-    testClear();
     user = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
     quiz = testCreateQuiz(user.token, 'Quiz 1', 'This is quiz 1').response;
   });
@@ -656,8 +667,6 @@ describe('adminQuizList v2', () => {
   let quiz : {quizId: number};
 
   beforeEach(() => {
-    testClear();
-
     // First person
     user = testRegister('hayden.smith@unsw.edu.au', 'password1', 'nameFirst', 'nameLast').response;
     quiz = testCreateQuiz(user.token, 'Quiz by Hayden', '').response;
