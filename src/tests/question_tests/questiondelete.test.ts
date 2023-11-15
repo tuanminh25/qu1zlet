@@ -59,7 +59,7 @@ describe('Question Delete', () => {
   };
 
   beforeEach(() => {
-    user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
+    user = testRegister('testuser1@example.com', 'password123', 'Test', 'User').response;
     quiz = testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description').response;
     ques = testCreateQuizQuestion(user.token, quiz.quizId, validQuestion).response;
     gameSession = testGameSessionStart(user.token, quiz.quizId, 10).response;
