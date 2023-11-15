@@ -12,6 +12,7 @@ import {
   findPlayerFromId,
   isPLayer,
   findGameSession,
+  checkSessionsEnded
 } from './helper';
 import { Question, Answer, ReturnAnswer, ReturnQuestion, QuestionBody } from './interface';
 import HttpError from 'http-errors';
@@ -211,30 +212,22 @@ export function adminQuestionUpdate(token: string, quizId: number, questionId: n
  * @returns
  */
 export function adminQuestionDelete(token: string, quizId: number, questionId: number): { error?: string } {
-  const session = isToken(token);
-
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
+  const session = getSession(token);
 
   const data = load();
   const quiz = data.quizzes.find((item) => item.quizId === quizId);
 
   if (quiz.quizOwnedby !== session.userId) {
-    return {
-      error: 'Unauthorised'
-    };
+    throw HttpError(403, 'Unauthorised');
   }
 
   const ques = quiz.questions.find((item) => item.questionId === questionId);
 
   if (!ques) {
-    return {
-      error: 'Question Id does not refer to a valid question within this quiz'
-    };
+    throw HttpError(400, 'Question Id does not refer to a valid question within this quiz');
   }
+
+  checkSessionsEnded(quizId);
 
   const newQuestions = quiz.questions.filter((item) => item.questionId !== questionId);
   quiz.questions = newQuestions;

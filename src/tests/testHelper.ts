@@ -254,8 +254,8 @@ export function testQuizDescriptionUpdate(token: string, quizId: number, descrip
 }
 
 export function testQuestionDelete(token: string, quizId: number, questionId: number) {
-  const res = request('DELETE', `${SERVER_URL}/v1/admin/quiz/${quizId}/question/${questionId}`, {
-    qs: {
+  const res = request('DELETE', `${SERVER_URL}/v2/admin/quiz/${quizId}/question/${questionId}`, {
+    headers: {
       token: token
     }
   });
