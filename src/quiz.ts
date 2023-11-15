@@ -261,7 +261,7 @@ export function adminQuizTransfer(token: string, quizId: number, userEmail: stri
  * @returns {}
  *
  */
-export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string): Record<string, never> {
+export function adminQuizDescriptionUpdate(token: string, quizId: number, description: string): Record<string, never> {
   const data = load();
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
 
