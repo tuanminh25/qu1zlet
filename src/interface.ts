@@ -111,6 +111,7 @@ export interface GameSession {
   metadata: Quiz;
   autoStartNum: number;
   messages: ChatMessage[];
+  questionDatas: QuestionData[]
 }
 
 export interface DataStore {
@@ -175,4 +176,22 @@ export interface ChatMessage {
   playerId: number,
   playerName: string,
   timeSent: number
+}
+
+export interface QuestionData {
+  questionId: number;
+  playersCorrectList: string[];
+  averageAnswerTime: number;
+  percentCorrect: number;
+  playerSubmissions: PlayerSubmission[];
+  openTime: number;
+  correctAnswerIds: number[];
+  validAnswerIds: number[]
+}
+
+export interface PlayerSubmission {
+  playerId: number;
+  timeSubmitted: number;
+  answerIds: number[];
+  name: string
 }

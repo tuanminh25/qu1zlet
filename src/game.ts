@@ -5,7 +5,6 @@ import {
   checkquizId,
   sortPlayerNames,
   generateRandomName,
-  findPlayerFromId,
 } from './helper';
 import HttpError from 'http-errors';
 import {
@@ -15,7 +14,7 @@ import {
   ReturnGameSession,
   ReturnQuizInfo,
   Player,
-  PlayerStatus
+  QuestionData
 } from './interface';
 
 interface GameSessionTimeoutIds {
@@ -48,6 +47,18 @@ function durationTimer(gameSessionId: number, countdown: number, duration: numbe
   }, (countdown + duration) * 1000);
 }
 
+export function clearAllTimers() {
+  for (const timer of gameSessionTimeoutIds) {
+    if (timer.questionCountDown !== null) {
+      clearTimeout(timer.questionCountDown);
+    }
+
+    if (timer.questionDurationTimer !== null) {
+      clearTimeout(timer.questionDurationTimer);
+    }
+  }
+}
+
 export function gameSessionStart(token: string, quizId: number, autoStartNum: number): {sessionId: number} {
   const data = load();
   const session = getSession(token);
@@ -73,6 +84,30 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
     throw HttpError(400, 'Quiz does not have any question');
   }
 
+  const newQuestionDatas: QuestionData[] = [];
+  for (const ques of quiz.questions) {
+    const correctAnswerIds: number[] = [];
+    const validAnswerIds: number[] = [];
+    for (const answer of ques.answers) {
+      if (answer.correct === true) {
+        correctAnswerIds.push(answer.answerId);
+      }
+      validAnswerIds.push(answer.answerId);
+    }
+    newQuestionDatas.push(
+      {
+        questionId: ques.questionId,
+        averageAnswerTime: 0,
+        percentCorrect: 0,
+        playersCorrectList: [],
+        openTime: 0,
+        playerSubmissions: [],
+        correctAnswerIds: correctAnswerIds,
+        validAnswerIds: validAnswerIds
+      }
+    );
+  }
+
   const newGameSession: GameSession = {
     gameSessionId: ++data.ids.gameSessionId,
     state: GameState.LOBBY,
@@ -81,6 +116,7 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
     metadata: quiz,
     autoStartNum: autoStartNum,
     messages: [],
+    questionDatas: newQuestionDatas
   };
 
   quiz.activeSessions.push(newGameSession.gameSessionId);
@@ -342,16 +378,4 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
   data.ids.playerId++;
   save(data);
   return { playerId: player.playerId };
-}
-
-export function playerStatus(playerId: number): PlayerStatus {
-  const data = load();
-  const player = findPlayerFromId(playerId);
-  const gameSession = data.gameSessions.find((g) => g.gameSessionId === player.sessionId);
-
-  return {
-    state: gameSession.state,
-    atQuestion: gameSession.atQuestion,
-    numQuestions: gameSession.metadata.numQuestions
-  };
 }

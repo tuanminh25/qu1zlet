@@ -183,7 +183,7 @@ export function adminQuizNameUpdate(token: string, quizId : number, name: string
 
   // error 401
   if (!quiz) {
-    throw HttpError(403, 'Unauthorised');
+    throw HttpError(403, 'Quiz does not exist');
   }
 
   // Quiz ID does not refer to a quiz that this user owns
@@ -261,7 +261,7 @@ export function adminQuizTransfer(token: string, quizId: number, userEmail: stri
  * @returns {}
  *
  */
-export function adminQuizDescriptionUpdate (token: string, quizId: number, description: string): Record<string, never> {
+export function adminQuizDescriptionUpdate(token: string, quizId: number, description: string): Record<string, never> {
   const data = load();
   const quiz = data.quizzes.find((quiz) => quiz.quizId === quizId);
 
@@ -307,7 +307,7 @@ export function adminThumbnailUpdate(token: string, quizId: number, imgUrl: stri
   checkUrlImage(imgUrl);
 
   if (!quiz) {
-    throw HttpError(403, 'Unauthorised');
+    throw HttpError(403, 'Quiz doesnt exist');
   }
 
   // Quiz ID does not refer to a quiz that this user owns

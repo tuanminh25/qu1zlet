@@ -1,5 +1,5 @@
 import { load, save } from './helper';
-
+import { clearAllTimers } from './game';
 /**
   * Reset the state of the application back to the start.
   *
@@ -8,7 +8,7 @@ import { load, save } from './helper';
 */
 export function clear(): Record<string, never> {
   const data = load();
-  // attributes of data store
+  clearAllTimers();
   data.users.length = 0;
   data.quizzes.length = 0;
   data.sessions.length = 0;
