@@ -184,7 +184,8 @@ export interface QuestionData {
   averageAnswerTime: number;
   percentCorrect: number;
   playerSubmissions: PlayerSubmission[];
-  openTime: number
+  openTime: number;
+  correctAnswerIds: number[]
 }
 
 export interface PlayerSubmission {

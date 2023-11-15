@@ -86,8 +86,14 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
     throw HttpError(400, 'Quiz does not have any question');
   }
 
-  let newQuestionDatas: QuestionData[];
+  const newQuestionDatas: QuestionData[] = []
   for (const ques of quiz.questions) {
+    const correctAnswerIds: number[] = [];
+    for (const answer of ques.answers) {
+      if (answer.correct === true) {
+        correctAnswerIds.push(answer.answerId);
+      }
+    }
     newQuestionDatas.push(
       {
         questionId: ques.questionId,
@@ -95,11 +101,12 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
         percentCorrect: 0,
         playersCorrectList: [],
         openTime: 0,
-        playerSubmissions: []
+        playerSubmissions: [],
+        correctAnswerIds: correctAnswerIds
       }
     )
   }
-  
+
   const newGameSession: GameSession = {
     gameSessionId: ++data.ids.gameSessionId,
     state: GameState.LOBBY,
