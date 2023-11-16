@@ -25,6 +25,7 @@ import {
   playerSubmission,
   joinPlayer
 } from './player';
+import { playerFinalResults } from './result';
 
 // Set up web app
 const app = express();
@@ -223,6 +224,12 @@ app.get('/v1/player/:playerId/question/:questionposition', (req: Request, res: R
 app.get('/v1/player/:playerId/chat', (req: Request, res: Response) => {
   const playerId = req.params.playerId;
   const response = getChatMessages(parseInt(playerId));
+  res.json(response);
+});
+
+app.get('/v1/player/:playerId/results', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const response = playerFinalResults(parseInt(playerId));
   res.json(response);
 });
 

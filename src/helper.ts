@@ -288,7 +288,7 @@ export function checkUrlImage(url: string): void {
   * @returns { GameSession }
   *
 */
-export function findGameSession(gameSessionId: number) {
+export function findGameSession(gameSessionId: number): GameSession {
   const data = load();
   return data.gameSessions.find(gameSession => gameSession.gameSessionId === gameSessionId);
 }
