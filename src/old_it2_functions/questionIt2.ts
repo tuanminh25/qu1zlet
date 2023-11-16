@@ -198,29 +198,19 @@ export function adminQuestionUpdateIt2(token: string, quizId: number, questionId
  * @returns
  */
 export function adminQuestionDeleteIt2(token: string, quizId: number, questionId: number): { error?: string } {
-  const session = isToken(token);
-
-  if (!session) {
-    return {
-      error: 'Invalid token'
-    };
-  }
+  const session = getSession(token);
 
   const data = load();
   const quiz = data.quizzes.find((item) => item.quizId === quizId);
 
   if (quiz.quizOwnedby !== session.userId) {
-    return {
-      error: 'Unauthorised'
-    };
+    throw HttpError(403, 'Unauthorised');
   }
 
   const ques = quiz.questions.find((item) => item.questionId === questionId);
 
   if (!ques) {
-    return {
-      error: 'Question Id does not refer to a valid question within this quiz'
-    };
+    throw HttpError(400, 'Question Id does not refer to a valid question within this quiz');
   }
 
   const newQuestions = quiz.questions.filter((item) => item.questionId !== questionId);

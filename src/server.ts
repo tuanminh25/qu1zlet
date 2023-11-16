@@ -432,16 +432,7 @@ app.delete('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Re
   const questionId = parseInt(req.params.questionId);
 
   const response = adminQuestionDeleteIt2(String(token), quizId, questionId);
-
-  if (response.error === 'Invalid token') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Unauthorised') {
-    return res.status(403).json(response);
-  } else if (response.error) {
-    return res.status(400).json(response);
-  } else {
-    res.json(response);
-  }
+  res.json(response);
 });
 
 app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
