@@ -17,7 +17,6 @@ import { adminQuestionCreate, moveQuizQuestion, dupQuizQuestion, currentPlayerQu
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, viewGameSession } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
-
 import { adminQuestionCreateIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2, dupQuizQuestionIt2 } from './old_it2_functions/questionIt2';
 import {
   getChatMessages,
@@ -285,15 +284,6 @@ app.post('/v1/admin/quiz', (req: Request, res: Response) => {
 app.put('/v1/admin/user/details', (req: Request, res: Response) => {
   const { token, email, nameFirst, nameLast } = req.body;
   const response = adminUserUpdate(token, email, nameFirst, nameLast);
-
-  res.json(response);
-});
-
-app.get('/v1/admin/quiz/:quizid/session/:sessionid', (req: Request, res: Response) => {
-  const quizId = req.params.quizid;
-  const sessionId = req.params.sessionid;
-  const token = req.headers.token;
-  const response = getGameStatus(String(token), parseInt(quizId), parseInt(sessionId));
 
   res.json(response);
 });

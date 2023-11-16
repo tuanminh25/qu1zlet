@@ -3,10 +3,50 @@ import {
   findPlayerFromId,
   generateTime,
   save,
-  generateRandomName
+  generateRandomName,
+  checkQuesPosition
 } from './helper';
-import { ChatMessage, PlayerStatus, PlayerSubmission, GameState, Player } from './interface';
+import { ChatMessage, PlayerStatus, PlayerSubmission, GameState, Player, GameSession, QuestionData } from './interface';
 import HttpError from 'http-errors';
+
+function isAnswerCorrect(answer: number[], playerAns: number[]) {
+  const sortedAnswer = answer.sort();
+  const sortedPlayerAnswer = playerAns.sort();
+
+  if (sortedAnswer.length !== sortedPlayerAnswer.length) {
+    return false;
+  }
+
+  for (let i = 0; i < sortedAnswer.length; i++) {
+    if (sortedAnswer[i] !== sortedPlayerAnswer[i]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+function updateQuestionData(gameSession: GameSession, questionPosition: number, playerSubmit: PlayerSubmission) {
+  const currQues: QuestionData = gameSession.questionDatas[questionPosition - 1];
+  if (isAnswerCorrect(currQues.correctAnswerIds, playerSubmit.answerIds)) {
+    const place = currQues.playersCorrectList.length + 1;
+    const score = currQues.points * (1 / place);
+
+    currQues.playersCorrectList.push({
+      playerId: playerSubmit.playerId,
+      score: score,
+      name: playerSubmit.name
+    });
+  }
+
+  let totalAnswerTime = 0;
+  for (const submit of currQues.playerSubmissions) {
+    totalAnswerTime += submit.answerTime;
+  }
+
+  currQues.averageAnswerTime = totalAnswerTime / (currQues.playerSubmissions.length);
+  currQues.percentCorrect = (currQues.playersCorrectList.length / gameSession.players.length) * 100;
+}
 
 /**
  * Allow a guest player to join
@@ -132,7 +172,7 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
 
   const gameSession = data.gameSessions.find((g) => g.gameSessionId === player.sessionId);
 
-  if (questionPosition < 1 || questionPosition > gameSession.metadata.numQuestions) {
+  if (!checkQuesPosition(gameSession, questionPosition)) {
     throw HttpError(400, 'Invalid questionPosition');
   }
 
@@ -140,7 +180,7 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
     throw HttpError(400, 'Session is not in QUESTION_OPEN state');
   }
 
-  if (gameSession.atQuestion < questionPosition) {
+  if (gameSession.atQuestion !== questionPosition) {
     throw HttpError(400, 'Session is not yet up to this question');
   }
 
@@ -161,10 +201,11 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
     playerId: playerId,
     answerIds: answerIds,
     name: player.name,
-    timeSubmitted: generateTime()
+    answerTime: generateTime() - gameSession.questionDatas[questionPosition - 1].openTime
   };
 
   gameSession.questionDatas[questionPosition - 1].playerSubmissions.push(playerSubmit);
+  updateQuestionData(gameSession, questionPosition, playerSubmit);
   save(data);
 
   return {};
