@@ -1,5 +1,4 @@
 import {
-  checkauthUserId,
   generateTime,
   load,
   save,
@@ -10,7 +9,7 @@ import {
   getSession,
   findPlayerFromId,
   findGameSession,
-  checkSessionsEnded
+  checkSessionsEnded,
 } from './helper';
 import { Question, Answer, ReturnAnswer, ReturnQuestion, QuestionBody } from './interface';
 import HttpError from 'http-errors';
@@ -123,18 +122,18 @@ export function adminQuestionCreate(token: string, quizId: number, questionBody:
 export function adminQuestionUpdate(token: string, quizId: number, questionId: number, questionBody: QuestionBody) {
   const data = load();
   const quiz = data.quizzes.find(q => q.quizId === quizId);
-  const question = quiz.questions.find(q => q.questionId === questionId);
-
   const userId = getSession(token).userId;
 
-  if (!checkauthUserId(userId)) {
+  // Error 403 checking
+  if (!quiz) {
     throw HttpError(403, 'Unauthorised');
   }
 
-  // Error 403 checking
   if (quiz.quizOwnedby !== userId) {
     throw HttpError(403, 'Unauthorised');
   }
+
+  const question = quiz.questions.find(q => q.questionId === questionId);
 
   // Error 400 checking
   if (!quiz.questions.some(q => q.questionId === questionId)) {
@@ -300,9 +299,6 @@ export function dupQuizQuestion(token: string, quizId: number, questionId: numbe
 
   // Non-existent quiz
   const quiz = checkquizId(quizId);
-  if (!quiz) {
-    throw HttpError(403, 'Valid token is provided, quiz does not exist');
-  }
 
   // User is not owner of the quiz
   if (session.userId !== quiz.quizOwnedby) {

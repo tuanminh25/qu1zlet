@@ -54,6 +54,11 @@ export function restoreQuizInTrash(token: string, quizId: number): { error?: str
   const session = getSession(token);
 
   const quiz = isQuizInTrash(quizId);
+
+  if (!quiz && isQuizInCurrentQuizzies(quizId)) {
+    throw HttpError(400, 'Quiz ID refers to a quiz that is not currently in the trash');
+  }
+
   if (!quiz) {
     throw HttpError(400, 'Quiz ID refers to a quiz that is not currently in the trash');
   }
