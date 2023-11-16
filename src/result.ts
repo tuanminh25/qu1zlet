@@ -1,11 +1,9 @@
 import {
-  load,
   findPlayerFromId,
   findGameSession,
 } from './helper';
-import { ReturnQuestResult , ReturnFinalResults, UsersRanked, QuestionData, GameState } from './interface';
+import { ReturnQuestResult, ReturnFinalResults, UsersRanked, QuestionData, GameState } from './interface';
 import HttpError from 'http-errors';
-
 
 function calculateFinalScore(name: string, allQues: QuestionData[]): number {
   let score = 0;
@@ -17,7 +15,7 @@ function calculateFinalScore(name: string, allQues: QuestionData[]): number {
     }
   }
 
-  return score
+  return score;
 }
 
 export function playerFinalResults(playerId: number): ReturnFinalResults {
@@ -60,5 +58,5 @@ export function playerFinalResults(playerId: number): ReturnFinalResults {
   return {
     usersRankedByScore: users,
     questionResults: questionResults
-  }
+  };
 }
