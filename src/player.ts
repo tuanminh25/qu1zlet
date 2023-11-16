@@ -10,7 +10,7 @@ import HttpError from 'http-errors';
 
 /**
  * Allow a guest player to join
- * 
+ *
  * @param {number} sessionId
  * @param {string} name
  * @returns {playerId: number}
@@ -57,8 +57,8 @@ export function joinPlayer(sessionId: number, name: string): {playerId: number} 
 
 /**
  * Return all messages that are in the same session as the player
- * 
- * @param {number} playerId 
+ *
+ * @param {number} playerId
  * @returns {messages: ChatMessage[]}
  */
 export function getChatMessages(playerId: number): {messages: ChatMessage[]} {
@@ -73,10 +73,10 @@ export function getChatMessages(playerId: number): {messages: ChatMessage[]} {
 
 /**
  * Send a new chat message to everyone in the session
- * 
- * @param {number} playerId 
+ *
+ * @param {number} playerId
  * @param {string} message
- * @returns 
+ * @returns
  */
 export function sendChatMessages(playerId: number, message: string): Record<string, never> {
   const data = load();
@@ -102,8 +102,8 @@ export function sendChatMessages(playerId: number, message: string): Record<stri
 
 /**
  * Get the status of a guest player that has already joined a session
- * 
- * @param {number} playerId  
+ *
+ * @param {number} playerId
  * @returns {PlayerStatus}
  */
 export function playerStatus(playerId: number): PlayerStatus {
@@ -119,12 +119,12 @@ export function playerStatus(playerId: number): PlayerStatus {
 }
 
 /**
- * 
- * 
- * @param {number} playerId 
+ *
+ *
+ * @param {number} playerId
  * @param {number} questionPosition
  * @param {number[]} answerIds
- * @returns 
+ * @returns
  */
 export function playerSubmission(playerId: number, questionPosition: number, answerIds: number[]) {
   const data = load();
