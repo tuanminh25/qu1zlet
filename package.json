@@ -17,7 +17,7 @@
         "game": "jest game.test.ts",
         "chat": "jest chat.test.ts",
         "player": "jest player.test.ts",
-        "result": "jest result.test.ts",
+        "result": "jest results.test.ts",
         "startNodemon": "nodemon src/server.ts"
     },
     "dependencies": {

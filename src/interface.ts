@@ -209,3 +209,13 @@ export interface ReturnQuestResult {
   averageAnswerTime: number;
   percentCorrect: number;
 }
+
+export interface UsersRanked {
+  name: string,
+  score: number
+}
+
+export interface ReturnFinalResults {
+  usersRankedByScore: UsersRanked[]
+  questionResults: ReturnQuestResult[]
+}

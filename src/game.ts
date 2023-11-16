@@ -229,11 +229,11 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     if (action !== GameAction.SKIP_COUNTDOWN) {
       throw HttpError(400, 'Action enum cannot be applied in the current state');
     } else {
+      gameSession.state = GameState.QUESTION_OPEN;
       clearTimeout(timerIds.questionCountDown);
       clearTimeout(timerIds.questionDurationTimer);
       timerIds.questionCountDown = null;
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 0, currQues.duration);
-      gameSession.state = GameState.QUESTION_OPEN;
       gameSession.questionDatas[gameSession.atQuestion - 1].openTime = generateTime();
 
       save(data);
@@ -362,7 +362,7 @@ export function viewGameSession(token: string, quizId: number) {
   }
 
   return {
-    activeSessions: quiz.activeSessions,
-    inactiveSessions: quiz.inactiveSessions
+    activeSessions: quiz.activeSessions.sort(),
+    inactiveSessions: quiz.inactiveSessions.sort()
   };
 }
