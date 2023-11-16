@@ -121,3 +121,5 @@ describe('adminAuthLogout', () => {
     expect(details1.status).toStrictEqual(401);
   });
 });
+
+testClear();
