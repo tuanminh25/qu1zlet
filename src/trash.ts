@@ -60,7 +60,7 @@ export function restoreQuizInTrash(token: string, quizId: number): { error?: str
   }
 
   if (!quiz) {
-    throw HttpError(400, 'Quiz ID refers to a quiz that is not currently in the trash');
+    throw HttpError(403, 'Unauthorised');
   }
 
   if (quiz.quizOwnedby !== session.userId) {
