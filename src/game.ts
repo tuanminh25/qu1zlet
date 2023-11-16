@@ -4,6 +4,7 @@ import {
   save,
   checkquizId,
   sortPlayerNames,
+  generateTime,
 } from './helper';
 import HttpError from 'http-errors';
 import {
@@ -30,6 +31,7 @@ function countDownTimer(gameSessionId: number): ReturnType<typeof setTimeout> {
     const data = load();
     const gameSession = data.gameSessions.find((g) => g.gameSessionId === gameSessionId);
     gameSession.state = GameState.QUESTION_OPEN;
+    gameSession.questionDatas[gameSession.atQuestion - 1].openTime = generateTime();
     timer.questionCountDown = null;
     save(data);
   }, 3000);
@@ -113,6 +115,7 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
       }
       validAnswerIds.push(answer.answerId);
     }
+
     newQuestionDatas.push(
       {
         questionId: ques.questionId,
@@ -122,7 +125,8 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
         openTime: 0,
         playerSubmissions: [],
         correctAnswerIds: correctAnswerIds,
-        validAnswerIds: validAnswerIds
+        validAnswerIds: validAnswerIds,
+        points: ques.points
       }
     );
   }
@@ -231,6 +235,7 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
       timerIds.questionCountDown = null;
       timerIds.questionDurationTimer = durationTimer(gameSessionId, 0, currQues.duration);
       gameSession.state = GameState.QUESTION_OPEN;
+      gameSession.questionDatas[gameSession.atQuestion - 1].openTime = generateTime();
 
       save(data);
 
@@ -358,8 +363,8 @@ export function viewGameSession(token: string, quizId: number) {
   }
 
   return {
-    activeSessions: quiz.activeSessions,
-    inactiveSessions: quiz.inactiveSessions
+    activeSessions: quiz.activeSessions.sort(),
+    inactiveSessions: quiz.inactiveSessions.sort()
   };
 }
 

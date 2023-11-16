@@ -13,7 +13,8 @@ import {
   Colours,
   Session,
   Player,
-  GameState
+  GameState,
+  GameSession
 } from './interface';
 
 export function load(): DataStore {
@@ -48,26 +49,6 @@ export function checkquizId(quizId: number): Quiz {
     throw HttpError(403, 'Quiz does not exist');
   }
   return quiz;
-}
-
-/**
-  * Given a an auth user id
-  *
-  * @param {string} authUserId
-  * @returns { user:
-    *   {
-    *   userId: number,
-    *   name : string,
-    *   email : string,
-    *   numSuccessfulLogins: number,
-    *   numFailedPasswordsSinceLastLogin: number
-    *   }
-    * }
-    * @returns {undefined} - AuthUserId is not a valid user
-  */
-export function checkauthUserId(authUserId: number): User {
-  const data = load();
-  return data.users.find((user) => user.userId === authUserId);
 }
 
 /**
@@ -368,5 +349,20 @@ export function checkSessionsEnded(quizId: number): void {
 
   if (notEndedSessions) {
     throw HttpError(400, 'Not all game sessions are in END state for quizId ' + quizId);
+  }
+}
+
+/**
+ * checks if questionPosition is valid
+ *
+ * @param {GameSession} gameSession
+ * @param {number} questionPosition
+ * @returns {boolean}
+ */
+export function checkQuesPosition(gameSession: GameSession, questionPosition: number): boolean {
+  if (questionPosition < 1 || questionPosition > gameSession.metadata.numQuestions) {
+    return false;
+  } else {
+    return true;
   }
 }

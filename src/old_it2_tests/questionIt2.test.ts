@@ -129,7 +129,7 @@ describe('CreateQuizQuestion v1', () => {
 
   test('Answer string is too long', () => {
     const question = testCreateQuizQuestion(user.token, quiz.quizId, {
-      question: 'What is the answer to this very long answer option?',
+      question: 'What is the answer to this?',
       duration: 5,
       points: 5,
       answers: [
@@ -288,6 +288,10 @@ describe('UpdateQuizQuestion v1', () => {
       update: { ...validQuestionUpdate, duration: -4 }
     },
     {
+      description: 'Question duration too high',
+      update: { ...validQuestionUpdate, duration: 400 }
+    },
+    {
       description: 'Invalid points (too low)',
       update: { ...validQuestionUpdate, points: 0 }
     },
@@ -315,6 +319,13 @@ describe('UpdateQuizQuestion v1', () => {
         ...validQuestionUpdate,
         answers: [{ answer: 'Yes', correct: true }, { answer: 'Yes', correct: false }]
       }
+    },
+    {
+      description: 'No correct answers',
+      update: {
+        ...validQuestionUpdate,
+        answers: [{ answer: 'yikes', correct: false }, { answer: 'Yes', correct: false }]
+      }
     }
   ];
 
@@ -324,6 +335,18 @@ describe('UpdateQuizQuestion v1', () => {
       expect(updatedQuestion.response).toStrictEqual(ERROR);
       expect(updatedQuestion.status).toBe(400);
     });
+  });
+
+  test('Question doesnt exist', () => {
+    const updatedQuestion = testUpdateQuestion(user.token, quiz.quizId, question.questionId + 102, validQuestionUpdate);
+    expect(updatedQuestion.response).toStrictEqual(ERROR);
+    expect(updatedQuestion.status).toBe(400);
+  });
+
+  test('Quiz doesnt exist', () => {
+    const updatedQuestion = testUpdateQuestion(user.token, quiz.quizId + 792, question.questionId, validQuestionUpdate);
+    expect(updatedQuestion.response).toStrictEqual(ERROR);
+    expect(updatedQuestion.status).toBe(403);
   });
 
   test('Empty token', () => {

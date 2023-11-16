@@ -180,18 +180,19 @@ export interface ChatMessage {
 
 export interface QuestionData {
   questionId: number;
-  playersCorrectList: string[];
+  playersCorrectList: PlayersCorrect[];
   averageAnswerTime: number;
   percentCorrect: number;
   playerSubmissions: PlayerSubmission[];
   openTime: number;
   correctAnswerIds: number[];
-  validAnswerIds: number[]
+  validAnswerIds: number[];
+  points: number;
 }
 
 export interface PlayerSubmission {
   playerId: number;
-  timeSubmitted: number;
+  answerTime: number;
   answerIds: number[];
   name: string
 }
@@ -204,6 +205,12 @@ export interface QuizResults {
 export interface UserScore {
   name: string;
   score: number;
+}
+
+export interface PlayersCorrect {
+  playerId: number;
+  name: string;
+  score: number
 }
 
 export interface QuestionResult {
