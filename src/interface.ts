@@ -180,7 +180,7 @@ export interface ChatMessage {
 
 export interface QuestionData {
   questionId: number;
-  playersCorrectList: string[];
+  playersCorrectList: PlayersCorrect[];
   averageAnswerTime: number;
   percentCorrect: number;
   playerSubmissions: PlayerSubmission[];
@@ -191,7 +191,20 @@ export interface QuestionData {
 
 export interface PlayerSubmission {
   playerId: number;
-  timeSubmitted: number;
+  answerTime: number;
   answerIds: number[];
   name: string
+}
+
+export interface PlayersCorrect {
+  playerId: number;
+  name: string;
+  score: number
+}
+
+export interface ReturnQuestResult {
+  questionId: Number;
+  playersCorrectList: string[];
+  averageAnswerTime: number;
+  percentCorrect: number;
 }

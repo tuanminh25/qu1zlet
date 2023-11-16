@@ -17,7 +17,6 @@ import { adminQuestionCreate, moveQuizQuestion, dupQuizQuestion, currentPlayerQu
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, viewGameSession } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
-
 import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
 import {
   getChatMessages,
@@ -26,6 +25,7 @@ import {
   playerSubmission,
   joinPlayer
 } from './player';
+import { playerGetQuesResult } from './result';
 
 // Set up web app
 const app = express();
@@ -204,6 +204,14 @@ app.put('/v1/admin/quiz/:quizId/thumbnail', (req: Request, res: Response) => {
 
   res.json(response);
 });
+
+app.get('/v1/player/:playerId/question/:questionposition/results', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const questionposition = req.params.questionposition;
+  const response = playerGetQuesResult(parseInt(playerId), parseInt(questionposition));
+  res.json(response);
+});
+
 
 app.put('/v1/player/:playerId/question/:questionposition/answer', (req: Request, res: Response) => {
   const playerId = req.params.playerId;

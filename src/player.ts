@@ -3,7 +3,8 @@ import {
   findPlayerFromId,
   generateTime,
   save,
-  generateRandomName
+  generateRandomName,
+  checkQuesPosition
 } from './helper';
 import { ChatMessage, PlayerStatus, PlayerSubmission, GameState, Player } from './interface';
 import HttpError from 'http-errors';
@@ -132,7 +133,7 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
 
   const gameSession = data.gameSessions.find((g) => g.gameSessionId === player.sessionId);
 
-  if (questionPosition < 1 || questionPosition > gameSession.metadata.numQuestions) {
+  if (!checkQuesPosition(gameSession, questionPosition)) {
     throw HttpError(400, 'Invalid questionPosition');
   }
 
@@ -161,7 +162,7 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
     playerId: playerId,
     answerIds: answerIds,
     name: player.name,
-    timeSubmitted: generateTime()
+    answerTime: generateTime()
   };
 
   gameSession.questionDatas[questionPosition - 1].playerSubmissions.push(playerSubmit);

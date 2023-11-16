@@ -13,8 +13,10 @@ import {
   Colours,
   Session,
   Player,
-  GameState
+  GameState,
+  GameSession
 } from './interface';
+import e from 'express';
 
 export function load(): DataStore {
   const data = fs.readFileSync(filePath, 'utf8');
@@ -368,5 +370,20 @@ export function checkSessionsEnded(quizId: number): void {
 
   if (notEndedSessions) {
     throw HttpError(400, 'Not all game sessions are in END state for quizId ' + quizId);
+  }
+}
+
+/**
+ * checks if questionPosition is valid
+ * 
+ * @param {GameSession} gameSession
+ * @param {number} questionPosition
+ * @returns {boolean}
+ */
+export function checkQuesPosition(gameSession: GameSession, questionPosition: number): boolean {
+  if (questionPosition < 1 || questionPosition > gameSession.metadata.numQuestions) {
+    return false;
+  } else {
+    return true;
   }
 }
