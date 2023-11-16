@@ -440,3 +440,8 @@ export function testViewSessions(token: string, quizId: number) {
   });
   return { response: JSON.parse(res.body.toString()), status: res.statusCode };
 }
+
+export function testPlayerQuesResult(playerId: number, questionPosition: number) {
+  const res = request('GET', SERVER_URL + playerV1 + playerId + `/question/${questionPosition}/results`);
+  return { response: JSON.parse(res.body.toString()), status: res.statusCode };
+}
