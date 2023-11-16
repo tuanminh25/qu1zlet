@@ -256,7 +256,7 @@ describe('Submit answers', () => {
     expect(submit.status).toStrictEqual(400);
   });
 
-  test('Session is not at QUESION_OPEN_STATE', () => {
+  test('Session is not at QUESTION_OPEN_STATE', () => {
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
     const submit = testPlayerSubmit(player.playerId, 1, [1]);
     expect(submit.response).toStrictEqual(ERROR);

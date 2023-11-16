@@ -1,8 +1,8 @@
 import {
-    load,
-    findPlayerFromId,
-    checkQuesPosition
-  } from './helper';
+  load,
+  findPlayerFromId,
+  checkQuesPosition
+} from './helper';
 import { GameState, ReturnQuestResult } from './interface';
 import HttpError from 'http-errors';
 
