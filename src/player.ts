@@ -5,7 +5,7 @@ import {
   save,
   generateRandomName
 } from './helper';
-import { ChatMessage, PlayerStatus, PlayerSubmission, GameState, Player } from './interface';
+import { ChatMessage, PlayerStatus, PlayerSubmission, GameState, Player, QuizResults } from './interface';
 import HttpError from 'http-errors';
 
 /**
@@ -168,4 +168,30 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
   save(data);
 
   return {};
+}
+
+/**
+ * Get the final results for a whole session a player is playing in
+ *
+ * @param {number} playerId
+ * @returns {QuizResults}
+ */
+export function GetPlayerQuizResults(playerId: number): QuizResults {
+  const quizResults = {
+    usersRankedByScore: [
+      {
+        name: 'Hayden',
+        score: 45
+      },
+    ],
+    questionResults: [
+      {
+        questionId: 5546,
+        playersCorrectList: ['Hayden'],
+        averageAnswerTime: 45,
+        percentCorrect: 54
+      },
+    ]
+  };
+  return quizResults;
 }

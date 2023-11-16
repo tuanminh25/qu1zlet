@@ -195,3 +195,20 @@ export interface PlayerSubmission {
   answerIds: number[];
   name: string
 }
+
+export interface QuizResults {
+  usersRankedByScore: UserScore[];
+  questionResults: QuestionResult[];
+}
+
+export interface UserScore {
+  name: string;
+  score: number;
+}
+
+export interface QuestionResult {
+  questionId: number;
+  playersCorrectList: string[];
+  averageAnswerTime: number;
+  percentCorrect: number;
+}

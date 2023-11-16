@@ -11,7 +11,7 @@ import {
   findGameSession,
   checkSessionsEnded,
 } from './helper';
-import { Question, Answer, ReturnAnswer, ReturnQuestion, QuestionBody } from './interface';
+import { Question, Answer, ReturnAnswer, ReturnQuestion, QuestionBody, QuestionResult } from './interface';
 import HttpError from 'http-errors';
 /**
   * Given details about a new question, add it to the specified quiz for the logged in user,
@@ -367,4 +367,22 @@ export function currentPlayerQuestionInfor(playerId: number, questionposition: n
     answers: returnAnswer,
   };
   return returnQuestion;
+}
+
+/**
+ * Get the results for a particular question of the session a player is playing in. Question position starts at 1
+ *
+ * @param {number} playerId
+ * @param {number} questionposition
+ * @returns {QuestionResult}
+ */
+
+export function GetQuestionResults(playerId: number, questionposition: number): QuestionResult {
+  const questionResults = {
+    questionId: 5546,
+    playersCorrectList: ['Hayden'],
+    averageAnswerTime: 45,
+    percentCorrect: 54
+  };
+  return questionResults;
 }
