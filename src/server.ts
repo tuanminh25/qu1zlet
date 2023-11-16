@@ -25,6 +25,7 @@ import {
   playerSubmission,
   joinPlayer
 } from './player';
+import { playerQuestionResult } from './result';
 
 // Set up web app
 const app = express();
@@ -217,6 +218,13 @@ app.get('/v1/player/:playerId/question/:questionposition', (req: Request, res: R
   const playerId = req.params.playerId;
   const questionposition = req.params.questionposition;
   const response = currentPlayerQuestionInfor(parseInt(playerId), parseInt(questionposition));
+  res.json(response);
+});
+
+app.get('/v1/player/:playerId/question/:questionposition/results', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const questionposition = req.params.questionposition;
+  const response = playerQuestionResult(parseInt(playerId), parseInt(questionposition));
   res.json(response);
 });
 

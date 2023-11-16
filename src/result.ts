@@ -26,7 +26,7 @@ export function playerQuestionResult(playerId: number, questionPosition: number)
   }
 
   const questionData = gameSession.questionDatas[questionPosition];
-  const playerList = questionData.playersCorrectList.map(player => player.name);
+  const playerList = questionData.playersCorrectList.map(player => player.name).sort();
 
   return {
     questionId: questionData.questionId,
