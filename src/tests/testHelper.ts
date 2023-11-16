@@ -287,10 +287,12 @@ export function testEmptyTheTrash(token: string, quizIds: Array<number>) {
 }
 
 export function testMoveQuizQuestion(token: string, quizId: number, questionId: number, newPosition: number) {
-  const res = request('PUT', SERVER_URL + '/v1/admin/quiz/' + quizId + '/question/' + questionId + '/move',
+  const res = request('PUT', SERVER_URL + '/v2/admin/quiz/' + quizId + '/question/' + questionId + '/move',
     {
-      json: {
+      headers: {
         token: token,
+      },
+      json: {
         newPosition: newPosition
       }
     });

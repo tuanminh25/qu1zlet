@@ -54,16 +54,17 @@ export function restoreQuizInTrash(token: string, quizId: number): { error?: str
   const session = getSession(token);
 
   const quiz = isQuizInTrash(quizId);
+
+  if (!quiz && isQuizInCurrentQuizzies(quizId)) {
+    throw HttpError(400, 'Quiz ID refers to a quiz that is not currently in the trash');
+  }
+
   if (!quiz) {
-    throw HttpError(400, 'Unauthorised');
+    throw HttpError(403, 'Unauthorised');
   }
 
   if (quiz.quizOwnedby !== session.userId) {
     throw HttpError(403, 'Unauthorised');
-  }
-
-  if (!quiz) {
-    throw HttpError(400, 'Quiz ID refers to a quiz that is not currently in the trash');
   }
 
   const activeQuizzes = data.quizzes.filter((q) => q.quizOwnedby === session.userId);
