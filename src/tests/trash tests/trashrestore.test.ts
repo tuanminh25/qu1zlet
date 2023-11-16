@@ -45,8 +45,15 @@ describe('Restore Trash', () => {
     expect(restore.response).toStrictEqual(ERROR);
   });
 
+  test('Quiz doesnt exist', () => {
+    const restore = testRestoreTrash(user.token, quiz.quizId + 1000);
+    expect(restore.status).toStrictEqual(403);
+    expect(restore.response).toStrictEqual(ERROR);
+  });
+
   test('Quiz ID refers to a quiz that is not currently in the trash', () => {
-    const restore = testRestoreTrash(user.token, quiz.quizId + 123);
+    const quiz2 = testCreateQuiz(user.token, 'Samp Quiz', 'Sample Description').response;
+    const restore = testRestoreTrash(user.token, quiz2.quizId);
     expect(restore.status).toStrictEqual(400);
     expect(restore.response).toStrictEqual(ERROR);
   });
