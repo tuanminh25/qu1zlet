@@ -9,7 +9,7 @@ import {
   getSession,
   findPlayerFromId,
   findGameSession,
-  checkSessionsEnded
+  checkSessionsEnded,
 } from './helper';
 import { Question, Answer, ReturnAnswer, ReturnQuestion, QuestionBody } from './interface';
 import HttpError from 'http-errors';
