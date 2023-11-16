@@ -289,15 +289,6 @@ app.put('/v1/admin/user/details', (req: Request, res: Response) => {
   res.json(response);
 });
 
-app.get('/v1/admin/quiz/:quizid/session/:sessionid', (req: Request, res: Response) => {
-  const quizId = req.params.quizid;
-  const sessionId = req.params.sessionid;
-  const token = req.headers.token;
-  const response = getGameStatus(String(token), parseInt(quizId), parseInt(sessionId));
-
-  res.json(response);
-});
-
 app.delete('/v2/admin/quiz/trash/empty', (req: Request, res: Response) => {
   const token = req.headers.token;
   let quizIds = req.query.quizIds;
