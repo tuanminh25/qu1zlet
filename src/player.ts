@@ -7,7 +7,7 @@ import {
   checkQuesPosition
 } from './helper';
 
-import { ChatMessage, PlayerStatus, PlayerSubmission, GameState, Player, GameSession, QuestionData , QuizResults } from './interface';
+import { ChatMessage, PlayerStatus, PlayerSubmission, GameState, Player, GameSession, QuestionData, QuizResults } from './interface';
 
 import HttpError from 'http-errors';
 
