@@ -3,10 +3,64 @@ import {
   findPlayerFromId,
   generateTime,
   save,
+  generateRandomName
 } from './helper';
-import { ChatMessage, PlayerStatus, PlayerSubmission, GameState } from './interface';
+import { ChatMessage, PlayerStatus, PlayerSubmission, GameState, Player } from './interface';
 import HttpError from 'http-errors';
 
+/**
+ * Allow a guest player to join
+ *
+ * @param {number} sessionId
+ * @param {string} name
+ * @returns {playerId: number}
+ */
+export function joinPlayer(sessionId: number, name: string): {playerId: number} {
+  const data = load();
+  const gameSession = data.gameSessions.find(g => g.gameSessionId === sessionId);
+
+  if (!gameSession) {
+    throw HttpError(400, 'Session does not exist');
+  }
+
+  if (gameSession.players.find((p) => p.name === name)) {
+    throw HttpError(400, 'Name of user is not unique');
+  }
+
+  // Session is not in LOBBY state
+  if (gameSession.state !== 'LOBBY') {
+    throw HttpError(400, 'Session is not in LOBBY state');
+  }
+
+  // Check name, generate new one if neccessary
+  if (name === '') {
+    name = generateRandomName();
+    while (gameSession.players.find((p) => p.name === name)) {
+      name = generateRandomName();
+    }
+  }
+
+  // Initialize new player
+  const player: Player = {
+    sessionId: sessionId,
+    name: name,
+    playerId: data.ids.playerId,
+  };
+
+  // Save data
+  data.players.push(player);
+  gameSession.players.push(player);
+  data.ids.playerId++;
+  save(data);
+  return { playerId: player.playerId };
+}
+
+/**
+ * Return all messages that are in the same session as the player
+ *
+ * @param {number} playerId
+ * @returns {messages: ChatMessage[]}
+ */
 export function getChatMessages(playerId: number): {messages: ChatMessage[]} {
   const data = load();
   const player = findPlayerFromId(playerId);
@@ -17,6 +71,13 @@ export function getChatMessages(playerId: number): {messages: ChatMessage[]} {
   };
 }
 
+/**
+ * Send a new chat message to everyone in the session
+ *
+ * @param {number} playerId
+ * @param {string} message
+ * @returns
+ */
 export function sendChatMessages(playerId: number, message: string): Record<string, never> {
   const data = load();
   const player = findPlayerFromId(playerId);
@@ -39,6 +100,12 @@ export function sendChatMessages(playerId: number, message: string): Record<stri
   return {};
 }
 
+/**
+ * Get the status of a guest player that has already joined a session
+ *
+ * @param {number} playerId
+ * @returns {PlayerStatus}
+ */
 export function playerStatus(playerId: number): PlayerStatus {
   const data = load();
   const player = findPlayerFromId(playerId);
@@ -51,13 +118,21 @@ export function playerStatus(playerId: number): PlayerStatus {
   };
 }
 
+/**
+ *
+ *
+ * @param {number} playerId
+ * @param {number} questionPosition
+ * @param {number[]} answerIds
+ * @returns
+ */
 export function playerSubmission(playerId: number, questionPosition: number, answerIds: number[]) {
   const data = load();
   const player = findPlayerFromId(playerId);
 
   const gameSession = data.gameSessions.find((g) => g.gameSessionId === player.sessionId);
 
-  if (questionPosition === 0 || questionPosition > gameSession.metadata.numQuestions) {
+  if (questionPosition < 1 || questionPosition > gameSession.metadata.numQuestions) {
     throw HttpError(400, 'Invalid questionPosition');
   }
 
@@ -69,6 +144,10 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
     throw HttpError(400, 'Session is not yet up to this question');
   }
 
+  if (answerIds.length === 0) {
+    throw HttpError(400, 'Less than 1 answer ID was submitted');
+  }
+
   if (!answerIds.some(ids => gameSession.questionDatas[questionPosition - 1].validAnswerIds.includes(ids))) {
     throw HttpError(400, 'Answer IDs are not valid for this particular questio');
   }
@@ -76,10 +155,6 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
   const uniqueAnswerIds = new Set(answerIds);
   if (uniqueAnswerIds.size !== answerIds.length) {
     throw HttpError(400, 'There are duplicate answer IDs provided');
-  }
-
-  if (answerIds.length === 0) {
-    throw HttpError(400, 'Less than 1 answer ID was submitted');
   }
 
   const playerSubmit: PlayerSubmission = {

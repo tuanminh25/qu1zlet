@@ -4,16 +4,16 @@ import {
   testCreateQuizQuestion,
   testClear,
   validQuestion,
+  footballQues,
   testGameSessionStart,
   testGameSessionUpdate,
   testGetGameStatus,
-  testPlayerJoin,
-  testRandomName,
-  testPlayerStatus
+  testViewSessions
 } from './testHelper';
 
 const ERROR = { error: expect.any(String) };
-
+validQuestion.duration = 1;
+footballQues.duration = 1;
 beforeEach(() => {
   testClear();
 });
@@ -38,6 +38,12 @@ describe('Create Game Session', () => {
     const gameSession = testGameSessionStart(user.token, quiz.quizId, 4);
     expect(gameSession.response).toStrictEqual({ sessionId: expect.any(Number) });
     expect(gameSession.status).toStrictEqual(200);
+  });
+
+  test('Invalid quizId', () => {
+    const gameSession = testGameSessionStart(user.token, quiz.quizId + 12334, 4);
+    expect(gameSession.response).toStrictEqual(ERROR);
+    expect(gameSession.status).toStrictEqual(403);
   });
 
   test('Invalid token', () => {
@@ -91,6 +97,7 @@ describe('Update Game Session', () => {
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
     quiz = testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description').response;
     testCreateQuizQuestion(user.token, quiz.quizId, validQuestion);
+    testCreateQuizQuestion(user.token, quiz.quizId, footballQues);
     gameSession = testGameSessionStart(user.token, quiz.quizId, 10).response;
   });
 
@@ -139,7 +146,7 @@ describe('Update Game Session', () => {
   test('Success Update State QUESTION_CLOSE: END', () => {
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
-    sleepSync(4 * 1000);
+    sleepSync(1 * 1000);
 
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
     expect(update.response).toStrictEqual({});
@@ -149,7 +156,7 @@ describe('Update Game Session', () => {
   test('Success Update State QUESTION_CLOSE: GO_TO_ANSWER', () => {
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
-    sleepSync(4 * 1000);
+    sleepSync(1 * 1000);
 
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_ANSWER');
     expect(update.response).toStrictEqual({});
@@ -159,7 +166,7 @@ describe('Update Game Session', () => {
   test('Success Update State QUESTION_CLOSE: GO_TO_FINAL_RESULTS', () => {
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
-    sleepSync(4 * 1000);
+    sleepSync(1 * 1000);
 
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_FINAL_RESULTS');
     expect(update.response).toStrictEqual({});
@@ -169,7 +176,7 @@ describe('Update Game Session', () => {
   test('Success Update State QUESTION_CLOSE: NEXT_QUESTION', () => {
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
     testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
-    sleepSync(4 * 1000);
+    sleepSync(1 * 1000);
 
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
     expect(update.response).toStrictEqual({});
@@ -211,6 +218,36 @@ describe('Update Game Session', () => {
     const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'END');
     expect(update.response).toStrictEqual({});
     expect(update.status).toStrictEqual(200);
+  });
+
+  test('NEXT_QUESTION at last question State ANSWER_SHOW', () => {
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_ANSWER');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_ANSWER');
+    const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    expect(update.response).toStrictEqual({});
+    expect(update.status).toStrictEqual(200);
+  });
+
+  test('NEXT_QUESTION at last question State QUESTION_CLOSE', () => {
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'GO_TO_ANSWER');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'SKIP_COUNTDOWN');
+    sleepSync(1 * 1000);
+    const update = testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    expect(update.response).toStrictEqual({});
+    expect(update.status).toStrictEqual(200);
+  });
+
+  test('Invalid quizId', () => {
+    const update = testGameSessionUpdate(user.token, quiz.quizId + 123, gameSession.sessionId, 'END');
+    expect(update.response).toStrictEqual(ERROR);
+    expect(update.status).toStrictEqual(403);
   });
 
   test('Invalid token', () => {
@@ -378,7 +415,7 @@ describe('Get game status', () => {
           {
             questionId: ques.questionId,
             question: validQuestion.question,
-            duration: 4,
+            duration: 1,
             thumbnailUrl: 'http://example.com/image.jpg',
             points: 5,
             answers: [
@@ -389,7 +426,7 @@ describe('Get game status', () => {
             ]
           }
         ],
-        duration: 4,
+        duration: 1,
         thumbnailUrl: ''
       }
     });
@@ -466,186 +503,64 @@ describe('Get game status', () => {
   });
 });
 
-describe('Player join', () => {
-  let admin: { token: string; };
-  let quiz: { quizId: number; };
-  let gameSession: { sessionId: number};
-  beforeEach(() => {
-    testClear();
-    admin = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
-    quiz = testCreateQuiz(admin.token, 'Sample Quiz', 'Sample Description').response;
-    expect(testCreateQuizQuestion(admin.token, quiz.quizId, validQuestion).status).toStrictEqual(200);
-    gameSession = testGameSessionStart(admin.token, quiz.quizId, 10).response;
-  });
-
-  // Error cases:
-  // Code 400
-  // Name of user entered is not unique (compared to other users who have already joined)
-  test('Name of user entered is not unique', () => {
-    expect(testPlayerJoin(gameSession.sessionId, 'Luca').status).toStrictEqual(200);
-    expect(testPlayerJoin(gameSession.sessionId, 'Luca').status).toStrictEqual(400);
-    expect(testPlayerJoin(gameSession.sessionId, 'Luca').response).toStrictEqual(ERROR);
-  });
-
-  // Session is not in LOBBY state
-  test('Session is not in LOBBY state', () => {
-    expect(testGameSessionUpdate(admin.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION').status).toStrictEqual(200);
-    expect(testPlayerJoin(gameSession.sessionId, 'Luca').status).toStrictEqual(400);
-    expect(testPlayerJoin(gameSession.sessionId, 'Luca').response).toStrictEqual(ERROR);
-    testGameSessionUpdate(admin.token, quiz.quizId, gameSession.sessionId, 'END');
-  });
-
-  // Working cases:
-  // Code 200
-  // Join 1 player
-  test('Join 1 player', () => {
-    const addPlayer = testPlayerJoin(gameSession.sessionId, 'Luca');
-    expect(addPlayer.status).toStrictEqual(200);
-    expect(addPlayer.response).toStrictEqual({ playerId: expect.any(Number) });
-    expect(testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players).toStrictEqual(['Luca']);
-  });
-
-  // Empty string name : randomly generated that conforms to the structure "[5 letters][3 numbers]"
-  test('Empty string name', () => {
-    const addPlayer = testPlayerJoin(gameSession.sessionId, '');
-    expect(addPlayer.status).toStrictEqual(200);
-    expect(addPlayer.response).toStrictEqual({ playerId: expect.any(Number) });
-    const playerName = testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players[0];
-    expect(testRandomName(playerName)).toStrictEqual(true);
-  });
-
-  // Join many people
-  // Empty string name : randomly generated that conforms to the structure "[5 letters][3 numbers]"
-  test('Many empty string name', () => {
-    // Add first empty string name player
-    const addPlayer = testPlayerJoin(gameSession.sessionId, '');
-    expect(addPlayer.status).toStrictEqual(200);
-    expect(addPlayer.response).toStrictEqual({ playerId: expect.any(Number) });
-
-    // Add second empty string name player
-    const addPlayer2 = testPlayerJoin(gameSession.sessionId, '');
-    expect(addPlayer2.status).toStrictEqual(200);
-    expect(addPlayer2.response).toStrictEqual({ playerId: expect.any(Number) });
-
-    // Get the first player name
-    const playerName = testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players[0];
-    expect(testRandomName(playerName)).toStrictEqual(true);
-
-    // Get the second player name
-    const playerName2 = testGetGameStatus(admin.token, quiz.quizId, gameSession.sessionId).response.players[1];
-    expect(testRandomName(playerName2)).toStrictEqual(true);
-
-    // Expect them to be different name
-    expect(playerName === playerName2).toStrictEqual(false);
-
-    // Adding player 3 name: "Luca"
-    const addPlayer3 = testPlayerJoin(gameSession.sessionId, 'Luca');
-    expect(addPlayer3.status).toStrictEqual(200);
-    expect(addPlayer3.response).toStrictEqual({ playerId: expect.any(Number) });
-  });
-});
-
-describe('Status of guest player in session', () => {
+describe('View Sessions', () => {
   let user: { token: string; };
   let quiz: { quizId: number; };
   let gameSession: { sessionId: number};
   beforeEach(() => {
-    testClear();
     user = testRegister('testuser@example.com', 'password123', 'Test', 'User').response;
     quiz = testCreateQuiz(user.token, 'Sample Quiz', 'Sample Description').response;
-    expect(testCreateQuizQuestion(user.token, quiz.quizId, validQuestion).status).toStrictEqual(200);
+    testCreateQuizQuestion(user.token, quiz.quizId, validQuestion);
     gameSession = testGameSessionStart(user.token, quiz.quizId, 10).response;
   });
 
-  // Error cases:
-  // 400
-  // If player ID does not exist
-  test('Player ID does not exist', () => {
-    const addPlayer = testPlayerJoin(gameSession.sessionId, 'Luca');
-    expect(addPlayer.status).toStrictEqual(200);
-    const playerId1 = addPlayer.response.playerId;
-    expect(testPlayerStatus(playerId1 + 100).status).toStrictEqual(400);
+  test('Invalid quizId', () => {
+    const sessions = testViewSessions(user.token, quiz.quizId + 1234);
+    expect(sessions.response).toStrictEqual(ERROR);
+    expect(sessions.status).toStrictEqual(403);
   });
 
-  // Working cases:
-  // 200
-  // One player
-  test('1 Player ID exists', () => {
-    const addPlayer = testPlayerJoin(gameSession.sessionId, 'Luca');
-    expect(addPlayer.status).toStrictEqual(200);
-    const playerId1 = addPlayer.response.playerId;
-    expect(testPlayerStatus(playerId1).status).toStrictEqual(200);
-    expect(testPlayerStatus(playerId1).response).toStrictEqual({
-      state: 'LOBBY',
-      numQuestions: expect.any(Number),
-      atQuestion: expect.any(Number),
-    });
+  test('Invalid token', () => {
+    const sessions = testViewSessions(user.token + '123cs', quiz.quizId);
+    expect(sessions.response).toStrictEqual(ERROR);
+    expect(sessions.status).toStrictEqual(401);
   });
 
-  // 2 players same session
-  test('2 players same session', () => {
-    // First player
-    let addPlayer = testPlayerJoin(gameSession.sessionId, 'Luca');
-    expect(addPlayer.status).toStrictEqual(200);
-    const playerId1 = addPlayer.response.playerId;
-    expect(testPlayerStatus(playerId1).status).toStrictEqual(200);
-    expect(testPlayerStatus(playerId1).response).toStrictEqual({
-      state: 'LOBBY',
-      numQuestions: expect.any(Number),
-      atQuestion: expect.any(Number),
-    });
-
-    // Second player
-    addPlayer = testPlayerJoin(gameSession.sessionId, 'Lucas');
-    expect(addPlayer.status).toStrictEqual(200);
-    const playerId2 = addPlayer.response.playerId;
-    expect(testPlayerStatus(playerId2).status).toStrictEqual(200);
-    expect(testPlayerStatus(playerId2).response).toStrictEqual({
-      state: 'LOBBY',
-      numQuestions: expect.any(Number),
-      atQuestion: expect.any(Number),
-    });
-    expect(playerId1 !== playerId2).toStrictEqual(true);
-
-    const status2 = testPlayerStatus(playerId2).response;
-    const status1 = testPlayerStatus(playerId1).response;
-    expect(status1.state === status2.state).toStrictEqual(true);
-    expect(status1.numQuestions === status2.numQuestions).toStrictEqual(true);
-    expect(status1.atQuestion === status2.atQuestion).toStrictEqual(true);
+  test('Empty token', () => {
+    const sessions = testViewSessions('', quiz.quizId);
+    expect(sessions.response).toStrictEqual(ERROR);
+    expect(sessions.status).toStrictEqual(401);
   });
 
-  // 2 player different session
-  test('2 players different session', () => {
-    // First player
-    let addPlayer = testPlayerJoin(gameSession.sessionId, 'Luca');
-    expect(addPlayer.status).toStrictEqual(200);
-    const playerId1 = addPlayer.response.playerId;
-    expect(testPlayerStatus(playerId1).status).toStrictEqual(200);
-    expect(testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION').status).toStrictEqual(200);
+  test('Unauthorised', () => {
+    const user2 = testRegister('testuser2@example.com', 'password1235', 'Roger', 'Duong').response;
+    const sessions = testViewSessions(user2.token, quiz.quizId);
+    expect(sessions.response).toStrictEqual(ERROR);
+    expect(sessions.status).toStrictEqual(403);
+  });
 
-    expect(testPlayerStatus(playerId1).response).toStrictEqual({
-      state: 'QUESTION_COUNTDOWN',
-      numQuestions: expect.any(Number),
-      atQuestion: expect.any(Number),
+  test('1 active session', () => {
+    const sessions = testViewSessions(user.token, quiz.quizId);
+    expect(sessions.response).toStrictEqual({
+      activeSessions: [gameSession.sessionId],
+      inactiveSessions: []
     });
+    expect(sessions.status).toStrictEqual(200);
+  });
 
-    // Second player
-    const gameSession2 = testGameSessionStart(user.token, quiz.quizId, 10).response;
-    addPlayer = testPlayerJoin(gameSession2.sessionId, 'Luca');
-    expect(addPlayer.status).toStrictEqual(200);
-    const playerId2 = addPlayer.response.playerId;
-    expect(testPlayerStatus(playerId2).status).toStrictEqual(200);
-    expect(testPlayerStatus(playerId2).response).toStrictEqual({
-      state: 'LOBBY',
-      numQuestions: expect.any(Number),
-      atQuestion: expect.any(Number),
+  test('Multiple sessions', () => {
+    testGameSessionUpdate(user.token, quiz.quizId, gameSession.sessionId, 'NEXT_QUESTION');
+    const session2 = testGameSessionStart(user.token, quiz.quizId, 10).response;
+    const session3 = testGameSessionStart(user.token, quiz.quizId, 10).response;
+    const session4 = testGameSessionStart(user.token, quiz.quizId, 10).response;
+    testGameSessionUpdate(user.token, quiz.quizId, session2.sessionId, 'END');
+
+    const sessions = testViewSessions(user.token, quiz.quizId);
+    expect(sessions.response).toStrictEqual({
+      activeSessions: [gameSession.sessionId, session3.sessionId, session4.sessionId],
+      inactiveSessions: [session2.sessionId]
     });
-    expect(playerId1 !== playerId2).toStrictEqual(true);
-
-    const status2 = testPlayerStatus(playerId2).response;
-    const status1 = testPlayerStatus(playerId1).response;
-    expect(status1 !== status2).toStrictEqual(true);
+    expect(sessions.status).toStrictEqual(200);
   });
 });
-
 testClear();
