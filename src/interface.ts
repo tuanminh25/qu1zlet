@@ -186,7 +186,8 @@ export interface QuestionData {
   playerSubmissions: PlayerSubmission[];
   openTime: number;
   correctAnswerIds: number[];
-  validAnswerIds: number[]
+  validAnswerIds: number[];
+  points: number;
 }
 
 export interface PlayerSubmission {
