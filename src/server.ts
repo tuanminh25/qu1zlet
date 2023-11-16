@@ -17,7 +17,7 @@ import { adminQuestionCreate, moveQuizQuestion, dupQuizQuestion, currentPlayerQu
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, viewGameSession } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
-import { adminQuestionCreateIt2, dupQuizQuestionIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
+import { adminQuestionCreateIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2, dupQuizQuestionIt2 } from './old_it2_functions/questionIt2';
 import {
   getChatMessages,
   sendChatMessages,
@@ -25,7 +25,7 @@ import {
   playerSubmission,
   joinPlayer
 } from './player';
-import { playerGetQuesResult } from './result';
+
 
 // Set up web app
 const app = express();
@@ -202,13 +202,6 @@ app.put('/v1/admin/quiz/:quizId/thumbnail', (req: Request, res: Response) => {
 
   const response = adminThumbnailUpdate(String(token), parseInt(quizId), String(imgUrl));
 
-  res.json(response);
-});
-
-app.get('/v1/player/:playerId/question/:questionposition/results', (req: Request, res: Response) => {
-  const playerId = req.params.playerId;
-  const questionposition = req.params.questionposition;
-  const response = playerGetQuesResult(parseInt(playerId), parseInt(questionposition));
   res.json(response);
 });
 
@@ -419,15 +412,8 @@ app.post('/v1/admin/quiz/:quizId/restore', (req: Request, res: Response) => {
 app.post('/v1/admin/quiz/:quizId/question', (req: Request, res: Response) => {
   const { token, questionBody } = req.body;
   const { quizId } = req.params;
-  const response = adminQuestionCreateIt2(token, parseInt(quizId), questionBody);
 
-  if (response.error === 'Invalid token') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Unauthorised') {
-    return res.status(403).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
+  const response = adminQuestionCreateIt2(token, parseInt(quizId), questionBody);
   res.json(response);
 });
 
@@ -437,16 +423,7 @@ app.delete('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Re
   const questionId = parseInt(req.params.questionId);
 
   const response = adminQuestionDeleteIt2(String(token), quizId, questionId);
-
-  if (response.error === 'Invalid token') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Unauthorised') {
-    return res.status(403).json(response);
-  } else if (response.error) {
-    return res.status(400).json(response);
-  } else {
-    res.json(response);
-  }
+  res.json(response);
 });
 
 app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Response) => {
@@ -456,16 +433,7 @@ app.put('/v1/admin/quiz/:quizId/question/:questionId', (req: Request, res: Respo
   const questionBody = req.body.questionBody;
 
   const response = adminQuestionUpdateIt2(String(token), quizId, questionId, questionBody);
-
-  if (response.error === 'Invalid token') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Unauthorised') {
-    return res.status(403).json(response);
-  } else if (response.error) {
-    return res.status(400).json(response);
-  } else {
-    res.json(response);
-  }
+  res.json(response);
 });
 
 app.put('/v1/admin/quiz/:quizId/name', (req: Request, res: Response) => {
@@ -530,16 +498,6 @@ app.post('/v1/admin/quiz/:quizId/question/:questionId/duplicate', (req: Request,
   const questionId = req.params.questionId;
 
   const response = dupQuizQuestionIt2(String(token), parseInt(quizId), parseInt(questionId));
-
-  if (response.error === 'Token is empty or invalid') {
-    return res.status(401).json(response);
-  } else if (response.error === 'Valid token is provided, quiz does not exist: ' + parseInt(quizId)) {
-    return res.status(403).json(response);
-  } else if (response.error === 'Valid token is provided, but user is not an owner of this quiz') {
-    return res.status(403).json(response);
-  } else if ('error' in response) {
-    return res.status(400).json(response);
-  }
 
   res.json(response);
 });
