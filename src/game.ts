@@ -57,6 +57,26 @@ export function clearAllTimers() {
   }
 }
 
+function goToNextQues(gameSession: GameSession, timerIds: GameSessionTimeoutIds): void {
+  if (gameSession.atQuestion === gameSession.metadata.numQuestions) {
+    gameSession.state = GameState.FINAL_RESULTS;
+    return;
+  }
+  const newQues = gameSession.metadata.questions[gameSession.atQuestion];
+  gameSession.atQuestion++;
+  gameSession.state = GameState.QUESTION_COUNTDOWN;
+  timerIds.questionCountDown = countDownTimer(gameSession.gameSessionId);
+  timerIds.questionDurationTimer = durationTimer(gameSession.gameSessionId, 3, newQues.duration);
+}
+
+/**
+ * Create a name quiz game session
+ *
+ * @param {string} token
+ * @param {number} quizId
+ * @param {number} autoStartNum
+ * @returns {sessionId: number}
+ */
 export function gameSessionStart(token: string, quizId: number, autoStartNum: number): {sessionId: number} {
   const data = load();
   const session = getSession(token);
@@ -132,6 +152,15 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
   };
 }
 
+/**
+ * Update the state of a particular session by sending an action command
+ *
+ * @param {string} token
+ * @param {number} quizId
+ * @param {number} gameSessionId
+ * @param {string} action
+ * @returns {}
+ */
 export function updateGameSessionState(token: string, quizId: number, gameSessionId: number, action: string): Record<string, never> {
   const data = load();
   const session = getSession(token);
@@ -185,13 +214,9 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
     if (action !== GameAction.NEXT_QUESTION) {
       throw HttpError(400, 'Action enum cannot be applied in the current state');
     } else {
-      gameSession.state = GameState.QUESTION_COUNTDOWN;
+      goToNextQues(gameSession, timerIds);
       save(data);
-      timerIds.questionCountDown = countDownTimer(gameSessionId);
-      timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
 
-      gameSession.atQuestion++;
-      save(data);
       return {};
     }
   }
@@ -228,22 +253,8 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
 
   if (gameSession.state === GameState.ANSWER_SHOW) {
     if (action === GameAction.NEXT_QUESTION) {
-      if (gameSession.atQuestion === gameSession.metadata.numQuestions) {
-        gameSession.state = GameState.FINAL_RESULTS;
-        save(data);
-
-        return {};
-      }
-
-      gameSession.state = GameState.QUESTION_COUNTDOWN;
-
+      goToNextQues(gameSession, timerIds);
       save(data);
-      timerIds.questionCountDown = countDownTimer(gameSessionId);
-
-      gameSession.atQuestion++;
-
-      save(data);
-      timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
 
       return {};
     } else if (action === GameAction.GO_TO_FINAL_RESULTS) {
@@ -273,21 +284,8 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
 
       return {};
     } else if (action === GameAction.NEXT_QUESTION) {
-      if (gameSession.atQuestion === gameSession.metadata.numQuestions) {
-        gameSession.state = GameState.FINAL_RESULTS;
-        save(data);
-
-        return {};
-      }
-      gameSession.state = GameState.QUESTION_COUNTDOWN;
-
+      goToNextQues(gameSession, timerIds);
       save(data);
-      timerIds.questionCountDown = countDownTimer(gameSessionId);
-
-      gameSession.atQuestion++;
-
-      save(data);
-      timerIds.questionDurationTimer = durationTimer(gameSessionId, 3, currQues.duration);
 
       return {};
     } else {
@@ -302,6 +300,14 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
   return {};
 }
 
+/**
+ * Get the status of a particular quiz session
+ *
+ * @param {string} token
+ * @param {number} quizId
+ * @param {number} gameSessionId
+ * @returns {ReturnGameSession}
+ */
 export function getGameStatus(token: string, quizId: number, gameSessionId: number): ReturnGameSession {
   const data = load();
   const session = getSession(token);
@@ -336,6 +342,12 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
   };
 }
 
+/**
+ *
+ * @param {string} token
+ * @param {number} quizId
+ * @returns
+ */
 export function viewGameSession(token: string, quizId: number) {
   const session = getSession(token);
   const quiz = checkquizId(quizId);
