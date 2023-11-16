@@ -203,7 +203,7 @@ export interface PlayersCorrect {
 }
 
 export interface ReturnQuestResult {
-  questionId: Number;
+  questionId: number;
   playersCorrectList: string[];
   averageAnswerTime: number;
   percentCorrect: number;

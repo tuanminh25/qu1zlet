@@ -16,7 +16,6 @@ import {
   GameState,
   GameSession
 } from './interface';
-import e from 'express';
 
 export function load(): DataStore {
   const data = fs.readFileSync(filePath, 'utf8');
@@ -375,7 +374,7 @@ export function checkSessionsEnded(quizId: number): void {
 
 /**
  * checks if questionPosition is valid
- * 
+ *
  * @param {GameSession} gameSession
  * @param {number} questionPosition
  * @returns {boolean}

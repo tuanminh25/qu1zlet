@@ -212,7 +212,6 @@ app.get('/v1/player/:playerId/question/:questionposition/results', (req: Request
   res.json(response);
 });
 
-
 app.put('/v1/player/:playerId/question/:questionposition/answer', (req: Request, res: Response) => {
   const playerId = req.params.playerId;
   const questionposition = req.params.questionposition;
