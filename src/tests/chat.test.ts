@@ -16,13 +16,6 @@ beforeEach(() => {
   testClear();
 });
 
-// function sleepSync(ms: number) {
-//   const startTime = new Date().getTime();
-//   while (new Date().getTime() - startTime < ms) {
-//     // zzzZZ - comment needed so eslint doesn't complain
-//   }
-// }
-
 describe('Chat messages', () => {
   let user: { token: string; };
   let quiz: { quizId: number; };
@@ -143,3 +136,5 @@ describe('Send messages', () => {
     });
   });
 });
+
+testClear();
