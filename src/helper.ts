@@ -51,26 +51,6 @@ export function checkquizId(quizId: number): Quiz {
 }
 
 /**
-  * Given a an auth user id
-  *
-  * @param {string} authUserId
-  * @returns { user:
-    *   {
-    *   userId: number,
-    *   name : string,
-    *   email : string,
-    *   numSuccessfulLogins: number,
-    *   numFailedPasswordsSinceLastLogin: number
-    *   }
-    * }
-    * @returns {undefined} - AuthUserId is not a valid user
-  */
-export function checkauthUserId(authUserId: number): User {
-  const data = load();
-  return data.users.find((user) => user.userId === authUserId);
-}
-
-/**
   * Checks if password is valid
   *
   * @param {string} password

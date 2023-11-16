@@ -18,7 +18,7 @@ import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
 import { gameSessionStart, getGameStatus, updateGameSessionState, viewGameSession } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
 
-import { adminQuestionCreateIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2 } from './old_it2_functions/questionIt2';
+import { adminQuestionCreateIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2, dupQuizQuestionIt2 } from './old_it2_functions/questionIt2';
 import {
   getChatMessages,
   sendChatMessages,
@@ -506,7 +506,7 @@ app.post('/v1/admin/quiz/:quizId/question/:questionId/duplicate', (req: Request,
   const quizId = req.params.quizId;
   const questionId = req.params.questionId;
 
-  const response = dupQuizQuestion(String(token), parseInt(quizId), parseInt(questionId));
+  const response = dupQuizQuestionIt2(String(token), parseInt(quizId), parseInt(questionId));
 
   res.json(response);
 });

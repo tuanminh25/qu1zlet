@@ -1,5 +1,4 @@
 import {
-  isToken,
   generateTime,
   Question,
   load,
@@ -7,7 +6,9 @@ import {
   Answer,
   randomColour,
   QuestionBody,
-  getSession
+  getSession,
+  checkquizId,
+  isQuizQuestion
 } from './helperIt2';
 import HttpError from 'http-errors';
 
@@ -220,4 +221,43 @@ export function adminQuestionDeleteIt2(token: string, quizId: number, questionId
 
   save(data);
   return {};
+}
+
+/**
+ * A particular question gets duplicated to immediately after where the source question is
+ *
+ * @param token
+ * @param {number} quizId
+ * @param {number} questionId
+ * @returns
+ */
+export function dupQuizQuestionIt2(token: string, quizId: number, questionId: number): { error?: string; newQuestionId?: number; } {
+  // Check errors
+  // Invalid token
+  const session = getSession(token);
+
+  // Non-existent quiz
+  const quiz = checkquizId(quizId);
+  if (!quiz) {
+    throw HttpError(403, 'User is not an owner of this quiz');
+  }
+
+  // User is not owner of the quiz
+  if (session.userId !== quiz.quizOwnedby) {
+    throw HttpError(403, 'Valid token is provided, but user is not an owner of this quiz');
+  }
+
+  // Question Id does not belong to this quiz
+  const question = isQuizQuestion(questionId, quizId);
+  if (!question) {
+    throw HttpError(400, 'Question Id does not refer to a valid question within this quiz');
+  }
+
+  // Create new instance
+  const dup = adminQuestionCreateIt2(token, quizId, question);
+
+  // Update quiz
+  quiz.timeLastEdited = generateTime();
+
+  return { newQuestionId: dup.questionId };
 }
