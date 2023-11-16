@@ -57,6 +57,14 @@ export function clearAllTimers() {
   }
 }
 
+/**
+ * Create a name quiz game session
+ * 
+ * @param {string} token
+ * @param {number} quizId
+ * @param {number} autoStartNum
+ * @returns {sessionId: number}
+ */
 export function gameSessionStart(token: string, quizId: number, autoStartNum: number): {sessionId: number} {
   const data = load();
   const session = getSession(token);
@@ -132,6 +140,15 @@ export function gameSessionStart(token: string, quizId: number, autoStartNum: nu
   };
 }
 
+/**
+ * Update the state of a particular session by sending an action command
+ * 
+ * @param {string} token
+ * @param {number} quizId
+ * @param {number} gameSessionId 
+ * @param {string} action
+ * @returns {}
+ */
 export function updateGameSessionState(token: string, quizId: number, gameSessionId: number, action: string): Record<string, never> {
   const data = load();
   const session = getSession(token);
@@ -302,6 +319,14 @@ export function updateGameSessionState(token: string, quizId: number, gameSessio
   return {};
 }
 
+/**
+ * Get the status of a particular quiz session
+ * 
+ * @param {string} token
+ * @param {number} quizId
+ * @param {number} gameSessionId  
+ * @returns {ReturnGameSession}
+ */
 export function getGameStatus(token: string, quizId: number, gameSessionId: number): ReturnGameSession {
   const data = load();
   const session = getSession(token);
@@ -336,6 +361,12 @@ export function getGameStatus(token: string, quizId: number, gameSessionId: numb
   };
 }
 
+/**
+ * 
+ * @param {string} token
+ * @param {number} quizId
+ * @returns 
+ */
 export function viewGameSession(token: string, quizId: number) {
   const session = getSession(token);
   const quiz = checkquizId(quizId);
