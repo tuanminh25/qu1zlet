@@ -5,15 +5,11 @@ import {
   save,
   Answer,
   randomColour,
-  QuestionBody,
-  getSession,
   checkquizId,
   isQuizQuestion,
   QuestionBody,
   getSession
 } from './helperIt2';
-import HttpError from 'http-errors';
-
 import HttpError from 'http-errors';
 
 /**
