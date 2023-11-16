@@ -44,8 +44,8 @@ function updateQuestionData(gameSession: GameSession, questionPosition: number, 
     totalAnswerTime += submit.answerTime;
   }
 
-  currQues.averageAnswerTime = totalAnswerTime / (currQues.playerSubmissions.length);
-  currQues.percentCorrect = (currQues.playersCorrectList.length / gameSession.players.length) * 100;
+  currQues.averageAnswerTime = Math.floor(totalAnswerTime / (currQues.playerSubmissions.length));
+  currQues.percentCorrect = Math.floor((currQues.playersCorrectList.length / gameSession.players.length) * 100);
 }
 
 /**
@@ -197,12 +197,17 @@ export function playerSubmission(playerId: number, questionPosition: number, ans
     throw HttpError(400, 'There are duplicate answer IDs provided');
   }
 
+  const currQues = gameSession.questionDatas[questionPosition - 1];
   const playerSubmit: PlayerSubmission = {
     playerId: playerId,
     answerIds: answerIds,
     name: player.name,
-    answerTime: generateTime() - gameSession.questionDatas[questionPosition - 1].openTime
+    answerTime: generateTime() - currQues.openTime
   };
+
+  if (currQues.playerSubmissions.find((ans) => ans.playerId === playerSubmit.playerId)) {
+    currQues.playerSubmissions = currQues.playerSubmissions.filter((ans) => ans.playerId !== playerSubmit.playerId);
+  }
 
   gameSession.questionDatas[questionPosition - 1].playerSubmissions.push(playerSubmit);
   updateQuestionData(gameSession, questionPosition, playerSubmit);

@@ -362,7 +362,7 @@ export function viewGameSession(token: string, quizId: number) {
   }
 
   return {
-    activeSessions: quiz.activeSessions,
-    inactiveSessions: quiz.inactiveSessions
+    activeSessions: quiz.activeSessions.sort(),
+    inactiveSessions: quiz.inactiveSessions.sort()
   };
 }
