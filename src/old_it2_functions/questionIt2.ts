@@ -7,9 +7,7 @@ import {
   save,
   Answer,
   randomColour,
-  checkquizId,
-  isQuizQuestion,
-  QuestionBody
+  QuestionBody,
 } from './helperIt2';
 
 /**
@@ -118,50 +116,6 @@ export function adminQuestionCreateIt2(token: string, quizId: number, questionBo
   return {
     questionId: newQuestion.questionId
   };
-}
-
-/**
- * A particular question gets duplicated to immediately after where the source question is
- *
- * @param token
- * @param {number} quizId
- * @param {number} questionId
- * @returns
- */
-export function dupQuizQuestionIt2(token: string, quizId: number, questionId: number): { error?: string, newQuestionId?: number } {
-  // Check errors
-  // Invalid token
-  const session = isToken(token);
-  if (!session) {
-    return { error: 'Token is empty or invalid' };
-  }
-
-  // Non-existent quiz
-  const quiz = checkquizId(quizId);
-  if (quiz === undefined) {
-    return { error: 'Valid token is provided, quiz does not exist: ' + quizId };
-  }
-
-  // User is not owner of the quiz
-  if (session.userId !== quiz.quizOwnedby) {
-    return { error: 'Valid token is provided, but user is not an owner of this quiz' };
-  }
-
-  // Question Id does not belong to this quiz
-  const question = isQuizQuestion(questionId, quizId);
-  if (!question) {
-    return { error: 'Question Id does not refer to a valid question within this quiz: ' + questionId };
-  }
-
-  // Create new instance
-  const dup = adminQuestionCreateIt2(token, quizId, question);
-  console.log(dup);
-  console.log(quiz.questions);
-
-  // Update quiz
-  quiz.timeLastEdited = generateTime();
-
-  return { newQuestionId: dup.questionId };
 }
 
 /**
