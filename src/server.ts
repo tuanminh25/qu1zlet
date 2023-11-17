@@ -25,7 +25,7 @@ import {
   playerSubmission,
   joinPlayer
 } from './player';
-import { playerFinalResults } from './result';
+import { playerQuestionResult, playerFinalResults } from './result';
 
 // Set up web app
 const app = express();
@@ -211,6 +211,13 @@ app.put('/v1/player/:playerId/question/:questionposition/answer', (req: Request,
   const answerIds = req.body.answerIds;
   const parsedAnswerIds = answerIds.map((id: string) => parseInt(id));
   const response = playerSubmission(parseInt(playerId), parseInt(questionposition), parsedAnswerIds);
+  res.json(response);
+});
+
+app.get('/v1/player/:playerId/question/:questionposition/results', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const questionposition = req.params.questionposition;
+  const response = playerQuestionResult(parseInt(playerId), parseInt(questionposition));
   res.json(response);
 });
 
