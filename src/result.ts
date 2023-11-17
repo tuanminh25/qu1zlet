@@ -34,7 +34,7 @@ export function playerQuestionResult(playerId: number, questionPosition: number)
     playersCorrectList: playerList,
     averageAnswerTime: questionData.averageAnswerTime,
     percentCorrect: questionData.percentCorrect
-  } 
+  };
 }
 
 function calculateFinalScore(name: string, allQues: QuestionData[]): number {
@@ -92,4 +92,3 @@ export function playerFinalResults(playerId: number): ReturnFinalResults {
     questionResults: questionResults
   };
 }
-

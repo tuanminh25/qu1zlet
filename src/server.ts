@@ -25,8 +25,7 @@ import {
   playerSubmission,
   joinPlayer
 } from './player';
-import { playerQuestionResult,  playerFinalResults } from './result';
-
+import { playerQuestionResult, playerFinalResults } from './result';
 
 // Set up web app
 const app = express();
