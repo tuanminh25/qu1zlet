@@ -13,9 +13,9 @@ import { adminAuthLogin, adminAuthRegister, adminAuthLogout } from './auth';
 import { adminUserDetails, updatePassword, adminUserUpdate } from './user';
 import { clear } from './other';
 import { adminQuizCreate, adminQuizList, adminQuizRemove, adminQuizInfo, adminQuizDescriptionUpdate, adminQuizNameUpdate, adminThumbnailUpdate, adminQuizTransfer } from './quiz';
-import { adminQuestionCreate, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete } from './question';
+import { adminQuestionCreate, moveQuizQuestion, dupQuizQuestion, currentPlayerQuestionInfor, adminQuestionUpdate, adminQuestionDelete, GetQuestionResults } from './question';
 import { viewQuizzesInTrash, emptyTrash, restoreQuizInTrash } from './trash';
-import { gameSessionStart, getGameStatus, updateGameSessionState, viewGameSession } from './game';
+import { gameSessionStart, getGameStatus, GetQuizResults, updateGameSessionState, viewGameSession } from './game';
 import { adminQuizInfoIt2, adminQuizNameUpdateIt2, adminQuizTransferIt2 } from './old_it2_functions/quizIt2';
 import { adminQuestionCreateIt2, adminQuestionUpdateIt2, adminQuestionDeleteIt2, dupQuizQuestionIt2 } from './old_it2_functions/questionIt2';
 import {
@@ -23,7 +23,8 @@ import {
   sendChatMessages,
   playerStatus,
   playerSubmission,
-  joinPlayer
+  joinPlayer,
+  GetPlayerQuizResults
 } from './player';
 import { playerFinalResults } from './result';
 
@@ -221,6 +222,19 @@ app.get('/v1/player/:playerId/question/:questionposition', (req: Request, res: R
   res.json(response);
 });
 
+app.get('/v1/player/:playerId/question/:questionposition/results', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const questionposition = req.params.questionposition;
+  const response = GetQuestionResults(parseInt(playerId), parseInt(questionposition));
+  res.json(response);
+});
+
+app.get('/v1/player/:playerId/results', (req: Request, res: Response) => {
+  const playerId = req.params.playerId;
+  const response = GetPlayerQuizResults(parseInt(playerId));
+  res.json(response);
+});
+
 app.get('/v1/player/:playerId/chat', (req: Request, res: Response) => {
   const playerId = req.params.playerId;
   const response = getChatMessages(parseInt(playerId));
@@ -291,6 +305,33 @@ app.post('/v1/admin/quiz', (req: Request, res: Response) => {
 app.put('/v1/admin/user/details', (req: Request, res: Response) => {
   const { token, email, nameFirst, nameLast } = req.body;
   const response = adminUserUpdate(token, email, nameFirst, nameLast);
+
+  res.json(response);
+});
+
+app.get('/v1/admin/quiz/:quizid/session/:sessionid', (req: Request, res: Response) => {
+  const quizId = req.params.quizid;
+  const sessionId = req.params.sessionid;
+  const token = req.headers.token;
+  const response = getGameStatus(String(token), parseInt(quizId), parseInt(sessionId));
+
+  res.json(response);
+});
+
+app.get('/v1/admin/quiz/:quizid/session/:sessionid/results', (req: Request, res: Response) => {
+  const quizId = req.params.quizid;
+  const sessionId = req.params.sessionid;
+  const token = req.headers.token;
+  const response = GetQuizResults(String(token), parseInt(quizId), parseInt(sessionId));
+
+  res.json(response);
+});
+
+app.get('/v1/admin/quiz/:quizid/session/:sessionid/results/csv', (req: Request, res: Response) => {
+  const quizId = req.params.quizid;
+  const sessionId = req.params.sessionid;
+  const token = req.headers.token;
+  const response = GetQuizResults(String(token), parseInt(quizId), parseInt(sessionId));
 
   res.json(response);
 });
