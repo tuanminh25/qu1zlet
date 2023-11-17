@@ -26,7 +26,7 @@ export function playerQuestionResult(playerId: number, questionPosition: number)
     throw HttpError(400, 'session is not yet up to this question');
   }
 
-  const questionData = gameSession.questionDatas[questionPosition];
+  const questionData = gameSession.questionDatas[questionPosition - 1];
   const playerList = questionData.playersCorrectList.map(player => player.name).sort();
 
   return {
