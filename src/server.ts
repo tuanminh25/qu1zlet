@@ -64,13 +64,13 @@ const HOST: string = process.env.IP || 'localhost';
 
 // Example get request
 app.get('/data', async (req: Request, res: Response) => {
-  const data = await database.hgetall('data');
+  const data = await database.hgetall('data:game');
   return res.status(200).json({ data });
 });
 
 app.put('/data', async (req: Request, res: Response) => {
   const { data } = req.body;
-  await database.hset("data:forum", { data });
+  await database.hset("data:game", { data });
   return res.status(200).json({});
 });
 

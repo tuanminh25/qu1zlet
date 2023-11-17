@@ -39,20 +39,6 @@ try {
   return res.data;
 } catch (e) {
   return e;
-  // return { 
-  //   users: [],
-  //   quizzes: [],
-  //   trash: [],
-  //   sessions: [],
-  //   gameSessions: [],
-  //   ids: {  userId: undefined,
-  //     quizId: undefined,
-  //     questionId: undefined,
-  //     answerId: undefined,
-  //     gameSessionId: undefined,
-  //     playerId: undefined,},
-  //   players: [],
-  // };
 }
 };
 
