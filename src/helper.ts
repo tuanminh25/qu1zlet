@@ -39,7 +39,7 @@ try {
   return res.data;
 } catch (e) {
   return e;
-  // return {
+  // return { 
   //   users: [],
   //   quizzes: [],
   //   trash: [],
