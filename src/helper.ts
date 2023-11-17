@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 import HttpError from 'http-errors';
+import request, { HttpVerb } from 'sync-request';
+const DEPLOYED_URL = "https://w15a-crunchie-awesome-backend.vercel.app/"
 
 const filePath = path.join(__dirname, 'dataStore.json');
 
@@ -17,15 +19,56 @@ import {
   GameSession
 } from './interface';
 
-export function load(): DataStore {
-  const data = fs.readFileSync(filePath, 'utf8');
-  return JSON.parse(String(data));
-}
 
-export function save(data: DataStore) {
-  const dataStr = JSON.stringify(data);
-  fs.writeFileSync(filePath, dataStr);
+const requestHelper = (method: HttpVerb, path: string, payload: object) => {
+  let json = {};
+  let qs = {};
+  if (['GET', 'DELETE'].includes(method)) {
+    qs = payload;
+  } else {
+    json = payload;
+  }
+
+  const res = request(method, DEPLOYED_URL + path, { qs, json, timeout: 20000 });
+  return JSON.parse(res.body.toString());
+};
+
+export const load = (): DataStore => {
+try {
+  const res = requestHelper('GET', '/data', {});
+  return res.data;
+} catch (e) {
+  return e;
+  // return {
+  //   users: [],
+  //   quizzes: [],
+  //   trash: [],
+  //   sessions: [],
+  //   gameSessions: [],
+  //   ids: {  userId: undefined,
+  //     quizId: undefined,
+  //     questionId: undefined,
+  //     answerId: undefined,
+  //     gameSessionId: undefined,
+  //     playerId: undefined,},
+  //   players: [],
+  // };
 }
+};
+
+export const save= (newData: DataStore) => {
+  requestHelper('PUT', '/data', { data: newData });
+};
+
+// export function load(): DataStore {
+//   const data = fs.readFileSync(filePath, 'utf8');
+//   return JSON.parse(String(data));
+// }
+
+// export function save(data: DataStore) {
+//   const dataStr = JSON.stringify(data);
+//   fs.writeFileSync(filePath, dataStr);
+// }
 
 /**
   * Given a quiz id, returns the quiz and its

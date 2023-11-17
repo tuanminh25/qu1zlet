@@ -27,6 +27,21 @@ import {
 } from './player';
 import { playerQuestionResult, playerFinalResults } from './result';
 
+import { createClient } from '@vercel/kv';
+
+// Replace this with your API_URL
+// E.g. https://large-poodle-44208.kv.vercel-storage.com
+const KV_REST_API_URL="https://splendid-mako-45604.kv.vercel-storage.com";
+// Replace this with your API_TOKEN
+// E.g. AaywASQgOWE4MTVkN2UtODZh...
+const KV_REST_API_TOKEN="AbIkASQgODEzYmZkZjItZTA1OC00Nzg2LWI1YTItZDQ5NGM5Y2Y1ZWFjNTllNTM3NDhhZDRiNGMxNmEyNmNiNjhkNzAwMjgzYTY=";
+
+const database = createClient({
+  url: KV_REST_API_URL,
+  token: KV_REST_API_TOKEN,
+});
+
+
 // Set up web app
 const app = express();
 // Use middleware that allows us to access the JSON body of requests
@@ -48,6 +63,17 @@ const HOST: string = process.env.IP || 'localhost';
 // ====================================================================
 
 // Example get request
+app.get('/data', async (req: Request, res: Response) => {
+  const data = await database.hgetall('data:forum');
+  res.status(200).json({ data });
+});
+
+app.put('/data', async (req: Request, res: Response) => {
+  const { data } = req.body;
+  await database.hset("data:forum", { data });
+  return res.status(200).json({});
+});
+
 app.get('/echo', (req: Request, res: Response) => {
   const data = req.query.echo as string;
   return res.json(echo(data));
