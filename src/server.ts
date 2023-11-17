@@ -70,7 +70,7 @@ app.get('/data', async (req: Request, res: Response) => {
 
 app.put('/data', async (req: Request, res: Response) => {
   const { data } = req.body;
-  await database.hset("data:game", { data });
+  await database.hset("data:game", data);
   return res.status(200).json({});
 });
 
