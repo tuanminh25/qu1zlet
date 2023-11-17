@@ -3,7 +3,7 @@ import path from 'path';
 import crypto from 'crypto';
 import HttpError from 'http-errors';
 import request, { HttpVerb } from 'sync-request';
-const DEPLOYED_URL = "https://w15a-crunchie-awesome-backend.vercel.app/"
+const DEPLOYED_URL = "https://w15a-crunchie-awesome-backend.vercel.app"
 
 const filePath = path.join(__dirname, 'dataStore.json');
 

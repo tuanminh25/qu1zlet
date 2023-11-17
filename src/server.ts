@@ -65,7 +65,7 @@ const HOST: string = process.env.IP || 'localhost';
 // Example get request
 app.get('/data', async (req: Request, res: Response) => {
   const data = await database.hgetall('data:forum');
-  res.status(200).json({ data });
+  return res.status(200).json({ data });
 });
 
 app.put('/data', async (req: Request, res: Response) => {
