@@ -197,23 +197,13 @@ export interface PlayerSubmission {
   name: string
 }
 
-export interface QuizResults {
-  usersRankedByScore: UserScore[];
-  questionResults: QuestionResult[];
-}
-
-export interface UserScore {
-  name: string;
-  score: number;
-}
-
 export interface PlayersCorrect {
   playerId: number;
   name: string;
   score: number
 }
 
-export interface QuestionResult {
+export interface ReturnQuestResult {
   questionId: number;
   playersCorrectList: string[];
   averageAnswerTime: number;

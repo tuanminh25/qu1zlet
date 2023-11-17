@@ -13,8 +13,7 @@ import {
   GameState,
   ReturnGameSession,
   ReturnQuizInfo,
-  QuestionData,
-  QuizResults
+  QuestionData
 } from './interface';
 
 interface GameSessionTimeoutIds {
@@ -366,46 +365,4 @@ export function viewGameSession(token: string, quizId: number) {
     activeSessions: quiz.activeSessions.sort(),
     inactiveSessions: quiz.inactiveSessions.sort()
   };
-}
-
-/**
- * Get the final results for all players for a completed quiz session
- *
- * @param {string} token
- * @param {number} quizId
- * @param {number} gameSessionId
- * @returns {QuizResults}
- */
-
-export function GetQuizResults (token: string, quizId: number, gameSessionId: number): QuizResults {
-  const quizResults = {
-    usersRankedByScore: [
-      {
-        name: 'Hayden',
-        score: 45
-      },
-    ],
-    questionResults: [
-      {
-        questionId: 5546,
-        playersCorrectList: ['Hayden'],
-        averageAnswerTime: 45,
-        percentCorrect: 54
-      },
-    ]
-  };
-  return quizResults;
-}
-
-/**
- * Get the a link to the final results (in CSV format) for all players for a completed quiz session
- *
- * @param {string} token
- * @param {number} quizId
- * @param {number} gameSessionId
- * @returns {string}
- */
-export function GetResultsCSV (token: string, quizId: number, gameSessionId: number): string {
-  const CSVlink = 'www.google.com';
-  return CSVlink;
 }
