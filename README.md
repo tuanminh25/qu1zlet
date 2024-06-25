@@ -8,7 +8,7 @@
 
 2. Open 2 terminals
 
-3. Go into the folder quizlet
+3. Go into the folder qu1zlet
 
 4. Run the command *start* to start the backend
 
