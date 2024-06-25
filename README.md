@@ -17,3 +17,5 @@
 6. Run npx http-server -p 3000
 
 7. Open a browser on http://localhost:3000
+
+Credit front end design to COMP1531 staff team and backend template to COMP1531 staff team 
